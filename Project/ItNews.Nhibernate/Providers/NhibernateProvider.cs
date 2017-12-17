@@ -4,12 +4,13 @@ using NHibernate;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ItNews.Nhibernate.Providers
 {
     public class NhibernateProvider<T> : IProvider<T>
-        where T : IEntity
+        where T : class, IEntity
     {
         public Task DeleteAsync(T instance)
         {
@@ -33,6 +34,8 @@ namespace ItNews.Nhibernate.Providers
             throw new NotImplementedException();
         }
 
+       
+
         public async Task<T> SaveOrUpdateAsync(T instance)
         {
             if (instance == null)
@@ -49,6 +52,8 @@ namespace ItNews.Nhibernate.Providers
                 return instance;
             }
         }
+
+
 
     }
 }

@@ -16,7 +16,7 @@ namespace ItNews.Nhibernate.Mappings
             Id(x => x.Id);
             HasOne(x => x.Author).Cascade.SaveUpdate().LazyLoad();
             Map(x => x.Title).Not.Nullable();
-            Map(x => x.Content).Not.Nullable();
+            Map(x => x.Text).Not.Nullable();
             Map(x => x.ImagePath);
             Map(x => x.Date).Not.Nullable();
         }

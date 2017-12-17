@@ -200,8 +200,6 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\News\About.cshtml" />
-    <Content Include="Views\News\Contact.cshtml" />
     <Content Include="Views\News\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>

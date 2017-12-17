@@ -8,7 +8,7 @@ namespace ItNews.Business.Entities
         public virtual AppUser Author { get; set; }
         public virtual string Title { get; set; }
         public virtual string ImagePath { get; set; }
-        public virtual string Content { get; set; }
+        public virtual string Text { get; set; }
         public virtual DateTime Date { get; set; }
     }
 }

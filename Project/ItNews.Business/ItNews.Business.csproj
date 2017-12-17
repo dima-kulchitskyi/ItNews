@@ -51,6 +51,7 @@
     <Compile Include="Entities\IEntity.cs" />
     <Compile Include="Managers\Manager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Providers\IArticleProvider.cs" />
     <Compile Include="Providers\IProvider.cs" />
   </ItemGroup>
   <ItemGroup>

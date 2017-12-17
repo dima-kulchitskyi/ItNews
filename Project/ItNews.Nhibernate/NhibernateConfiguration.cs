@@ -7,13 +7,13 @@ using System.Configuration;
 
 namespace ItNews.Nhibernate
 {
-    public static class NhibernateConfiguration
+    public class NhibernateConfiguration
     {
         public static void RegisterDependencies(IKernel kernel)
         {
             var connectionString = ConfigurationManager.ConnectionStrings["DbConnection"].ToString();
             kernel.Bind<ISessionFactory>().ToConstant(Fluently.Configure().Database(MsSqlConfiguration.MsSql2008.ConnectionString(connectionString).ShowSql())
-                                .Mappings(m => m.FluentMappings.AddFromAssemblyOf<SessionManager>())
+                                .Mappings(m => m.FluentMappings.AddFromAssemblyOf<NhibernateConfiguration>())
                                 .ExposeConfiguration(cfg => new SchemaUpdate(cfg).Execute(true, true))
                                 .BuildSessionFactory());
         }

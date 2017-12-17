@@ -3,6 +3,7 @@ using ItNews.Nhibernate;
 using Ninject.Web.Common;
 using ItNews.Business.Providers;
 using ItNews.Nhibernate.Providers;
+using ItNews.Business.Entities;
 
 namespace ItNews.Web
 {
@@ -14,6 +15,8 @@ namespace ItNews.Web
 
             Bind<SessionManager>().To<SessionManager>().InRequestScope();
             Bind(typeof(IProvider<>)).To(typeof(NhibernateProvider<>));
+    
+            Bind<IArticleProvider>().To<ArticleProvider>();
         }
     }
 }

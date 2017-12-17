@@ -3,10 +3,13 @@ using ItNews.Business.Providers;
 
 namespace ItNews.Business.Managers
 {
-    public abstract class Manager<TProvider, T>
-        where TProvider : IProvider<T> 
+    public class Manager<T>
         where T : IEntity
     {
-
+        protected IProvider<T> provider;
+        public Manager(IProvider<T> provider)
+        {
+            this.provider = provider;
+        }
     }
 }
