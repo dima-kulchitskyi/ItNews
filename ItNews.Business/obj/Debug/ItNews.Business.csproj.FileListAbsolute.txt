@@ -1,9 +1,0 @@
-C:\Users\deyne\source\repos\ItNews\ItNews.Business\bin\Debug\ItNews.Business.dll
-C:\Users\deyne\source\repos\ItNews\ItNews.Business\bin\Debug\ItNews.Business.pdb
-C:\Users\deyne\source\repos\ItNews\ItNews.Business\bin\Debug\Newtonsoft.Json.dll
-C:\Users\deyne\source\repos\ItNews\ItNews.Business\bin\Debug\Owin.dll
-C:\Users\deyne\source\repos\ItNews\ItNews.Business\bin\Debug\Newtonsoft.Json.xml
-C:\Users\deyne\source\repos\ItNews\ItNews.Business\obj\Debug\ItNews.Business.csprojResolveAssemblyReference.cache
-C:\Users\deyne\source\repos\ItNews\ItNews.Business\obj\Debug\ItNews.Business.csproj.CoreCompileInputs.cache
-C:\Users\deyne\source\repos\ItNews\ItNews.Business\obj\Debug\ItNews.Business.dll
-C:\Users\deyne\source\repos\ItNews\ItNews.Business\obj\Debug\ItNews.Business.pdb
