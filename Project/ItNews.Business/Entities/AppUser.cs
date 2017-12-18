@@ -10,4 +10,3 @@ namespace ItNews.Business.Entities
         public virtual string PasswordHash { get; set; }
     }
 }
-

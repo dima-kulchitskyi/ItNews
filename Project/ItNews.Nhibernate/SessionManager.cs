@@ -21,7 +21,5 @@ namespace ItNews.Nhibernate
         {
             this.sessionFactory = sessionFactory;
         }
-        
-       
     }
 }

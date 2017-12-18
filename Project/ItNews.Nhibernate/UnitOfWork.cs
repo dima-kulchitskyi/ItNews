@@ -10,34 +10,45 @@ using Ninject.Web.Mvc;
 
 namespace ItNews.Nhibernate
 {
-    public class UnitOfWork : IDisposable
+    public class UnitOfWork : IUnitOfWork, IDisposable
     {
         public SessionManager SessionManager { get; protected set; }
 
-        public ITransaction Transaction { get; protected set; }
+        protected ITransaction transaction;
 
-        public UnitOfWork(bool useTransaction)
+        public UnitOfWork(SessionManager sessionManager)
         {
-            SessionManager = DependencyResolver.Current.GetService<SessionManager>();
-            if (useTransaction)
-                BeginTransaction();
+            SessionManager = sessionManager;
         }
 
-        public UnitOfWork BeginTransaction()
+        public void BeginTransaction()
         {
-            Transaction = SessionManager?.Session?.Transaction;
-            if (Transaction == null || Transaction.WasCommitted)
-                Transaction = SessionManager?.Session?.BeginTransaction();
+            transaction = SessionManager?.Session?.Transaction;
+            if (transaction == null || transaction.WasCommitted)
+                transaction = SessionManager?.Session?.BeginTransaction();
+        }
 
-            return this;
+        public void RollbackTransaction()
+        {
+            transaction = SessionManager?.Session?.Transaction;
+            if (transaction?.IsActive == true && transaction?.WasCommitted == false && transaction?.WasRolledBack == false)
+                transaction?.Rollback();
+        }
+
+        public void CommitTransaction()
+        {
+            if (transaction?.IsActive == true && transaction?.WasCommitted == false && transaction?.WasRolledBack == false)
+                transaction?.Commit();
         }
 
         public void Dispose()
         {
-            if(Transaction?.IsActive == true && Transaction?.WasCommitted == false && Transaction?.WasRolledBack == false)
-                Transaction?.Commit();
+            CommitTransaction();
 
             SessionManager?.Session?.Dispose();
         }
+
+
+     
     }
 }

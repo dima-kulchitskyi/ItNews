@@ -1,17 +1,31 @@
 ﻿using ItNews.Business.Entities;
 using ItNews.Business.Providers;
+using NHibernate.Criterion;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ItNews.Business;
 
 namespace ItNews.Nhibernate.Providers
 {
-    public class ArticleProvider : NhibernateProvider<Article>, IArticleProvider
+    public class ArticleProvider : Provider<Article>, IArticleProvider
     {
-        public Task<IList<Article>> GetListSegment(int count, DateTime startDate)
+        public ArticleProvider(IUnitOfWork unitOfWork) : base(unitOfWork)
         {
-            using (var uow = new UnitOfWork(false))
-                return uow.SessionManager.Session.QueryOver<Article>().Where(it => it.Date.CompareTo(startDate) > 0).ListAsync();
+        }
+
+        public Task<IList<Article>> GetListSegmentAsync(int count, DateTime startDate, bool newFirst)
+        {
+            var criteria = unitOfWork.SessionManager.Session.CreateCriteria<Article>();
+
+            if (newFirst)
+                criteria.AddOrder(Order.Desc("Date"))
+                        .Add(Restrictions.Lt("Date", startDate));
+            else
+                criteria.AddOrder(Order.Asc("Date"))
+                        .Add(Restrictions.Gt("Date", startDate));
+
+            return criteria.SetMaxResults(count).ListAsync<Article>();
         }
     }
 }

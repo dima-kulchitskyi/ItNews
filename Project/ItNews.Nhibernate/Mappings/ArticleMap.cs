@@ -1,10 +1,5 @@
 ﻿using FluentNHibernate.Mapping;
 using ItNews.Business.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ItNews.Nhibernate.Mappings
 {
@@ -14,9 +9,9 @@ namespace ItNews.Nhibernate.Mappings
         {
             Table("Articles");
             Id(x => x.Id);
-            HasOne(x => x.Author).Cascade.SaveUpdate().LazyLoad();
+            References(x => x.Author).Column("AuthorId").Cascade.All().Not.Nullable().Not.LazyLoad();
             Map(x => x.Title).Not.Nullable();
-            Map(x => x.Text).Not.Nullable();
+            Map(x => x.Text).CustomSqlType("ntext").Not.Nullable();
             Map(x => x.ImagePath);
             Map(x => x.Date).Not.Nullable();
         }

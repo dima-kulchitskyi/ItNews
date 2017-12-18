@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
-namespace ItNews.Mvc
+namespace ItNews.Mvc.DependencyInjection
 {
     public static class NinjectInitialization
     {

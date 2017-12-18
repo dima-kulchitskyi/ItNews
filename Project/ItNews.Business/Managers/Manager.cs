@@ -6,7 +6,7 @@ namespace ItNews.Business.Managers
     public class Manager<T>
         where T : IEntity
     {
-        protected IProvider<T> provider;
+        private IProvider<T> provider;
         public Manager(IProvider<T> provider)
         {
             this.provider = provider;

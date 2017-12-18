@@ -1,22 +1,27 @@
 ﻿using Ninject.Modules;
-using ItNews.Nhibernate;
 using Ninject.Web.Common;
 using ItNews.Business.Providers;
-using ItNews.Nhibernate.Providers;
-using ItNews.Business.Entities;
+using ItNews.Business.Managers;
+using ItNews.Business;
 
-namespace ItNews.Web
+namespace ItNews.Mvc.DependencyInjection
 {
     public class NinjectRegistrations : NinjectModule
     {
         public override void Load()
         {
-            NhibernateConfiguration.RegisterDependencies(Kernel);
+            Nhibernate.Configuration.RegisterDependencies(Kernel);
 
-            Bind<SessionManager>().To<SessionManager>().InRequestScope();
-            Bind(typeof(IProvider<>)).To(typeof(NhibernateProvider<>));
-    
-            Bind<IArticleProvider>().To<ArticleProvider>();
+            Bind<Nhibernate.SessionManager>().To<Nhibernate.SessionManager>().InRequestScope();
+            Bind(typeof(IProvider<>)).To(typeof(Nhibernate.Providers.Provider<>));
+
+            Bind<IUnitOfWork>().To<Nhibernate.UnitOfWork>();
+
+            Bind<IArticleProvider>().To<Nhibernate.Providers.ArticleProvider>();
+            Bind<IAppUserProvider>().To<Nhibernate.Providers.AppUserProvider>();
+
+            Bind<AppUserManager>().To<AppUserManager>();
+            Bind<ArticleManager>().To<ArticleManager>();
         }
     }
 }

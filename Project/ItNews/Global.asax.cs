@@ -1,4 +1,5 @@
 ﻿using ItNews.Mvc;
+using ItNews.Mvc.DependencyInjection;
 using ItNews.Web;
 using System.Web;
 using System.Web.Mvc;

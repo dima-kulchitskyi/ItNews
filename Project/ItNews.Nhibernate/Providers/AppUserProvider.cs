@@ -1,12 +1,18 @@
-﻿using System;
+﻿using ItNews.Business.Providers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ItNews.Business.Entities;
+using ItNews.Business;
 
 namespace ItNews.Nhibernate.Providers
 {
-    class AppUserProvider
+    public class AppUserProvider : Provider<AppUser>, IAppUserProvider
     {
+        public AppUserProvider(IUnitOfWork unitOfWork) : base(unitOfWork)
+        {
+        }
     }
 }

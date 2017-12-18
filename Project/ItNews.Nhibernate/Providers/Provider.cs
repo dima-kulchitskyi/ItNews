@@ -1,4 +1,5 @@
-﻿using ItNews.Business.Entities;
+﻿using ItNews.Business;
+using ItNews.Business.Entities;
 using ItNews.Business.Providers;
 using NHibernate;
 using System;
@@ -9,19 +10,26 @@ using System.Threading.Tasks;
 
 namespace ItNews.Nhibernate.Providers
 {
-    public class NhibernateProvider<T> : IProvider<T>
+    public class Provider<T> : IProvider<T>
         where T : class, IEntity
     {
+        protected UnitOfWork unitOfWork;
+
+        public Provider(IUnitOfWork unitOfWork)
+        {
+            this.unitOfWork = (UnitOfWork)unitOfWork;
+        }
+
         public Task DeleteAsync(T instance)
         {
-            if(instance == null)
+            if (instance == null)
                 throw new ArgumentNullException(nameof(instance));
 
             if (string.IsNullOrEmpty(instance?.Id))
                 throw new ArgumentNullException("Id");
 
-            using (var uow = new UnitOfWork(true))
-                return uow.SessionManager.Session.DeleteAsync(instance);
+            unitOfWork.BeginTransaction();
+            return unitOfWork.SessionManager.Session.DeleteAsync(instance);
         }
 
         public Task<T> GetAsync(string id)
@@ -34,23 +42,22 @@ namespace ItNews.Nhibernate.Providers
             throw new NotImplementedException();
         }
 
-       
+
 
         public async Task<T> SaveOrUpdateAsync(T instance)
         {
             if (instance == null)
                 throw new ArgumentNullException(nameof(instance));
 
-            using (var uow = new UnitOfWork(true))
+            unitOfWork.BeginTransaction();
+            if (string.IsNullOrEmpty(instance.Id))
             {
-                if (string.IsNullOrEmpty(instance.Id))
-                {
-                    instance.Id = Guid.NewGuid().ToString();
-                    return (T)await uow.SessionManager.Session.SaveAsync(instance);
-                }
-                await uow.SessionManager.Session.UpdateAsync(instance);
-                return instance;
+                instance.Id = Guid.NewGuid().ToString();
+                return (T)await unitOfWork.SessionManager.Session.SaveAsync(instance);
             }
+            await unitOfWork.SessionManager.Session.UpdateAsync(instance);
+            return instance;
+
         }
 
 
