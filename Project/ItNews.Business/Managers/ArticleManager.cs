@@ -14,6 +14,7 @@ namespace ItNews.Business.Managers
 
         public ArticleManager(IArticleProvider provider) : base(provider)
         {
+            
             articleProvider = provider;
         }
 

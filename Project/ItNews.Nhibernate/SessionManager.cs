@@ -1,11 +1,4 @@
-﻿using FluentNHibernate.Cfg;
-using FluentNHibernate.Cfg.Db;
-using ItNews.Business.Entities;
-using NHibernate;
-using NHibernate.Cfg;
-using NHibernate.Tool.hbm2ddl;
-using System;
-using System.Web.Configuration;
+﻿using NHibernate;
 
 namespace ItNews.Nhibernate
 {

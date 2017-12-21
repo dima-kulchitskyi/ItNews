@@ -21,10 +21,10 @@ namespace ItNews.Controllers
         public async Task<ActionResult> Index()
         {
             var itemsOnPageCount = int.Parse(WebConfigurationManager.AppSettings["NewsListItemsOnPageCount"]);
-            var page = await articleManager.GetListSegmentAsync(itemsOnPageCount, DateTime.MaxValue, true);
-
+            var articles = await articleManager.GetListSegmentAsync(itemsOnPageCount, DateTime.MaxValue, true);
+            
             //TODO: use entity mapper
-            var model = page.Select(it => new ArticlesListPageItem
+            var model = articles.Select(it => new ArticlesListPageItem
             {
                 Title = it.Title,
                 UrlPath = it.Id,

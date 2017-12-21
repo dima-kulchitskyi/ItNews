@@ -23,14 +23,14 @@ namespace ItNews.Nhibernate
 
         public void BeginTransaction()
         {
-            transaction = SessionManager?.Session?.Transaction;
-            if (transaction == null || transaction.WasCommitted)
-                transaction = SessionManager?.Session?.BeginTransaction();
+            transaction = SessionManager.Session.Transaction;
+            if (transaction == null || !transaction.IsActive)
+                transaction = SessionManager.Session.BeginTransaction();
         }
 
         public void RollbackTransaction()
         {
-            transaction = SessionManager?.Session?.Transaction;
+            transaction = SessionManager.Session.Transaction;
             if (transaction?.IsActive == true && transaction?.WasCommitted == false && transaction?.WasRolledBack == false)
                 transaction?.Rollback();
         }
@@ -47,8 +47,5 @@ namespace ItNews.Nhibernate
 
             SessionManager?.Session?.Dispose();
         }
-
-
-     
     }
 }

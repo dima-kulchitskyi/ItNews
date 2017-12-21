@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace ItNews.Nhibernate.Providers
 {
     public class Provider<T> : IProvider<T>
-        where T : class, IEntity
+        where T : IEntity
     {
         protected UnitOfWork unitOfWork;
 
@@ -42,8 +42,6 @@ namespace ItNews.Nhibernate.Providers
             throw new NotImplementedException();
         }
 
-
-
         public async Task<T> SaveOrUpdateAsync(T instance)
         {
             if (instance == null)
@@ -57,10 +55,6 @@ namespace ItNews.Nhibernate.Providers
             }
             await unitOfWork.SessionManager.Session.UpdateAsync(instance);
             return instance;
-
         }
-
-
-
     }
 }
