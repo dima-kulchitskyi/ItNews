@@ -8,5 +8,6 @@ namespace ItNews.Business.Providers
     public interface IArticleProvider : IProvider<Article> 
     {
         Task<IList<Article>> GetListSegmentAsync(int count, DateTime startDate, bool newFirst);
+        Task<IList<Article>> GetPage(int count, int pageNumber, bool newFirst);
     }
 }

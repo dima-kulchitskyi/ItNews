@@ -22,5 +22,9 @@ namespace ItNews.Business.Managers
         {
             return articleProvider.GetListSegmentAsync(count, startDate, newFirst);
         }
+        public Task<IList<Article>> GetPage(int count, int pageNumber, bool newFirst)
+        {
+            return articleProvider.GetPage(count, pageNumber, newFirst);
+        }
     }
 }

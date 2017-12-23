@@ -12,5 +12,6 @@ namespace ItNews.Business.Providers
         Task<T> SaveOrUpdateAsync(T instance);
         Task DeleteAsync(T instance);
         Task<IList<T>> GetListAsync();
+        Task<int> GetCount();
     }
 }

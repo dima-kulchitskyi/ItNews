@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace ItNews.Nhibernate.Providers
 {
     public class Provider<T> : IProvider<T>
-        where T : IEntity
+        where T : class, IEntity
     {
         protected UnitOfWork unitOfWork;
 
@@ -35,6 +35,11 @@ namespace ItNews.Nhibernate.Providers
         public Task<T> GetAsync(string id)
         {
             throw new NotImplementedException();
+        }
+
+        public Task<int> GetCount()
+        {
+            return unitOfWork.SessionManager.Session.QueryOver<T>().RowCountAsync();
         }
 
         public Task<IList<T>> GetListAsync()

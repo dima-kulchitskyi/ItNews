@@ -11,6 +11,7 @@ namespace ItNews.Controllers
     public class NewsController : Controller
     {
         protected ArticleManager articleManager;
+        protected readonly int DefaultItemsOnPageCount =  int.Parse(WebConfigurationManager.AppSettings["NewsListItemsOnPageCount"]);
 
         public NewsController(ArticleManager articleManager)
         {
@@ -18,10 +19,11 @@ namespace ItNews.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Index()
+        public async Task<ActionResult> Index(int page = 1, int itemsCount = 2)
         {
-            var itemsOnPageCount = int.Parse(WebConfigurationManager.AppSettings["NewsListItemsOnPageCount"]);
-            var articles = await articleManager.GetListSegmentAsync(itemsOnPageCount, DateTime.MaxValue, true);
+            if (itemsCount <= 0)
+                itemsCount = DefaultItemsOnPageCount;
+            var articles = await articleManager.GetPage(itemsCount, page, true);
             
             //TODO: use entity mapper
             var model = articles.Select(it => new ArticlesListPageItem
@@ -31,8 +33,9 @@ namespace ItNews.Controllers
                 Author = it.Author.UserName,
                 ImagePath = it.ImagePath,
                 Date = it.Date,
-                Text = it.Text
+                Text = it.Text             
             }).ToList();
+            int nextPage = page++;
             return View(model);
         }
     }
