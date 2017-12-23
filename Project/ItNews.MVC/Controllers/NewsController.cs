@@ -24,8 +24,6 @@ namespace ItNews.Controllers
             if (itemsCount <= 0)
                 itemsCount = DefaultItemsOnPageCount;
             var articles = await articleManager.GetPage(itemsCount, page, true);
-            
-            //TODO: use entity mapper
             var model = articles.Select(it => new ArticlesListPageItem
             {
                 Title = it.Title,
@@ -35,7 +33,7 @@ namespace ItNews.Controllers
                 Date = it.Date,
                 Text = it.Text             
             }).ToList();
-            int nextPage = page++;
+            ViewData.Add("NextPage", ++page); //Кароче, как я понял вью дата и все такое, использывать плохой опыт, но или так или просто делать класс, который будет совмещать ArticlesListPageItem и служебную инфу (какая сейчас страница, сколько итемов на странице и т.д.)
             return View(model);
         }
     }
