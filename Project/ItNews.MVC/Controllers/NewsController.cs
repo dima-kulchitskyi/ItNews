@@ -24,16 +24,23 @@ namespace ItNews.Controllers
             if (itemsCount <= 0)
                 itemsCount = DefaultItemsOnPageCount;
             var articles = await articleManager.GetPage(itemsCount, page, true);
-            var model = articles.Select(it => new ArticlesListPageItem
+            var model = new ArticlesList();
+            if (articles.Count > 0)
+                model.NextAvailable = true;
+            if (page > 1)
+                model.PrevAvailable = true;
+            model.Articles = articles.Select(it => new ArticlesListPageItem
             {
                 Title = it.Title,
                 UrlPath = it.Id,
                 Author = it.Author.UserName,
                 ImagePath = it.ImagePath,
                 Date = it.Date,
-                Text = it.Text             
+                Text = it.Text
             }).ToList();
-            ViewData.Add("NextPage", ++page); //Кароче, как я понял вью дата и все такое, использывать плохой опыт, но или так или просто делать класс, который будет совмещать ArticlesListPageItem и служебную инфу (какая сейчас страница, сколько итемов на странице и т.д.)
+            model.PageSize = itemsCount;
+            model.PageNumber = page;
+            
             return View(model);
         }
     }

@@ -79,6 +79,7 @@
     <Compile Include="DependencyInjection\NinjectInitialization.cs" />
     <Compile Include="DependencyInjection\NinjectRegistrations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\News\ArticlesList.cs" />
     <Compile Include="ViewModels\News\ArticlesListPageItem.cs" />
   </ItemGroup>
   <ItemGroup />
