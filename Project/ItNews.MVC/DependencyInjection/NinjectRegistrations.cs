@@ -20,6 +20,8 @@ namespace ItNews.Mvc.DependencyInjection
             Bind<IArticleProvider>().To<Nhibernate.Providers.ArticleProvider>();
             Bind<IAppUserProvider>().To<Nhibernate.Providers.AppUserProvider>();
 
+
+            //Self bindings
             Bind<AppUserManager>().To<AppUserManager>();
             Bind<ArticleManager>().To<ArticleManager>();
         }

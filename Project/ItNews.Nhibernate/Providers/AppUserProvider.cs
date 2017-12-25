@@ -11,7 +11,7 @@ namespace ItNews.Nhibernate.Providers
 {
     public class AppUserProvider : Provider<AppUser>, IAppUserProvider
     {
-        public AppUserProvider(IUnitOfWork unitOfWork) : base(unitOfWork)
+        public AppUserProvider(SessionManager sessionManager) : base(sessionManager)
         {
         }
     }

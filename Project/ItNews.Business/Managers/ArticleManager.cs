@@ -14,13 +14,17 @@ namespace ItNews.Business.Managers
 
         public ArticleManager(IArticleProvider provider) : base(provider)
         {
-            
             articleProvider = provider;
         }
 
         public Task<IList<Article>> GetListSegmentAsync(int count, DateTime startDate, bool newFirst)
         {
             return articleProvider.GetListSegmentAsync(count, startDate, newFirst);
+        }
+
+        public Task<Article> GetArticle(string id)
+        {
+            return articleProvider.GetAsync(id);
         }
     }
 }

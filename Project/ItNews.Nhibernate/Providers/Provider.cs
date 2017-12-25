@@ -13,11 +13,11 @@ namespace ItNews.Nhibernate.Providers
     public class Provider<T> : IProvider<T>
         where T : IEntity
     {
-        protected UnitOfWork unitOfWork;
+        protected SessionManager sessionManager;
 
-        public Provider(IUnitOfWork unitOfWork)
+        public Provider(SessionManager sessionManager)
         {
-            this.unitOfWork = (UnitOfWork)unitOfWork;
+            this.sessionManager = sessionManager;
         }
 
         public Task DeleteAsync(T instance)
@@ -28,8 +28,7 @@ namespace ItNews.Nhibernate.Providers
             if (string.IsNullOrEmpty(instance?.Id))
                 throw new ArgumentNullException("Id");
 
-            unitOfWork.BeginTransaction();
-            return unitOfWork.SessionManager.Session.DeleteAsync(instance);
+            return sessionManager.Session.DeleteAsync(instance);
         }
 
         public Task<T> GetAsync(string id)
@@ -47,13 +46,10 @@ namespace ItNews.Nhibernate.Providers
             if (instance == null)
                 throw new ArgumentNullException(nameof(instance));
 
-            unitOfWork.BeginTransaction();
             if (string.IsNullOrEmpty(instance.Id))
-            {
                 instance.Id = Guid.NewGuid().ToString();
-                return (T)await unitOfWork.SessionManager.Session.SaveAsync(instance);
-            }
-            await unitOfWork.SessionManager.Session.UpdateAsync(instance);
+
+            await sessionManager.Session.SaveOrUpdateAsync(instance);
             return instance;
         }
     }

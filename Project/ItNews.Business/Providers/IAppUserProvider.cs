@@ -9,6 +9,6 @@ namespace ItNews.Business.Providers
 {
     public interface IAppUserProvider : IProvider<AppUser>
     {
-        
+
     }
 }

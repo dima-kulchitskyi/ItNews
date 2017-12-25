@@ -10,13 +10,13 @@ namespace ItNews.Nhibernate.Providers
 {
     public class ArticleProvider : Provider<Article>, IArticleProvider
     {
-        public ArticleProvider(IUnitOfWork unitOfWork) : base(unitOfWork)
+        public ArticleProvider(SessionManager sessionManager) : base(sessionManager)
         {
         }
 
         public Task<IList<Article>> GetListSegmentAsync(int count, DateTime startDate, bool newFirst)
         {
-            var criteria = unitOfWork.SessionManager.Session.CreateCriteria<Article>();
+            var criteria = sessionManager.Session.CreateCriteria<Article>();
 
             if (newFirst)
                 criteria.AddOrder(Order.Desc("Date"))

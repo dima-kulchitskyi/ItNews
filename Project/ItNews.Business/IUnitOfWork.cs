@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace ItNews.Business
 {
-    public interface IUnitOfWork
+    public interface IUnitOfWork : IDisposable
     {
-        void BeginTransaction();
+        IUnitOfWork BeginTransaction();
         void RollbackTransaction();
         void CommitTransaction();
     }
