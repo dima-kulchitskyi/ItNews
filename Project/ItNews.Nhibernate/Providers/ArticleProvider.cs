@@ -30,7 +30,8 @@ namespace ItNews.Nhibernate.Providers
 
         public Task<IList<Article>> GetPage(int count, int pageNumber, bool newFirst)
         {
-            var criteria = unitOfWork.SessionManager.Session.CreateCriteria<Article>();
+            var criteria = sessionManager.Session.CreateCriteria<Article>();
+
             if (newFirst)
                 criteria.AddOrder(Order.Desc("Date"));
             else

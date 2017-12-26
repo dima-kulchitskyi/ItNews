@@ -38,7 +38,7 @@ namespace ItNews.Nhibernate.Providers
 
         public Task<int> GetCount()
         {
-            return unitOfWork.SessionManager.Session.QueryOver<T>().RowCountAsync();
+            return sessionManager.Session.QueryOver<T>().RowCountAsync();
         }
 
         public Task<IList<T>> GetListAsync()
