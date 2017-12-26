@@ -1,6 +1,4 @@
-﻿using ItNews.Business.Entities;
-using ItNews.Mvc.ViewModels.News;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
