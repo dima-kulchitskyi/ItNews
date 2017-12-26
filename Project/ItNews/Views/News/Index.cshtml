@@ -1,14 +1,27 @@
 ﻿@{
     ViewBag.Title = "News list";
 }
-@model IList<ArticlesListPageItem>
+@model ArticlesList
 <div>
-    @foreach (var item in Model)
+    @foreach (var item in Model.Articles)
     {
         <hr />
         <h3>@item.Title</h3>
-        <p>@item.Text</p>
+        <p>@item.TextPreview</p>
         <p>Author: @item.Author</p>
         <p>Date: @item.Date</p>
     }
+</div>
+<div>
+    <hr/>
+    <h4>
+        @if (Model.PrevAvailable == true)
+        {
+            @Html.ActionLink("Previous", "Index", new { itemsCount = Model.PageSize, page = Model.PageNumber - 1 });
+        }
+        @if (Model.NextAvailable == true)
+        {
+            @Html.ActionLink("Next", "Index", new { itemsCount = Model.PageSize, page = Model.PageNumber + 1 });
+        }
+    </h4>
 </div>

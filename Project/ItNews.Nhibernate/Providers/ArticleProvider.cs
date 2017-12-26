@@ -27,5 +27,18 @@ namespace ItNews.Nhibernate.Providers
 
             return criteria.SetMaxResults(count).ListAsync<Article>();
         }
+
+        public Task<IList<Article>> GetPage(int count, int pageNumber, bool newFirst)
+        {
+            var criteria = unitOfWork.SessionManager.Session.CreateCriteria<Article>();
+            if (newFirst)
+                criteria.AddOrder(Order.Desc("Date"));
+            else
+                criteria.AddOrder(Order.Asc("Date"));
+            criteria.SetFirstResult(count * (pageNumber - 1) + 1);
+            criteria.SetMaxResults(count * pageNumber);
+            return criteria.SetMaxResults(count).ListAsync<Article>();
+
+        }
     }
 }
