@@ -9,7 +9,10 @@ namespace ItNews.Business
     public interface IUnitOfWork : IDisposable
     {
         IUnitOfWork BeginTransaction();
-        void RollbackTransaction();
-        void CommitTransaction();
+        void Rollback();
+        void Commit();
+        bool IsActive { get; }
+        bool IsCommited { get; }
+        bool IsRolledBack { get;  }
     }
 }

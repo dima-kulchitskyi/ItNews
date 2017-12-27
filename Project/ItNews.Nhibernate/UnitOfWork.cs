@@ -18,6 +18,12 @@ namespace ItNews.Nhibernate
 
         protected ISession session;
 
+        public bool IsActive => transaction?.IsActive ?? false;
+
+        public bool IsCommited => transaction?.WasCommitted ?? false;
+
+        public bool IsRolledBack => transaction?.WasRolledBack ?? false;
+
         public UnitOfWork(SessionManager sessionManager)
         {
             this.sessionManager = sessionManager;
@@ -36,7 +42,7 @@ namespace ItNews.Nhibernate
             return this;
         }
 
-        public void CommitTransaction()
+        public void Commit()
         {
             if (transaction == null || !transaction.IsActive)
                 throw new InvalidOperationException("Transaction is not active");
@@ -47,7 +53,7 @@ namespace ItNews.Nhibernate
             }
             catch
             {
-                RollbackTransaction();
+                Rollback();
             }
             finally
             {
@@ -55,7 +61,7 @@ namespace ItNews.Nhibernate
             }
         }
 
-        public void RollbackTransaction()
+        public void Rollback()
         {
             if (transaction == null || !transaction.IsActive)
                 throw new InvalidOperationException("Transaction is not active");
@@ -73,7 +79,7 @@ namespace ItNews.Nhibernate
         public void Dispose()
         {
             if (transaction != null && transaction.IsActive)
-                RollbackTransaction();
+                Rollback();
 
             session?.Dispose();
 

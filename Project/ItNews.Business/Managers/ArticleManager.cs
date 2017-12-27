@@ -47,7 +47,7 @@ namespace ItNews.Business.Managers
 
                 uow.BeginTransaction();
                 await articleProvider.SaveOrUpdate(article);
-                uow.CommitTransaction();
+                uow.Commit();
             }
         }
     }
