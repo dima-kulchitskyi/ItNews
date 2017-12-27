@@ -24,21 +24,23 @@ namespace ItNews.Nhibernate
         public IUnitOfWork BeginTransaction()
         {
             transaction = sessionManager.Session.Transaction;
-            if (transaction == null || !transaction.IsActive)
-                transaction = sessionManager.Session.BeginTransaction();
+
+            if (transaction != null && transaction.IsActive)
+                throw new InvalidOperationException("Transaction is already open");
+
+            transaction = sessionManager.Session.BeginTransaction();
 
             return this;
         }
 
         public void CommitTransaction()
         {
-            if (transaction == null)
-                throw new InvalidOperationException("Transaction wan not opened");
+            if (transaction == null || !transaction.IsActive)
+                throw new InvalidOperationException("Transaction is not active");
 
             try
             {
-                if (transaction.IsActive && !transaction.WasCommitted && !transaction.WasRolledBack)
-                    transaction.Commit();
+                transaction.Commit();
             }
             catch
             {
@@ -52,13 +54,12 @@ namespace ItNews.Nhibernate
 
         public void RollbackTransaction()
         {
-            if (transaction == null)
-                throw new InvalidOperationException("Transaction wan not opened");
+            if (transaction == null || !transaction.IsActive)
+                throw new InvalidOperationException("Transaction is not active");
 
             try
             {
-                if (transaction.IsActive && !transaction.WasCommitted && !transaction.WasRolledBack)
-                    transaction.Rollback();
+                transaction.Rollback();
             }
             finally
             {
@@ -68,7 +69,7 @@ namespace ItNews.Nhibernate
 
         public void Dispose()
         {
-            if (transaction != null && transaction.IsActive && !transaction.WasCommitted && !transaction.WasRolledBack)
+            if (transaction != null && transaction.IsActive)
                 RollbackTransaction();
 
             if (sessionManager.IsSessionOpen)
