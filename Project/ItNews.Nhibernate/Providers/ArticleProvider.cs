@@ -36,7 +36,7 @@ namespace ItNews.Nhibernate.Providers
                 criteria.AddOrder(Order.Desc("Date"));
             else
                 criteria.AddOrder(Order.Asc("Date"));
-            criteria.SetFirstResult(count * (pageNumber - 1) + 1);
+            criteria.SetFirstResult(count * pageNumber + 1);
             criteria.SetMaxResults(count * pageNumber);
             return criteria.SetMaxResults(count).ListAsync<Article>();
 
