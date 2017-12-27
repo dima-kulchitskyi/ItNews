@@ -16,6 +16,8 @@ namespace ItNews.Nhibernate
 
         protected ITransaction transaction;
 
+        protected ISession session;
+
         public UnitOfWork(SessionManager sessionManager)
         {
             this.sessionManager = sessionManager;
@@ -23,12 +25,13 @@ namespace ItNews.Nhibernate
 
         public IUnitOfWork BeginTransaction()
         {
-            transaction = sessionManager.Session.Transaction;
+            session = sessionManager.GetExistingOrOpenSession();
+            transaction = session.Transaction;
 
             if (transaction != null && transaction.IsActive)
                 throw new InvalidOperationException("Transaction is already open");
 
-            transaction = sessionManager.Session.BeginTransaction();
+            transaction = session.BeginTransaction();
 
             return this;
         }
@@ -48,7 +51,7 @@ namespace ItNews.Nhibernate
             }
             finally
             {
-                sessionManager.Session.Dispose();
+                session?.Dispose();
             }
         }
 
@@ -63,7 +66,7 @@ namespace ItNews.Nhibernate
             }
             finally
             {
-                sessionManager.Session.Dispose();
+                session?.Dispose();
             }
         }
 
@@ -72,8 +75,7 @@ namespace ItNews.Nhibernate
             if (transaction != null && transaction.IsActive)
                 RollbackTransaction();
 
-            if (sessionManager.IsSessionOpen)
-                sessionManager.Session.Dispose();
+            session?.Dispose();
 
             transaction = null;
             sessionManager = null;

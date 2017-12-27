@@ -16,7 +16,7 @@ namespace ItNews.Nhibernate.Providers
 
         public Task<IList<Article>> GetListSegment(int count, DateTime startDate, bool newFirst)
         {
-            var criteria = sessionManager.Session.CreateCriteria<Article>();
+            var criteria = sessionManager.GetExistingOrOpenSession().CreateCriteria<Article>();
 
             if (newFirst)
                 criteria.AddOrder(Order.Desc("Date"))
@@ -30,7 +30,7 @@ namespace ItNews.Nhibernate.Providers
 
         public Task<IList<Article>> GetPage(int count, int pageNumber, bool newFirst)
         {
-            var criteria = sessionManager.Session.CreateCriteria<Article>();
+            var criteria = sessionManager.GetExistingOrOpenSession().CreateCriteria<Article>();
 
             if (newFirst)
                 criteria.AddOrder(Order.Desc("Date"));
