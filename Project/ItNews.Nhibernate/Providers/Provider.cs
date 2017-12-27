@@ -28,6 +28,9 @@ namespace ItNews.Nhibernate.Providers
             if (string.IsNullOrEmpty(instance?.Id))
                 throw new ArgumentNullException("Id");
 
+            if (sessionManager.Session.Transaction?.IsActive != true)
+                throw new InvalidOperationException("Transaction required");
+
             return sessionManager.Session.DeleteAsync(instance);
         }
 
@@ -51,9 +54,12 @@ namespace ItNews.Nhibernate.Providers
             if (instance == null)
                 throw new ArgumentNullException(nameof(instance));
 
+            if (sessionManager.Session.Transaction?.IsActive != true)
+                throw new InvalidOperationException("Transaction required");
+
             if (string.IsNullOrEmpty(instance.Id))
                 instance.Id = Guid.NewGuid().ToString();
-
+            
             await sessionManager.Session.SaveOrUpdateAsync(instance);
             return instance;
         }
