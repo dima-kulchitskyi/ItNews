@@ -11,14 +11,14 @@ using System.Web.Mvc;
 
 namespace ItNews.Controllers
 {
-    public class NewsController : Controller
+    public class ArticleController : Controller
     {
-        protected ArticleManager articleManager;
+        private readonly int defaultItemsOnPageCount = int.Parse(WebConfigurationManager.AppSettings["NewsListItemsOnPageCount"]);
+        private readonly int articleTextPreviewLength = int.Parse(WebConfigurationManager.AppSettings["ArticleTextPreviewLength"]);
 
-        protected readonly int defaultItemsOnPageCount = int.Parse(WebConfigurationManager.AppSettings["NewsListItemsOnPageCount"]);
-        protected readonly int articleTextPreviewLength = int.Parse(WebConfigurationManager.AppSettings["ArticleTextPreviewLength"]);
-
-        public NewsController(ArticleManager articleManager)
+        private ArticleManager articleManager;
+        
+        public ArticleController(ArticleManager articleManager)
         {
             this.articleManager = articleManager;
         }

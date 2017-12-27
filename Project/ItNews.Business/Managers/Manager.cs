@@ -7,6 +7,7 @@ namespace ItNews.Business.Managers
         where T : IEntity
     {
         protected IProvider<T> provider;
+
         protected IUnitOfWorkFactory unitOfWorkFactory;
 
         public Manager(IProvider<T> provider, IUnitOfWorkFactory unitOfWorkFactory)
