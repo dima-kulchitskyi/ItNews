@@ -16,6 +16,14 @@ namespace ItNews.Nhibernate
 
         protected ITransaction transaction;
 
+        protected ISession session;
+
+        public bool IsActive => transaction?.IsActive ?? false;
+
+        public bool IsCommited => transaction?.WasCommitted ?? false;
+
+        public bool IsRolledBack => transaction?.WasRolledBack ?? false;
+
         public UnitOfWork(SessionManager sessionManager)
         {
             this.sessionManager = sessionManager;
@@ -23,58 +31,57 @@ namespace ItNews.Nhibernate
 
         public IUnitOfWork BeginTransaction()
         {
-            transaction = sessionManager.Session.Transaction;
-            if (transaction == null || !transaction.IsActive)
-                transaction = sessionManager.Session.BeginTransaction();
+            session = sessionManager.GetExistingOrOpenSession();
+            transaction = session.Transaction;
+
+            if (transaction != null && transaction.IsActive)
+                throw new InvalidOperationException("Transaction is already open");
+
+            transaction = session.BeginTransaction();
 
             return this;
         }
 
-        public void CommitTransaction()
+        public void Commit()
         {
-            if (transaction == null)
-                throw new InvalidOperationException("Transaction wan not opened");
+            if (transaction == null || !transaction.IsActive)
+                throw new InvalidOperationException("Transaction is not active");
 
             try
             {
-                if (transaction.IsActive && !transaction.WasCommitted && !transaction.WasRolledBack)
-                    transaction.Commit();
+                transaction.Commit();
             }
             catch
             {
-                RollbackTransaction();
+                Rollback();
             }
             finally
             {
-                sessionManager.Session.Dispose();
+                session?.Dispose();
             }
         }
 
-        public void RollbackTransaction()
+        public void Rollback()
         {
-            if (transaction == null)
-                throw new InvalidOperationException("Transaction wan not opened");
+            if (transaction == null || !transaction.IsActive)
+                throw new InvalidOperationException("Transaction is not active");
 
             try
             {
-                if (transaction.IsActive && !transaction.WasCommitted && !transaction.WasRolledBack)
-                    transaction.Rollback();
+                transaction.Rollback();
             }
             finally
             {
-                sessionManager.Session.Dispose();
+                session?.Dispose();
             }
         }
 
         public void Dispose()
         {
-            var ex = new Exception().InnerException;
+            if (transaction != null && transaction.IsActive)
+                Rollback();
 
-            if (transaction != null && transaction.IsActive && !transaction.WasCommitted && !transaction.WasRolledBack)
-                RollbackTransaction();
-
-            if (sessionManager.IsSessionOpen)
-                sessionManager.Session.Dispose();
+            session?.Dispose();
 
             transaction = null;
             sessionManager = null;
