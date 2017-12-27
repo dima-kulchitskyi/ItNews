@@ -13,17 +13,14 @@ namespace ItNews.Mvc.DependencyInjection
             Nhibernate.Configuration.RegisterDependencies(Kernel);
 
             Bind<Nhibernate.SessionManager>().To<Nhibernate.SessionManager>().InRequestScope();
-            Bind<IUnitOfWork>().To<Nhibernate.UnitOfWork>();
 
             Bind(typeof(IProvider<>)).To(typeof(Nhibernate.Providers.Provider<>));
 
+            Bind<IUnitOfWorkFactory>().To<Nhibernate.UnitOfWorkFactory>();
+            Bind<IUnitOfWork>().To<Nhibernate.UnitOfWork>();
+
             Bind<IArticleProvider>().To<Nhibernate.Providers.ArticleProvider>();
             Bind<IAppUserProvider>().To<Nhibernate.Providers.AppUserProvider>();
-
-
-            //Self bindings
-            Bind<AppUserManager>().To<AppUserManager>();
-            Bind<ArticleManager>().To<ArticleManager>();
         }
     }
 }

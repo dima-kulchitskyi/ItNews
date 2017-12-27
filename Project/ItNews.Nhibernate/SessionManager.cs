@@ -8,7 +8,18 @@ namespace ItNews.Nhibernate
 
         protected ISession session;
 
-        public ISession Session => session ?? (session = sessionFactory?.OpenSession());
+        public ISession Session
+        {
+            get
+            {
+                if (session == null || !session.IsOpen)
+                    session = sessionFactory?.OpenSession();
+
+                return session;
+            }
+        }
+
+        public bool IsSessionOpen => session != null && session.IsOpen;
 
         public SessionManager(ISessionFactory sessionFactory)
         {

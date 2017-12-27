@@ -16,8 +16,6 @@ namespace ItNews.Nhibernate
 
         protected ITransaction transaction;
 
-        private bool useTransaction;
-
         public UnitOfWork(SessionManager sessionManager)
         {
             this.sessionManager = sessionManager;
@@ -29,36 +27,18 @@ namespace ItNews.Nhibernate
             if (transaction == null || !transaction.IsActive)
                 transaction = sessionManager.Session.BeginTransaction();
 
-            useTransaction = true;
-
             return this;
-        }
-
-        public void RollbackTransaction()
-        {
-            if (!useTransaction)
-                throw new InvalidOperationException("Transaction wan not opened");
-
-            transaction = sessionManager.Session?.Transaction;
-            try
-            {
-                if (transaction?.IsActive == true && transaction?.WasCommitted == false && transaction?.WasRolledBack == false)
-                    transaction?.Rollback();
-            }
-            finally
-            {
-                sessionManager.Session?.Dispose();
-            }
         }
 
         public void CommitTransaction()
         {
-            if (!useTransaction)
+            if (transaction == null)
                 throw new InvalidOperationException("Transaction wan not opened");
+
             try
             {
-                if (transaction?.IsActive == true && transaction?.WasCommitted == false && transaction?.WasRolledBack == false)
-                    transaction?.Commit();
+                if (transaction.IsActive && !transaction.WasCommitted && !transaction.WasRolledBack)
+                    transaction.Commit();
             }
             catch
             {
@@ -66,16 +46,36 @@ namespace ItNews.Nhibernate
             }
             finally
             {
-                sessionManager.Session?.Dispose();
+                sessionManager.Session.Dispose();
+            }
+        }
+
+        public void RollbackTransaction()
+        {
+            if (transaction == null)
+                throw new InvalidOperationException("Transaction wan not opened");
+
+            try
+            {
+                if (transaction.IsActive && !transaction.WasCommitted && !transaction.WasRolledBack)
+                    transaction.Rollback();
+            }
+            finally
+            {
+                sessionManager.Session.Dispose();
             }
         }
 
         public void Dispose()
         {
-            if (useTransaction)
-                CommitTransaction();
+            if (transaction != null && transaction.IsActive && !transaction.WasCommitted && !transaction.WasRolledBack)
+                RollbackTransaction();
 
-            sessionManager.Session?.Dispose();
+            if (sessionManager.IsSessionOpen)
+                sessionManager.Session.Dispose();
+
+            transaction = null;
+            sessionManager = null;
         }
     }
 }

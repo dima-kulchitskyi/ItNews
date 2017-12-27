@@ -14,7 +14,7 @@ namespace ItNews.Nhibernate.Providers
         {
         }
 
-        public Task<IList<Article>> GetListSegmentAsync(int count, DateTime startDate, bool newFirst)
+        public Task<IList<Article>> GetListSegment(int count, DateTime startDate, bool newFirst)
         {
             var criteria = sessionManager.Session.CreateCriteria<Article>();
 

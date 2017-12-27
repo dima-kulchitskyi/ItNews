@@ -20,7 +20,7 @@ namespace ItNews.Nhibernate.Providers
             this.sessionManager = sessionManager;
         }
 
-        public Task DeleteAsync(T instance)
+        public Task Delete(T instance)
         {
             if (instance == null)
                 throw new ArgumentNullException(nameof(instance));
@@ -31,9 +31,9 @@ namespace ItNews.Nhibernate.Providers
             return sessionManager.Session.DeleteAsync(instance);
         }
 
-        public Task<T> GetAsync(string id)
+        public Task<T> Get(string id)
         {
-            throw new NotImplementedException();
+            return sessionManager.Session.GetAsync<T>(id);
         }
 
         public Task<int> GetCount()
@@ -41,12 +41,12 @@ namespace ItNews.Nhibernate.Providers
             return sessionManager.Session.QueryOver<T>().RowCountAsync();
         }
 
-        public Task<IList<T>> GetListAsync()
+        public Task<IList<T>> GetList()
         {
-            throw new NotImplementedException();
+            return sessionManager.Session.QueryOver<T>().ListAsync();
         }
 
-        public async Task<T> SaveOrUpdateAsync(T instance)
+        public async Task<T> SaveOrUpdate(T instance)
         {
             if (instance == null)
                 throw new ArgumentNullException(nameof(instance));

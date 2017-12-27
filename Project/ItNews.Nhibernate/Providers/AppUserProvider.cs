@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using ItNews.Business.Entities;
 using ItNews.Business;
+using ItNews.Business.Managers;
 
 namespace ItNews.Nhibernate.Providers
 {
@@ -13,6 +14,7 @@ namespace ItNews.Nhibernate.Providers
     {
         public AppUserProvider(SessionManager sessionManager) : base(sessionManager)
         {
+
         }
     }
 }
