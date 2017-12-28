@@ -21,7 +21,7 @@ namespace ItNews.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Index(int page = 1, int itemsCount = 2)
+        public async Task<ActionResult> Index(int page = 1, int itemsCount = 4)
         {
             if (itemsCount <= 0)
                 itemsCount = defaultItemsOnPageCount;
