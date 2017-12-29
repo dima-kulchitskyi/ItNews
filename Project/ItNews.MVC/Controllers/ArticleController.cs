@@ -4,9 +4,12 @@ using ItNews.Mvc.ViewModels.News;
 using ItNews.MVC.ViewModels.News;
 using Ninject;
 using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Configuration;
+using System.Web.Hosting;
 using System.Web.Mvc;
 
 namespace ItNews.Controllers
@@ -17,7 +20,7 @@ namespace ItNews.Controllers
         private readonly int articleTextPreviewLength = int.Parse(WebConfigurationManager.AppSettings["ArticleTextPreviewLength"]);
 
         private ArticleManager articleManager;
-        
+
         public ArticleController(ArticleManager articleManager)
         {
             this.articleManager = articleManager;
@@ -87,6 +90,47 @@ namespace ItNews.Controllers
             }, "1");
 
             return Content("dsa");
+        }
+
+        //[Authorize]
+        [HttpGet]
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        //[Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Create(CreateViewModel model)
+        {
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+           
+
+            var item = new Article
+            {
+                Text = model.Text,
+                Title = model.Title
+            };
+
+            //string fileName = null;
+           
+
+            if (model.Image != null && model.Image.ContentLength > 0)
+            {
+                var directory = Server.MapPath(Url.Content(WebConfigurationManager.AppSettings["ImagesFolder"]));
+                var fileName = Guid.NewGuid().ToString();
+                model.Image.SaveAs(Path.Combine(directory, fileName));
+                item.ImagePath = fileName;
+            }
+           
+            // Authorize (id)
+            await articleManager.CreateArticle(item, "1");
+
+            return RedirectToAction("Index");
         }
     }
 }

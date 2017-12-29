@@ -36,11 +36,11 @@ namespace ItNews.Business.Managers
             return articleProvider.Get(id);
         }
 
-        public async Task CreateArticle(Article article, string userId)
+        public async Task CreateArticle(Article article, string authorId)
         {
             using (var uow = unitOfWorkFactory.GetUnitOfWork())
             {
-                var user = await userProvider.Get(userId);
+                var user = await userProvider.Get(authorId);
 
                 article.Author = user ?? throw new InvalidOperationException("No user with given id");
                 article.Date = DateTime.Now;

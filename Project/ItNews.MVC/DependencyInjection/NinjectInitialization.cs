@@ -15,6 +15,8 @@ namespace ItNews.Mvc.DependencyInjection
         public static void Initialize(INinjectModule module)
         {  
             var kernel = new StandardKernel(module);
+            kernel.Unbind<ModelValidatorProvider>();
+
             DependencyResolver.SetResolver(new NinjectDependencyResolver(kernel));
         }
     }
