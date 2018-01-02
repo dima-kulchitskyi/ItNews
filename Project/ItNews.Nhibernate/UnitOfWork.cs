@@ -79,7 +79,12 @@ namespace ItNews.Nhibernate
         public void Dispose()
         {
             if (transaction != null && transaction.IsActive)
+            {
                 Rollback();
+                var exception = new InvalidOperationException("Transaction is still active, maybe you forgot to commit it?");
+                if (exception.InnerException == null)
+                    throw exception;
+            }
 
             session?.Dispose();
 
