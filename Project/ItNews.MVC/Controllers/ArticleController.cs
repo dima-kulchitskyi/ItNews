@@ -128,7 +128,7 @@ namespace ItNews.Controllers
             }
            
             // Authorize (id)
-            await articleManager.CreateArticle(item, "1");
+            await articleManager.CreateArticle(item, "5b7e96ae-bd28-455e-bcf6-82e56350eebc");
 
             return RedirectToAction("Index");
         }
