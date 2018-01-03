@@ -26,10 +26,10 @@ namespace ItNews.Controllers
             if (itemsCount <= 0)
                 itemsCount = defaultItemsOnPageCount;
 
-            var articles = await articleManager.GetPagesAsync(itemsCount, page - 1, true);
+            var articles = await articleManager.GetPage(itemsCount, page - 1, true);
 
             var model = new ArticlesList();
-            model.PageCount = Convert.ToInt32(Math.Ceiling(await articleManager.GetCountAsync() / (double)itemsCount));
+            model.PageCount = Convert.ToInt32(Math.Ceiling(await articleManager.GetCount() / (double)itemsCount));
             model.Articles = articles.Select(it =>
             new ArticlesListPageItem
             {
@@ -53,7 +53,7 @@ namespace ItNews.Controllers
             if (string.IsNullOrEmpty(id))
                 return HttpNotFound();
 
-            var article = await articleManager.GetAsync(id);
+            var article = await articleManager.GetArticle(id);
 
             if (article == null)
                 return HttpNotFound();
