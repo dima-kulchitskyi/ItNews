@@ -1,9 +1,7 @@
-﻿@model ArticlesList
-
+﻿﻿@model ArticlesList
 @{
     ViewBag.Title = "News list";
 }
-
 <div>
     @foreach (var item in Model.Articles)
     {
@@ -15,15 +13,21 @@
     }
 </div>
 <div>
-    <hr/>
+    <hr />
     <h4>
-        @if (Model.PrevAvailable == true)
+        @for (int i = 1; i <= Model.PageCount; i++)
         {
-            @Html.ActionLink("Previous", "Index", new { itemsCount = Model.PageSize, page = Model.PageNumber - 1 });
+            if (i == Model.PageNumber)
+            {
+                @Convert.ToString(i);
+            }
+            else
+            {
+                @Html.ActionLink(Convert.ToString(i), "Index", new { itemsCount = Model.PageSize, page = i });
+            }
+
         }
-        @if (Model.NextAvailable == true)
-        {
-            @Html.ActionLink("Next", "Index", new { itemsCount = Model.PageSize, page = Model.PageNumber + 1 });
-        }
+
+
     </h4>
 </div>
