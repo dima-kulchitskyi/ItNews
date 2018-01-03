@@ -1,6 +1,5 @@
 ﻿using ItNews.Business.Entities;
 using ItNews.Business.Providers;
-using System.Threading.Tasks;
 
 namespace ItNews.Business.Managers
 {
@@ -9,19 +8,12 @@ namespace ItNews.Business.Managers
     {
         protected IProvider<T> provider;
 
-        public Manager(IProvider<T> provider)
+        protected IUnitOfWorkFactory unitOfWorkFactory;
+
+        public Manager(IProvider<T> provider, IUnitOfWorkFactory unitOfWorkFactory)
         {
             this.provider = provider;
-        }
-
-        public Task<int> GetCountAsync()
-        {
-            return provider.GetCount();
-        }
-
-        public Task<T> GetAsync(string id)
-        {
-            return provider.GetAsync(id);
+            this.unitOfWorkFactory = unitOfWorkFactory;
         }
     }
 }
