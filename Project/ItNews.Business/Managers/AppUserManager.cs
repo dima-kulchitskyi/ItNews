@@ -10,11 +10,11 @@ namespace ItNews.Business.Managers
 {
     public class AppUserManager : Manager<AppUser>
     {
-        private IAppUserProvider appUserProvider;
+        private IUserProvider UserProvider;
 
-        public AppUserManager(IAppUserProvider provider, IUnitOfWorkFactory unitOfWorkFactory) : base(provider, unitOfWorkFactory)
+        public AppUserManager(IUserProvider provider, IUnitOfWorkFactory unitOfWorkFactory) : base(provider, unitOfWorkFactory)
         {
-            appUserProvider = provider;
+            UserProvider = provider;
         }
     }
 }
