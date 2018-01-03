@@ -69,6 +69,5 @@ namespace ItNews.Controllers
 
             return View(model);
         }
-
     }
 }

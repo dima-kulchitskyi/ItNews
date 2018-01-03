@@ -18,7 +18,7 @@ namespace ItNews.Nhibernate
 
         public ISession GetCurrentSession()
         {
-            return session ?? throw new InvalidOperationException("Session does not exists");
+            return session ?? throw new InvalidOperationException("Session does not exists.");
         }
 
         public ISession GetExistingOrOpenSession()
