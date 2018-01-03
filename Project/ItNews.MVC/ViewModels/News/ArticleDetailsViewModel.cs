@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ItNews.MVC.ViewModels.News
+namespace ItNews.Mvc.ViewModels.News
 {
     public class ArticleDetailsViewModel
     {

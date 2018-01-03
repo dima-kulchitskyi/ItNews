@@ -11,7 +11,6 @@ namespace ItNews.Mvc.ViewModels.News
         public IList<ArticlesListPageItem> Articles { set; get; }
         public int PageNumber { set; get; }
         public int PageSize { set; get; }
-        public bool NextAvailable { set; get; }
-        public bool PrevAvailable { set; get; }
+        public int PageCount { set; get; }
     }
 }

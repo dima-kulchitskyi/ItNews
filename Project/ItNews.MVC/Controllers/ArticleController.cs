@@ -1,7 +1,5 @@
-﻿using ItNews.Business.Entities;
-using ItNews.Business.Managers;
+﻿using ItNews.Business.Managers;
 using ItNews.Mvc.ViewModels.News;
-using ItNews.MVC.ViewModels.News;
 using Ninject;
 using System;
 using System.IO;
@@ -16,33 +14,28 @@ namespace ItNews.Controllers
 {
     public class ArticleController : Controller
     {
+        private ArticleManager articleManager;
         private readonly int defaultItemsOnPageCount = int.Parse(WebConfigurationManager.AppSettings["NewsListItemsOnPageCount"]);
         private readonly int articleTextPreviewLength = int.Parse(WebConfigurationManager.AppSettings["ArticleTextPreviewLength"]);
-
-        private ArticleManager articleManager;
-
+        
+        
         public ArticleController(ArticleManager articleManager)
         {
             this.articleManager = articleManager;
         }
 
         [HttpGet]
-        public async Task<ActionResult> Index(int page = 1, int itemsCount = 2)
+        public async Task<ActionResult> Index(int page = 1, int itemsCount = 4)
         {
             if (itemsCount <= 0)
                 itemsCount = defaultItemsOnPageCount;
 
-            var articles = await articleManager.GetPage(itemsCount, page, true);
+            var articles = await articleManager.GetPage(itemsCount, page - 1, true);
 
             var model = new ArticlesList();
-
-            if (articles.Count > 0)
-                model.NextAvailable = true;
-
-            if (page > 1)
-                model.PrevAvailable = true;
-
-            model.Articles = articles.Select(it => new ArticlesListPageItem
+            model.PageCount = Convert.ToInt32(Math.Ceiling(await articleManager.GetCount() / (double)itemsCount));
+            model.Articles = articles.Select(it =>
+            new ArticlesListPageItem
             {
                 Title = it.Title,
                 UrlPath = it.Id,
@@ -81,17 +74,6 @@ namespace ItNews.Controllers
             return View(model);
         }
 
-        public async Task<ActionResult> TestCreate(string name)
-        {
-            await articleManager.CreateArticle(new Article
-            {
-                Text = name ?? "test",
-                Title = "adasd"
-            }, "1");
-
-            return Content("dsa");
-        }
-
         //[Authorize]
         [HttpGet]
         public ActionResult Create()
@@ -108,7 +90,7 @@ namespace ItNews.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-           
+
 
             var item = new Article
             {
@@ -117,7 +99,7 @@ namespace ItNews.Controllers
             };
 
             //string fileName = null;
-           
+
 
             if (model.Image != null && model.Image.ContentLength > 0)
             {
@@ -126,7 +108,7 @@ namespace ItNews.Controllers
                 model.Image.SaveAs(Path.Combine(directory, fileName));
                 item.ImagePath = fileName;
             }
-           
+
             // Authorize (id)
             await articleManager.CreateArticle(item, "5b7e96ae-bd28-455e-bcf6-82e56350eebc");
 
