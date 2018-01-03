@@ -28,25 +28,25 @@ namespace ItNews.Nhibernate.Providers
             if (string.IsNullOrEmpty(instance?.Id))
                 throw new ArgumentNullException("Id");
 
-            if (sessionManager.Session.Transaction?.IsActive != true)
+            if (sessionManager.GetExistingOrOpenSession().Transaction?.IsActive != true)
                 throw new InvalidOperationException("Transaction required");
 
-            return sessionManager.Session.DeleteAsync(instance);
+            return sessionManager.GetExistingOrOpenSession().DeleteAsync(instance);
         }
 
         public Task<T> Get(string id)
         {
-            return sessionManager.Session.GetAsync<T>(id);
+            return sessionManager.GetExistingOrOpenSession().GetAsync<T>(id);
         }
 
         public Task<int> GetCount()
         {
-            return sessionManager.Session.QueryOver<T>().RowCountAsync();
+            return sessionManager.GetExistingOrOpenSession().QueryOver<T>().RowCountAsync();
         }
 
         public Task<IList<T>> GetList()
         {
-            return sessionManager.Session.QueryOver<T>().ListAsync();
+            return sessionManager.GetExistingOrOpenSession().QueryOver<T>().ListAsync();
         }
 
         public async Task<T> SaveOrUpdate(T instance)
@@ -54,13 +54,13 @@ namespace ItNews.Nhibernate.Providers
             if (instance == null)
                 throw new ArgumentNullException(nameof(instance));
 
-            if (sessionManager.Session.Transaction?.IsActive != true)
+            if (sessionManager.GetExistingOrOpenSession().Transaction?.IsActive != true)
                 throw new InvalidOperationException("Transaction required");
 
             if (string.IsNullOrEmpty(instance.Id))
                 instance.Id = Guid.NewGuid().ToString();
             
-            await sessionManager.Session.SaveOrUpdateAsync(instance);
+            await sessionManager.GetExistingOrOpenSession().SaveOrUpdateAsync(instance);
             return instance;
         }
     }

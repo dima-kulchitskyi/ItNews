@@ -21,7 +21,7 @@ namespace ItNews.MVC.Identity.Mangers
         {
             using (var uow = unitOfWorkFactory.GetUnitOfWork().BeginTransaction()) {
                 var result = await base.CreateAsync(user, password);
-                uow.CommitTransaction();
+                uow.Commit();
                 return result;
             }
         }

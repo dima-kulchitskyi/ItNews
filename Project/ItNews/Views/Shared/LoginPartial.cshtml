@@ -5,7 +5,7 @@
         @Html.AntiForgeryToken()
 
         <ul class="nav navbar-nav navbar-right">
-            <li>@Html.ActionLink("Create Article", "Create", "Article", new { @class= "navbar-brand" })</li>
+            <li>@Html.ActionLink("Create Article", "Create", "Article", "", new { @class= "navbar-brand" })</li>
             <li><input type="submit" value="Logout" class="navbar-brand"/></li>
         </ul>
     }
@@ -13,7 +13,7 @@
 else
 {
     <ul class="nav navbar-nav navbar-right">
-        <li>@Html.ActionLink("Register", "Register", "Account", new { @class = "navbar-brand" })</li>
-        <li>@Html.ActionLink("Log in", "Login", "Account", new { @class = "navbar-brand" })</li>
+        <li>@Html.ActionLink("Register", "Register", "Account", "", new { @class = "navbar-brand" })</li>
+        <li>@Html.ActionLink("Log in", "Login", "Account", "", new { @class = "navbar-brand" })</li>
     </ul>
 } 

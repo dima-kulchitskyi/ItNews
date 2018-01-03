@@ -19,7 +19,7 @@ namespace ItNews.Nhibernate.Providers
 
         public Task<AppUser> GetByUserName(string userName)
         {
-            return sessionManager.Session.QueryOver<AppUser>().Where(it => it.UserName == userName).SingleOrDefaultAsync();
+            return sessionManager.GetExistingOrOpenSession().QueryOver<AppUser>().Where(it => it.UserName == userName).SingleOrDefaultAsync();
         }
     }
 }
