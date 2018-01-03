@@ -1,7 +1,6 @@
 ﻿using ItNews.Business.Entities;
 using ItNews.Business.Managers;
 using ItNews.Mvc.ViewModels.News;
-using ItNews.MVC.ViewModels.News;
 using Ninject;
 using System;
 using System.Linq;

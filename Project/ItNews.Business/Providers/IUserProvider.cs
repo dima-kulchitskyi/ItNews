@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace ItNews.Business.Providers
 {
-    public interface IAppUserProvider : IProvider<AppUser>
+    public interface IUserProvider : IProvider<AppUser>
     {
+        Task<AppUser> GetByUserName(string userName);
 
     }
 }

@@ -3,8 +3,12 @@ using Ninject.Web.Common;
 using ItNews.Business.Providers;
 using ItNews.Business.Managers;
 using ItNews.Business;
+using System.Web;
+using ItNews.MVC.Identity;
+using Microsoft.Owin.Security;
+using Microsoft.AspNet.Identity;
 
-namespace ItNews.Mvc.DependencyInjection
+namespace ItNews.Web
 {
     public class NinjectRegistrations : NinjectModule
     {
@@ -20,7 +24,13 @@ namespace ItNews.Mvc.DependencyInjection
             Bind<IUnitOfWork>().To<Nhibernate.UnitOfWork>();
 
             Bind<IArticleProvider>().To<Nhibernate.Providers.ArticleProvider>();
-            Bind<IAppUserProvider>().To<Nhibernate.Providers.AppUserProvider>();
+            Bind<IUserProvider>().To<Nhibernate.Providers.UserProvider>();
+
+            //Identity
+            Bind<IUserStore<IdentityUser, string>>().To<MVC.Identity.Stores.IdentityUserStore>();
+            Bind<IAuthenticationManager>().ToMethod(ctx => HttpContext.Current.GetOwinContext().Authentication);
+            Bind<UserManager<IdentityUser, string>>().To<MVC.Identity.Mangers.IdentityUserManager>();
+            Bind<Microsoft.AspNet.Identity.Owin.SignInManager<IdentityUser, string>>().To<MVC.Identity.Mangers.IdentitySignInManager>();
         }
     }
 }

@@ -12,9 +12,9 @@ namespace ItNews.Business.Managers
     {
         private IArticleProvider articleProvider;
 
-        private IAppUserProvider userProvider;
+        private IUserProvider userProvider;
 
-        public ArticleManager(IArticleProvider articleProvider, IAppUserProvider userProvider, IUnitOfWorkFactory unitOfWorkFactory)
+        public ArticleManager(IArticleProvider articleProvider, IUserProvider userProvider, IUnitOfWorkFactory unitOfWorkFactory)
             : base(articleProvider, unitOfWorkFactory)
         {
             this.articleProvider = articleProvider;
@@ -47,7 +47,7 @@ namespace ItNews.Business.Managers
 
                 uow.BeginTransaction();
                 await articleProvider.SaveOrUpdate(article);
-                uow.Commit();
+                uow.CommitTransaction();
             }
         }
     }
