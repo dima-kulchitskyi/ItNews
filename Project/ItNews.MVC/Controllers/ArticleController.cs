@@ -1,6 +1,5 @@
 ﻿using ItNews.Business.Managers;
 using ItNews.Mvc.ViewModels.News;
-using ItNews.MVC.ViewModels.News;
 using Ninject;
 using System;
 using System.Linq;
@@ -70,15 +69,6 @@ namespace ItNews.Controllers
 
             return View(model);
         }
-    
-    public async Task<ActionResult> TestCreate(string name)
-    {
-        await articleManager.CreateArticle(new Article
-        {
-            Text = name ?? "test",
-            Title = "adasd"
-        }, "1");
 
-        return Content("dsa");
     }
 }
