@@ -75,7 +75,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controllers\NewsController.cs" />
+    <Compile Include="Controllers\ArticleController.cs" />
     <Compile Include="DependencyInjection\NinjectInitialization.cs" />
     <Compile Include="DependencyInjection\NinjectRegistrations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

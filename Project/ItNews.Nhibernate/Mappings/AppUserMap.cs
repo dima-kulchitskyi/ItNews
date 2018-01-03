@@ -8,7 +8,7 @@ namespace ItNews.Nhibernate.Mappings
         public AppUserMap()
         {
             Table("Users");
-            Id(x => x.Id);
+            Id(x => x.Id).GeneratedBy.Assigned();
             Map(x => x.Email).Not.Nullable();
             Map(x => x.UserName);
             Map(x => x.PasswordHash).Not.Nullable();

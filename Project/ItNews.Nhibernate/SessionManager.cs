@@ -1,4 +1,5 @@
 ﻿using NHibernate;
+using System;
 
 namespace ItNews.Nhibernate
 {
@@ -8,11 +9,25 @@ namespace ItNews.Nhibernate
 
         protected ISession session;
 
-        public ISession Session => session ?? (session = sessionFactory?.OpenSession());
+        public bool IsSessionOpen => session != null && session.IsOpen;
 
         public SessionManager(ISessionFactory sessionFactory)
         {
             this.sessionFactory = sessionFactory;
         }
+
+        public ISession GetCurrentSession()
+        {
+            return session ?? throw new InvalidOperationException("Session does not exists");
+        }
+
+        public ISession GetExistingOrOpenSession()
+        {
+            if (session == null || !session.IsOpen)
+                session = sessionFactory.OpenSession();
+
+            return session;
+        }
+
     }
 }
