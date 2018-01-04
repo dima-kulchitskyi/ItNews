@@ -12,7 +12,6 @@ namespace ItNews.Nhibernate.Mappings
             Map(x => x.Email).Not.Nullable();
             Map(x => x.UserName).Not.Nullable();
             Map(x => x.PasswordHash).Not.Nullable();
-
             Map(x => x.LockoutEndDate);
             Map(x => x.LockoutEnabled);
             Map(x => x.AccessFailedCount);

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ItNews.MVC.Identity.Mangers
+namespace ItNews.Mvc.Identity.Mangers
 {
     public class IdentityUserManager : UserManager<IdentityUser, string>
     {

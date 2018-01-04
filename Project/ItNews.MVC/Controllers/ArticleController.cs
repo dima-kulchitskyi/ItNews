@@ -1,5 +1,5 @@
 ﻿using ItNews.Business.Managers;
-using ItNews.Mvc.ViewModels.News;
+using ItNews.Mvc.ViewModels.Article;
 using Ninject;
 using System;
 using System.IO;
@@ -56,7 +56,6 @@ namespace ItNews.Controllers
         [HttpGet]
         public async Task<ActionResult> Details(string id)
         {
-
             if (string.IsNullOrEmpty(id))
                 return HttpNotFound();
 
@@ -64,7 +63,6 @@ namespace ItNews.Controllers
 
             if (article == null)
                 return HttpNotFound();
-            
 
             var model = new ArticleDetailsViewModel
             {

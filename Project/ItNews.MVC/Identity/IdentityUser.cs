@@ -7,7 +7,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ItNews.MVC.Identity
+namespace ItNews.Mvc.Identity
 {
     public class IdentityUser : IUser
     {
