@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace ItNews.MVC.ViewModels.News
+namespace ItNews.Mvc.ViewModels.Article
 {
     public class CreateViewModel
     {
