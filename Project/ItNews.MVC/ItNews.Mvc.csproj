@@ -123,8 +123,8 @@
     <Compile Include="ViewModels\Account\LoginViewModel.cs" />
     <Compile Include="ViewModels\Account\RegisterViewModel.cs" />
     <Compile Include="ViewModels\Article\ArticlesListViewModel.cs" />
-    <Compile Include="ViewModels\Article\ArticleDetailsViewModel.cs" />
     <Compile Include="ViewModels\Article\ArticlesListPageItem.cs" />
+    <Compile Include="ViewModels\Article\ArticleDetailsViewModel.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
