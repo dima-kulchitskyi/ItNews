@@ -12,9 +12,13 @@ namespace ItNews.Business.Managers
     {
         private IArticleProvider articleProvider;
 
-        public ArticleManager(IArticleProvider provider) : base(provider)
+        private IUserProvider userProvider;
+
+        public ArticleManager(IArticleProvider articleProvider, IUserProvider userProvider, IUnitOfWorkFactory unitOfWorkFactory)
+            : base(articleProvider, unitOfWorkFactory)
         {
-            articleProvider = provider;
+            this.articleProvider = articleProvider;
+            this.userProvider = userProvider;
         }
 
         public Task<IList<Article>> GetListSegmentAsync(int count, DateTime startDate, bool newFirst)
@@ -22,9 +26,34 @@ namespace ItNews.Business.Managers
             return articleProvider.GetListSegmentAsync(count, startDate, newFirst);
         }
 
-        public Task<IList<Article>> GetPagesAsync(int count, int pageNumber, bool newFirst)
+        public Task<IList<Article>> GetPage(int count, int pageNumber, bool newFirst)
         {
             return articleProvider.GetPage(count, pageNumber, newFirst);
+        }
+
+        public Task<Article> GetArticle(string id)
+        {
+            return articleProvider.Get(id);
+        }
+
+        public async Task CreateArticle(Article article, string authorId)
+        {
+            using (var uow = unitOfWorkFactory.GetUnitOfWork())
+            {
+                var user = await userProvider.Get(authorId);
+
+                article.Author = user ?? throw new InvalidOperationException("No user with given id");
+                article.Date = DateTime.Now;
+
+                uow.BeginTransaction();
+                await articleProvider.SaveOrUpdate(article);
+                uow.Commit();
+            }
+        }
+
+        public Task<int> GetCount()
+        {
+            return articleProvider.GetCount();
         }
     }
 }

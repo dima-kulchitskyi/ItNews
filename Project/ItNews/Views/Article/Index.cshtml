@@ -1,19 +1,19 @@
-﻿@{
+﻿﻿@model ArticlesList
+@{
     ViewBag.Title = "News list";
 }
-@model ArticlesList
 <div>
     @foreach (var item in Model.Articles)
     {
         <hr />
         <h3>@item.Title</h3>
         <p>@item.TextPreview</p>
-        <p>Author: @item.Author</p>
-        <p>Date: @item.Date.ToString("MM/dd/yyyy | HH:mm")</p>
+        <p>@Html.DisplayNameFor(model => item.Author): @item.Author</p>
+        <p>@Html.DisplayNameFor(model => item.Date): @item.Date</p>
     }
 </div>
 <div>
-    <hr/>
+    <hr />
     <h4>
         @for (int i = 1; i <= Model.PageCount; i++)
         {
@@ -21,8 +21,9 @@
             {
                 @Convert.ToString(i);
             }
-            else{ 
-                @Html.ActionLink(Convert.ToString(i), "Index", new { itemsCount = Model.PageSize, page = i});
+            else
+            {
+                @Html.ActionLink(Convert.ToString(i), "Index", new { itemsCount = Model.PageSize, page = i });
             }
 
         }

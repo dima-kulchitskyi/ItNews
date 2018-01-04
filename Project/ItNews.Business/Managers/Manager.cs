@@ -1,6 +1,5 @@
 ﻿using ItNews.Business.Entities;
 using ItNews.Business.Providers;
-using System.Threading.Tasks;
 
 namespace ItNews.Business.Managers
 {
@@ -15,16 +14,6 @@ namespace ItNews.Business.Managers
         {
             this.provider = provider;
             this.unitOfWorkFactory = unitOfWorkFactory;
-        }
-
-        public Task<int> GetCountAsync()
-        {
-            return provider.GetCount();
-        }
-
-        public Task<T> GetAsync(string id)
-        {
-            return provider.GetAsync(id);
         }
     }
 }
