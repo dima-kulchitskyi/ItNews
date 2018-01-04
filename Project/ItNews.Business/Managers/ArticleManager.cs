@@ -50,6 +50,7 @@ namespace ItNews.Business.Managers
                 uow.Commit();
             }
         }
+
         public Task<int> GetCount()
         {
             return articleProvider.GetCount();

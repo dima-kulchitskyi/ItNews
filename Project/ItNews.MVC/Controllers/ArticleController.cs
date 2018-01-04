@@ -1,5 +1,8 @@
-﻿using ItNews.Business.Managers;
+﻿using ItNews.Business.Entities;
+using ItNews.Business.Managers;
 using ItNews.Mvc.ViewModels.News;
+using ItNews.MVC.ViewModels.News;
+using Microsoft.AspNet.Identity;
 using Ninject;
 using System;
 using System.IO;
@@ -74,14 +77,14 @@ namespace ItNews.Controllers
             return View(model);
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpGet]
         public ActionResult Create()
         {
             return View();
         }
 
-        //[Authorize]
+        [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(CreateViewModel model)
@@ -90,16 +93,11 @@ namespace ItNews.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-
-
             var item = new Article
             {
                 Text = model.Text,
                 Title = model.Title
             };
-
-            //string fileName = null;
-
 
             if (model.Image != null && model.Image.ContentLength > 0)
             {
@@ -108,9 +106,8 @@ namespace ItNews.Controllers
                 model.Image.SaveAs(Path.Combine(directory, fileName));
                 item.ImagePath = fileName;
             }
-
-            // Authorize (id)
-            await articleManager.CreateArticle(item, "5b7e96ae-bd28-455e-bcf6-82e56350eebc");
+           
+            await articleManager.CreateArticle(item, User.Identity.GetUserId());
 
             return RedirectToAction("Index");
         }
