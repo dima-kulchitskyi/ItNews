@@ -23,7 +23,7 @@ namespace ItNews.Business.Managers
 
         public Task<IList<Article>> GetListSegmentAsync(int count, DateTime startDate, bool newFirst)
         {
-            return articleProvider.GetListSegmentAsync(count, startDate, newFirst);
+            return articleProvider.GetListSegment(count, startDate, newFirst);
         }
 
         public Task<IList<Article>> GetPage(int count, int pageNumber, bool newFirst)
