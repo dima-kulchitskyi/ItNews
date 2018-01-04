@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ItNews.Mvc.ViewModels.News
+namespace ItNews.Mvc.ViewModels.Article
 {
-    public class ArticlesList
+    public class ArticlesListViewModel
     {
         public IList<ArticlesListPageItem> Articles { set; get; }
         public int PageNumber { set; get; }

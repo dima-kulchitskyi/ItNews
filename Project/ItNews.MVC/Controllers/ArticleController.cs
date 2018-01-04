@@ -1,5 +1,5 @@
 ﻿using ItNews.Business.Managers;
-using ItNews.Mvc.ViewModels.News;
+using ItNews.Mvc.ViewModels.Article;
 using Ninject;
 using System;
 using System.Linq;
@@ -28,13 +28,13 @@ namespace ItNews.Controllers
 
             var articles = await articleManager.GetPage(itemsCount, page - 1, true);
 
-            var model = new ArticlesList();
+            var model = new ArticlesListViewModel();
             model.PageCount = Convert.ToInt32(Math.Ceiling(await articleManager.GetCount() / (double)itemsCount));
             model.Articles = articles.Select(it =>
             new ArticlesListPageItem
             {
                 Title = it.Title,
-                UrlPath = it.Id,
+                Id = it.Id,
                 Author = it.Author.UserName,
                 ImagePath = it.ImagePath,
                 Date = it.Date,

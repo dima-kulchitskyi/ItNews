@@ -4,7 +4,7 @@ using ItNews.Business.Providers;
 using ItNews.Business.Managers;
 using ItNews.Business;
 using System.Web;
-using ItNews.MVC.Identity;
+using ItNews.Mvc.Identity;
 using Microsoft.Owin.Security;
 using Microsoft.AspNet.Identity;
 
@@ -27,10 +27,10 @@ namespace ItNews.Web
             Bind<IUserProvider>().To<Nhibernate.Providers.UserProvider>();
 
             //Identity
-            Bind<IUserStore<IdentityUser, string>>().To<MVC.Identity.Stores.IdentityUserStore>();
+            Bind<IUserStore<IdentityUser, string>>().To<Mvc.Identity.Stores.IdentityUserStore>();
             Bind<IAuthenticationManager>().ToMethod(ctx => HttpContext.Current.GetOwinContext().Authentication);
-            Bind<UserManager<IdentityUser, string>>().To<MVC.Identity.Mangers.IdentityUserManager>();
-            Bind<Microsoft.AspNet.Identity.Owin.SignInManager<IdentityUser, string>>().To<MVC.Identity.Mangers.IdentitySignInManager>();
+            Bind<UserManager<IdentityUser, string>>().To<Mvc.Identity.Mangers.IdentityUserManager>();
+            Bind<Microsoft.AspNet.Identity.Owin.SignInManager<IdentityUser, string>>().To<Mvc.Identity.Mangers.IdentitySignInManager>();
         }
     }
 }

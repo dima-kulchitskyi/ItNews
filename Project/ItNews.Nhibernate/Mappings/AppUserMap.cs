@@ -1,6 +1,6 @@
 ﻿using FluentNHibernate.Mapping;
 using ItNews.Business.Entities;
-using ItNews.MVC.Identity;
+using ItNews.Mvc.Identity;
 
 namespace ItNews.Nhibernate.Mappings
 {
