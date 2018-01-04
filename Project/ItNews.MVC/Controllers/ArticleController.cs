@@ -33,18 +33,18 @@ namespace ItNews.Controllers
 
             var articles = await articleManager.GetPage(itemsCount, page - 1, true);
 
-            var model = new ArticlesList
+            var model = new ArticlesList();
+            model.PageCount = Convert.ToInt32(Math.Ceiling(await articleManager.GetCount() / (double)itemsCount));
+            model.Articles = articles.Select(it =>
+            new ArticlesListPageItem
             {
-                PageCount = Convert.ToInt32(Math.Ceiling(await articleManager.GetCount() / (double)itemsCount)),
-                Articles = articles.Select(it => new ArticlesListPageItem
-                {
-                    Title = it.Title,
-                    UrlPath = it.Id,
-                    Author = it.Author.UserName,
-                    ImagePath = it.ImagePath,
-                    Date = it.Date,
-                    TextPreview = it.Text.Substring(0, articleTextPreviewLength > it.Text.Length ? it.Text.Length : articleTextPreviewLength)
-                }).ToList(),
+                Title = it.Title,
+                UrlPath = it.Id,
+                Author = it.Author.UserName,
+                ImagePath = it.ImagePath,
+                Date = it.Date,
+                TextPreview = it.Text.Substring(0, articleTextPreviewLength > it.Text.Length ? it.Text.Length : articleTextPreviewLength)
+            }).ToList();
 
                 PageSize = itemsCount,
                 PageNumber = page
@@ -56,6 +56,7 @@ namespace ItNews.Controllers
         [HttpGet]
         public async Task<ActionResult> Details(string id)
         {
+
             if (string.IsNullOrEmpty(id))
                 return HttpNotFound();
 
@@ -63,6 +64,7 @@ namespace ItNews.Controllers
 
             if (article == null)
                 return HttpNotFound();
+            
 
             var model = new ArticleDetailsViewModel
             {
