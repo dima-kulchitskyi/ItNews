@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ItNews.Mvc.ViewModels.News
+namespace ItNews.Mvc.ViewModels.Article
 {
     public class ArticlesListPageItem
     {
         public string Title { get; set; }
-        public string UrlPath { get; set; }
+        public string Id { get; set; }
         public string Author { get; set; }
         public string ImagePath { get; set; }
         public string TextPreview { get; set; }

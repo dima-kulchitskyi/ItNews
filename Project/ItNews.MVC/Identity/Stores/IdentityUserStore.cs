@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ItNews.MVC.Identity.Stores
+namespace ItNews.Mvc.Identity.Stores
 {
     public class IdentityUserStore : IUserStore<IdentityUser, string>, IUserPasswordStore<IdentityUser>, IUserLockoutStore<IdentityUser, string>, IUserTwoFactorStore<IdentityUser, string>
     {

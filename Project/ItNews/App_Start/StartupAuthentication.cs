@@ -1,5 +1,5 @@
-﻿using ItNews.MVC.Identity;
-using ItNews.MVC.Identity.Mangers;
+﻿using ItNews.Mvc.Identity;
+using ItNews.Mvc.Identity.Mangers;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;

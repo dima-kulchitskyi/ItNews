@@ -7,7 +7,7 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
 
-namespace ItNews.MVC.Identity.Mangers
+namespace ItNews.Mvc.Identity.Mangers
 {
     public class IdentitySignInManager : SignInManager<IdentityUser, string>
     {

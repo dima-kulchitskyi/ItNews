@@ -122,10 +122,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\Account\LoginViewModel.cs" />
     <Compile Include="ViewModels\Account\RegisterViewModel.cs" />
-    <Compile Include="ViewModels\News\ArticlesList.cs" />
-    <Compile Include="ViewModels\News\ArticleDetailsViewModel.cs" />
-    <Compile Include="ViewModels\News\ArticlesListPageItem.cs" />
-    <Compile Include="ViewModels\News\CreateViewModel.cs" />
+    <Compile Include="ViewModels\Article\ArticlesListViewModel.cs" />
+    <Compile Include="ViewModels\Article\ArticleDetailsViewModel.cs" />
+    <Compile Include="ViewModels\Article\ArticlesListPageItem.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

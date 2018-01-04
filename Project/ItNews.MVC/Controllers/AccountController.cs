@@ -11,8 +11,8 @@ using Microsoft.Owin.Security;
 using ItNews.Mvc.ViewModels.Account;
 using ItNews.Business.Entities;
 using ItNews.Business.Managers;
-using ItNews.MVC.Identity.Mangers;
-using ItNews.MVC.Identity;
+using ItNews.Mvc.Identity.Mangers;
+using ItNews.Mvc.Identity;
 
 namespace ItNews.Mvc.Controllers
 {
