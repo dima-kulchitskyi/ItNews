@@ -11,7 +11,7 @@ namespace ItNews.Mvc.ViewModels.Article
     public class CreateViewModel
     {
         [Required]
-        [MaxLength(255, ErrorMessage = "Ostanovites`")]
+        [MaxLength(255)]
         public string Title { get; set; }
 
         [DataType(DataType.Upload)]

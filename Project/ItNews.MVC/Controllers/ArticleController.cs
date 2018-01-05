@@ -1,5 +1,7 @@
-﻿using ItNews.Business.Managers;
+﻿using ItNews.Business.Entities;
+using ItNews.Business.Managers;
 using ItNews.Mvc.ViewModels.Article;
+using Microsoft.AspNet.Identity;
 using Ninject;
 using System;
 using System.IO;
@@ -18,7 +20,7 @@ namespace ItNews.Controllers
 
         private readonly int articleTextPreviewLength = int.Parse(WebConfigurationManager.AppSettings["ArticleTextPreviewLength"]);
 
-        private readonly string ImagesFolderPath = WebConfigurationManager.AppSettings["IamgesFolder"];
+        private readonly string ImagesFolderPath = WebConfigurationManager.AppSettings["ImagesFolder"];
 
         public ArticleController(ArticleManager articleManager)
         {
@@ -65,17 +67,57 @@ namespace ItNews.Controllers
             if (article == null)
                 return HttpNotFound();
 
-
             var model = new ArticleDetailsViewModel
             {
                 Id = article.Id,
                 Title = article.Title,
                 AuthorName = article.Author.UserName,
-                Image = Path.Combine(ImagesFolderPath, article.ImagePath),
-                Date = article.Date
+                Date = article.Date.ToString("f"),
+                Content = article.Text
             };
 
+            if (!string.IsNullOrEmpty(article.ImagePath))
+            {
+                model.HasImage = true;
+                model.Image = Url.Content(Path.Combine(ImagesFolderPath, article.ImagePath));
+            }
+
             return View(model);
+        }
+
+        [Authorize]
+        [HttpGet]
+        public ActionResult Create()
+        {
+            return View();
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Create(CreateViewModel model)
+        {
+
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var item = new Article
+            {
+                Text = model.Text,
+                Title = model.Title
+            };
+
+            if (model.Image != null && model.Image.ContentLength > 0)
+            {
+                var directory = Server.MapPath(Url.Content(WebConfigurationManager.AppSettings["ImagesFolder"]));
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.Image.FileName);
+                model.Image.SaveAs(Path.Combine(directory, fileName));
+                item.ImagePath = fileName;
+            }
+
+            await articleManager.CreateArticle(item, User.Identity.GetUserId());
+
+            return RedirectToAction("Index");
         }
     }
 }

@@ -21,7 +21,11 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                   @Html.Partial("LoginPartial")
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li>@Html.ActionLink("Create Article", "Create", "Article", new { }, new { @class = "navbar-brand" })</li>
+                    }
+                    @Html.Partial("LoginPartial")
                 </ul>
             </div>
         </div>

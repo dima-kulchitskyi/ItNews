@@ -1,19 +1,13 @@
-﻿@if (Request.IsAuthenticated)
+﻿@if (User.Identity.IsAuthenticated)
 {
     using (Html.BeginForm("Logout", "Account", FormMethod.Post, new { @class = "navbar-right" }))
     {
         @Html.AntiForgeryToken()
-
-        <ul class="nav navbar-nav navbar-right">
-            <li>@Html.ActionLink("Create Article", "Create", "Article", "", new { @class= "navbar-brand" })</li>
-            <li><input type="submit" value="Logout" class="navbar-brand"/></li>
-        </ul>
+        <li><input type="submit" value="Logout" class="navbar-brand" /></li>
     }
 }
 else
 {
-    <ul class="nav navbar-nav navbar-right">
-        <li>@Html.ActionLink("Sign up", "Register", "Account", "", new { @class = "navbar-brand" })</li>
-        <li>@Html.ActionLink("Sign in", "Login", "Account", "", new { @class = "navbar-brand" })</li>
-    </ul>
+    <li>@Html.ActionLink("Sign up", "Register", "Account", new { }, new { @class = "navbar-brand" })</li>
+    <li>@Html.ActionLink("Sign in", "Login", "Account", new { }, new { @class = "navbar-brand" })</li>
 } 

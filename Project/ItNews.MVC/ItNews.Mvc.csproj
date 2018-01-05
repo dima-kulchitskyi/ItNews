@@ -139,6 +139,7 @@
     <Compile Include="ViewModels\Article\ArticlesListViewModel.cs" />
     <Compile Include="ViewModels\Article\ArticlesListPageItem.cs" />
     <Compile Include="ViewModels\Article\ArticleDetailsViewModel.cs" />
+    <Compile Include="ViewModels\Article\CreateViewModel.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

@@ -3,8 +3,7 @@ using System.Web.Mvc;
 
 using Unity.AspNet.Mvc;
 
-[assembly: WebActivatorEx.PreApplicationStartMethod(typeof(ItNews.UnityMvcActivator), nameof(ItNews.UnityMvcActivator.Start))]
-[assembly: WebActivatorEx.ApplicationShutdownMethod(typeof(ItNews.UnityMvcActivator), nameof(ItNews.UnityMvcActivator.Shutdown))]
+
 
 namespace ItNews
 {
