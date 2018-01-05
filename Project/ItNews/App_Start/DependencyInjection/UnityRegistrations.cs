@@ -1,10 +1,8 @@
-using ItNews.App_Start.DependencyInjection;
 using ItNews.Business;
 using ItNews.Business.Providers;
 using ItNews.Mvc.Identity;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
-using System;
 using System.Web;
 using Unity;
 using Unity.Injection;

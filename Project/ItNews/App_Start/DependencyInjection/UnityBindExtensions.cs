@@ -5,7 +5,7 @@ using System.Web;
 using Unity;
 using Unity.Lifetime;
 
-namespace ItNews.App_Start.DependencyInjection
+namespace ItNews.Web.DependencyInjection
 {
     public static class UnityBindExtentions
     {

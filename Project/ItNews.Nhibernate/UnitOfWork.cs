@@ -1,12 +1,6 @@
 ﻿using NHibernate;
-using NHibernate.Cfg;
-using NHibernate.Tool.hbm2ddl;
 using ItNews.Business;
-using ItNews.Business.Entities;
 using System;
-using ItNews.Nhibernate.Providers;
-using System.Web.Mvc;
-using Ninject.Web.Mvc;
 
 namespace ItNews.Nhibernate
 {
@@ -81,6 +75,8 @@ namespace ItNews.Nhibernate
             if (transaction != null && transaction.IsActive)
             {
                 Rollback();
+
+                //  ???
                 var exception = new InvalidOperationException("Transaction is still active, maybe you forgot to commit it?");
                 if (exception.InnerException == null)
                     throw exception;

@@ -2,7 +2,6 @@
 using ItNews.Business.Managers;
 using ItNews.Mvc.ViewModels.Article;
 using Microsoft.AspNet.Identity;
-using Ninject;
 using System;
 using System.IO;
 using System.Linq;

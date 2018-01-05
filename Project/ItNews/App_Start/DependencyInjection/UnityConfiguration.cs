@@ -15,13 +15,12 @@ namespace ItNews.Web.DependencyInjection
     {
 
         #region Unity Container
-        private static Lazy<IUnityContainer> container =
-          new Lazy<IUnityContainer>(() =>
-          {
-              var container = new UnityContainer();
-              UnityRegistrations.RegisterTypes(container);
-              return container;
-          });
+        private static Lazy<IUnityContainer> container = new Lazy<IUnityContainer>(() =>
+        {
+            var container = new UnityContainer();
+            UnityRegistrations.RegisterTypes(container);
+            return container;
+        });
 
         /// <summary>
         /// Configured Unity Container.
@@ -33,7 +32,7 @@ namespace ItNews.Web.DependencyInjection
         /// </summary>
         public static void Initialize()
         {
-            FilterProviders.Providers.Remove(FilterProviders.Providers.OfType<FilterAttributeFilterProvider>().First());
+            FilterProviders.Providers.Remove(FilterProviders.Providers.OfType<FilterAttributeFilterProvider>().FirstOrDefault());
             FilterProviders.Providers.Add(new UnityFilterAttributeFilterProvider(Container));
 
             DependencyResolver.SetResolver(new UnityDependencyResolver(Container));
