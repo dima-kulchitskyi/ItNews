@@ -4,6 +4,7 @@ using NHibernate;
 using NHibernate.Tool.hbm2ddl;
 using Ninject;
 using System.Configuration;
+using Unity;
 
 namespace ItNews.Nhibernate
 {
@@ -19,9 +20,9 @@ namespace ItNews.Nhibernate
             return sessionFactory;
         }
 
-        public static void RegisterDependencies(IKernel kernel)
+        public static void RegisterDependencies(IUnityContainer container)
         {
-            kernel.Bind<ISessionFactory>().ToConstant(ConfigureSessionFactory());
+            container.RegisterInstance(ConfigureSessionFactory());
         }
     }
 }

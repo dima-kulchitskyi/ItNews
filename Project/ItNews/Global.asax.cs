@@ -1,6 +1,5 @@
-﻿using ItNews.Mvc;
-using ItNews.Mvc.DependencyInjection;
-using ItNews.Web;
+﻿using ItNews.Web;
+using ItNews.Web.DependencyInjection;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
@@ -19,7 +18,7 @@ namespace ItNews
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             RouteConfig.SetRoutesDefaultNamespace(RouteTable.Routes);
 
-            NinjectInitialization.Initialize(new NinjectRegistrations());
+            UnityConfiguration.Initialize();
         }
     }
 }
