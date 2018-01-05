@@ -76,10 +76,7 @@ namespace ItNews.Nhibernate
             {
                 Rollback();
 
-                //  ???
-                var exception = new InvalidOperationException("Transaction is still active, maybe you forgot to commit it?");
-                if (exception.InnerException == null)
-                    throw exception;
+                throw new InvalidOperationException("Transaction is still active, maybe you forgot to commit it?");
             }
 
             session?.Dispose();

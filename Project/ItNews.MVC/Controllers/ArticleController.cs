@@ -108,14 +108,71 @@ namespace ItNews.Controllers
 
             if (model.Image != null && model.Image.ContentLength > 0)
             {
-                var directory = Server.MapPath(Url.Content(WebConfigurationManager.AppSettings["ImagesFolder"]));
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.Image.FileName);
-                model.Image.SaveAs(Path.Combine(directory, fileName));
+                model.Image.SaveAs(Path.Combine(Server.MapPath(Url.Content(ImagesFolderPath)), fileName));
                 item.ImagePath = fileName;
             }
 
             await articleManager.CreateArticle(item, User.Identity.GetUserId());
 
+            return RedirectToAction("Index");
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<ActionResult> Edit(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return HttpNotFound();
+
+            var article = await articleManager.GetArticle(id);
+
+            if (article == null)
+                return HttpNotFound();
+
+            var model = new EditViewModel
+            {
+                Id = article.Id,
+                Text = article.Text,
+                Title = article.Title,
+            };
+
+            if (article.ImagePath != null)
+                model.OldImagePath = Url.Content(Path.Combine(ImagesFolderPath, article.ImagePath));
+
+            return View(model);
+        }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Edit(EditViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var article = await articleManager.GetArticle(model.Id);
+
+            if (article.Author.Id != User.Identity.GetUserId())
+                return HttpNotFound();
+
+            var updatedArticle = new Article
+            {
+                Id = model.Id,
+                Title = model.Title,
+                Text = model.Text
+            };
+
+            if (model.UploadedImage != null)
+            {
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.UploadedImage.FileName);
+                model.UploadedImage.SaveAs(Path.Combine(Server.MapPath(Url.Content(ImagesFolderPath)), fileName));
+
+                updatedArticle.ImagePath = fileName;
+            }
+            
+            await articleManager.UpdateArticle(updatedArticle, User.Identity.GetUserId());
+           
             return RedirectToAction("Index");
         }
     }
