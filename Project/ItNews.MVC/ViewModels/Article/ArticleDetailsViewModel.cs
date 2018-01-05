@@ -15,5 +15,6 @@ namespace ItNews.Mvc.ViewModels.Article
         public string Date { get; set; }
         public bool HasImage { get; set; }
         public string Content { get; set; }
+        public bool CanEdit { get; set; }
     }
 }

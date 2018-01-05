@@ -16,9 +16,8 @@ namespace ItNews.Controllers
         private ArticleManager articleManager;
 
         private readonly int defaultItemsOnPageCount = int.Parse(WebConfigurationManager.AppSettings["NewsListItemsOnPageDefaultCount"]);
-
         private readonly int articleTextPreviewLength = int.Parse(WebConfigurationManager.AppSettings["ArticleTextPreviewLength"]);
-
+        private readonly string articleTextPreviewEnding = WebConfigurationManager.AppSettings["ArticleTextPreviewEnding"];
         private readonly string ImagesFolderPath = WebConfigurationManager.AppSettings["ImagesFolder"];
 
         public ArticleController(ArticleManager articleManager)
@@ -37,15 +36,14 @@ namespace ItNews.Controllers
             var model = new ArticlesListViewModel
             {
                 PageCount = Convert.ToInt32(Math.Ceiling(await articleManager.GetCount() / (double)itemsCount)),
-                Articles = articles.Select(it =>
-                new ArticlesListPageItem
+                Articles = articles.Select(it => new ArticlesListPageItem
                 {
                     Title = it.Title,
                     Id = it.Id,
                     Author = it.Author.UserName,
                     ImagePath = it.ImagePath,
                     Date = it.Date,
-                    TextPreview = it.Text.Substring(0, articleTextPreviewLength > it.Text.Length ? it.Text.Length : articleTextPreviewLength)
+                    TextPreview = (it.Text.Length > articleTextPreviewLength) ? it.Text.Substring(0, articleTextPreviewLength) + articleTextPreviewEnding : it.Text
                 }).ToList(),
                 PageSize = itemsCount,
                 PageNumber = page
@@ -72,7 +70,8 @@ namespace ItNews.Controllers
                 Title = article.Title,
                 AuthorName = article.Author.UserName,
                 Date = article.Date.ToString("f"),
-                Content = article.Text
+                Content = article.Text,
+                CanEdit = (User.Identity.IsAuthenticated && article.Author.Id == User.Identity.GetUserId())
             };
 
             if (!string.IsNullOrEmpty(article.ImagePath))
@@ -96,11 +95,10 @@ namespace ItNews.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(CreateViewModel model)
         {
-
             if (!ModelState.IsValid)
                 return View(model);
 
-            var item = new Article
+            var article = new Article
             {
                 Text = model.Text,
                 Title = model.Title
@@ -111,12 +109,12 @@ namespace ItNews.Controllers
                 var directory = Server.MapPath(Url.Content(WebConfigurationManager.AppSettings["ImagesFolder"]));
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.Image.FileName);
                 model.Image.SaveAs(Path.Combine(directory, fileName));
-                item.ImagePath = fileName;
+                article.ImagePath = fileName;
             }
 
-            await articleManager.CreateArticle(item, User.Identity.GetUserId());
+            await articleManager.CreateArticle(article, User.Identity.GetUserId());
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Details", new { id = article.Id });
         }
     }
 }
