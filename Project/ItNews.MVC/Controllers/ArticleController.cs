@@ -15,15 +15,18 @@ namespace ItNews.Controllers
     {
         private ArticleManager articleManager;
 
+        private CommentManager commentManager;
+
         private readonly int defaultItemsOnPageCount = int.Parse(WebConfigurationManager.AppSettings["NewsListItemsOnPageDefaultCount"]);
 
         private readonly int articleTextPreviewLength = int.Parse(WebConfigurationManager.AppSettings["ArticleTextPreviewLength"]);
 
         private readonly string ImagesFolderPath = WebConfigurationManager.AppSettings["ImagesFolder"];
 
-        public ArticleController(ArticleManager articleManager)
+        public ArticleController(ArticleManager articleManager, CommentManager commentManager)
         {
             this.articleManager = articleManager;
+            this.commentManager = commentManager;
         }
 
         [HttpGet]
@@ -62,6 +65,7 @@ namespace ItNews.Controllers
                 return HttpNotFound();
 
             var article = await articleManager.GetArticle(id);
+            var comment = await commentManager.GetArticleComments(id);
 
             if (article == null)
                 return HttpNotFound();

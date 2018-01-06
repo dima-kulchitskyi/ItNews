@@ -113,8 +113,10 @@
     <Compile Include="Configuration.cs" />
     <Compile Include="Mappings\AppUserMap.cs" />
     <Compile Include="Mappings\ArticleMap.cs" />
+    <Compile Include="Mappings\CommentMap.cs" />
     <Compile Include="Providers\ArticleProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Providers\CommentProvider.cs" />
     <Compile Include="Providers\UserProvider.cs" />
     <Compile Include="Providers\Provider.cs" />
     <Compile Include="SessionManager.cs" />
