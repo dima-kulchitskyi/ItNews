@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ItNews.Mvc.CustomValidationAttributes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -23,6 +24,7 @@ namespace ItNews.Mvc.ViewModels.Article
         public string OldImagePath { get; set; }
 
         [DataType(DataType.Upload)]
+        [FileType("JPG,PNG")]
         public HttpPostedFileBase UploadedImage { get; set; }
 
         [Required]

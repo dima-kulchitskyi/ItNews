@@ -182,6 +182,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\BundleOrderers\СoherentBundleOrderer.cs" />
     <Compile Include="App_Start\DependencyInjection\UnityBindExtensions.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
@@ -245,6 +246,7 @@
     <Content Include="Views\Shared\LoginPartial.cshtml" />
     <Content Include="Views\Article\Create.cshtml" />
     <Content Include="Views\Article\Edit.cshtml" />
+    <Content Include="Scripts\jquery.validate.fileExtensions.js" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
