@@ -1,16 +1,17 @@
 ﻿using NHibernate;
 using ItNews.Business;
 using System;
+using System.Threading.Tasks;
 
 namespace ItNews.Nhibernate
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
-        protected SessionManager sessionManager;
+        protected SessionContainerFactory sessionManager;
 
         protected ITransaction transaction;
 
-        protected ISession session;
+        protected SessionContainer sessionContainer;
 
         public bool IsActive => transaction?.IsActive ?? false;
 
@@ -18,22 +19,20 @@ namespace ItNews.Nhibernate
 
         public bool IsRolledBack => transaction?.WasRolledBack ?? false;
 
-        public UnitOfWork(SessionManager sessionManager)
+        public UnitOfWork(SessionContainerFactory sessionManager)
         {
             this.sessionManager = sessionManager;
+            sessionContainer = sessionManager.CreateSessionContainer();
         }
 
-        public IUnitOfWork BeginTransaction()
+        public void BeginTransaction()
         {
-            session = sessionManager.GetExistingOrOpenSession();
-            transaction = session.Transaction;
+            transaction = sessionContainer.Session.Transaction;
 
             if (transaction != null && transaction.IsActive)
                 throw new InvalidOperationException("Transaction is already open");
 
-            transaction = session.BeginTransaction();
-
-            return this;
+            transaction = sessionContainer.Session.Transaction;
         }
 
         public void Commit()
@@ -51,7 +50,7 @@ namespace ItNews.Nhibernate
             }
             finally
             {
-                session?.Dispose();
+                sessionContainer?.Dispose();
             }
         }
 
@@ -66,7 +65,7 @@ namespace ItNews.Nhibernate
             }
             finally
             {
-                session?.Dispose();
+                sessionContainer?.Dispose();
             }
         }
 
@@ -76,16 +75,10 @@ namespace ItNews.Nhibernate
             {
                 Rollback();
 
-                //  ???
-                var exception = new InvalidOperationException("Transaction is still active, maybe you forgot to commit it?");
-                if (exception.InnerException == null)
-                    throw exception;
+                throw new InvalidOperationException("Transaction is still active, maybe you forgot to commit it?");
             }
 
-            session?.Dispose();
-
-            transaction = null;
-            sessionManager = null;
+            sessionContainer?.Dispose();
         }
     }
 }

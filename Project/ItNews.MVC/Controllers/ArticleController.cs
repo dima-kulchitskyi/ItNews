@@ -1,6 +1,7 @@
 ﻿using ItNews.Business.Entities;
 using ItNews.Business.Managers;
 using ItNews.Mvc.ViewModels.Article;
+using ItNews.Mvc.ModelBinders;
 using Microsoft.AspNet.Identity;
 using System;
 using System.IO;
@@ -15,10 +16,6 @@ namespace ItNews.Controllers
     {
         private ArticleManager articleManager;
 
-        private readonly int defaultItemsOnPageCount = int.Parse(WebConfigurationManager.AppSettings["NewsListItemsOnPageDefaultCount"]);
-        private readonly int articleTextPreviewLength = int.Parse(WebConfigurationManager.AppSettings["ArticleTextPreviewLength"]);
-        private readonly string articleTextPreviewEnding = WebConfigurationManager.AppSettings["ArticleTextPreviewEnding"];
-        private readonly string ImagesFolderPath = WebConfigurationManager.AppSettings["ImagesFolder"];
 
         public ArticleController(ArticleManager articleManager)
         {
@@ -26,12 +23,17 @@ namespace ItNews.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Index(int page = 1, int itemsCount = 0)
+        public async Task<ActionResult> Index([ModelBinder(typeof(PageNumberModelBinder))]int page, int itemsCount = 0)
         {
-            if (itemsCount <= 0)
-                itemsCount = defaultItemsOnPageCount;
+            var defaultItemsCount = int.Parse(WebConfigurationManager.AppSettings["NewsListItemsOnPageDefaultCount"]);
 
-            var articles = await articleManager.GetPage(itemsCount, page - 1, true);
+            if (itemsCount <= 0)
+                itemsCount = defaultItemsCount;
+
+            var articles = await articleManager.GetPage(itemsCount, page, true);
+
+            var previewLength = int.Parse(WebConfigurationManager.AppSettings["ArticleTextPreviewLength"]);
+            var previewEnding = WebConfigurationManager.AppSettings["ArticleTextPreviewEnding"];
 
             var model = new ArticlesListViewModel
             {
@@ -43,7 +45,7 @@ namespace ItNews.Controllers
                     Author = it.Author.UserName,
                     ImagePath = it.ImagePath,
                     Date = it.Date,
-                    TextPreview = (it.Text.Length > articleTextPreviewLength) ? it.Text.Substring(0, articleTextPreviewLength) + articleTextPreviewEnding : it.Text
+                    TextPreview = (it.Text.Length > previewLength) ? it.Text.Substring(0, previewLength) + previewEnding : it.Text
                 }).ToList(),
                 PageSize = itemsCount,
                 PageNumber = page
@@ -55,7 +57,6 @@ namespace ItNews.Controllers
         [HttpGet]
         public async Task<ActionResult> Details(string id)
         {
-
             if (string.IsNullOrEmpty(id))
                 return HttpNotFound();
 
@@ -77,7 +78,7 @@ namespace ItNews.Controllers
             if (!string.IsNullOrEmpty(article.ImagePath))
             {
                 model.HasImage = true;
-                model.Image = Url.Content(Path.Combine(ImagesFolderPath, article.ImagePath));
+                model.Image = Path.Combine(WebConfigurationManager.AppSettings["ImagesFolder"], article.ImagePath);
             }
 
             return View(model);
@@ -106,7 +107,7 @@ namespace ItNews.Controllers
 
             if (model.Image != null && model.Image.ContentLength > 0)
             {
-                var directory = Server.MapPath(Url.Content(WebConfigurationManager.AppSettings["ImagesFolder"]));
+                var directory = Server.MapPath(WebConfigurationManager.AppSettings["ImagesFolder"]);
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.Image.FileName);
                 model.Image.SaveAs(Path.Combine(directory, fileName));
                 article.ImagePath = fileName;

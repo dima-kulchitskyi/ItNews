@@ -10,36 +10,44 @@ namespace ItNews.Nhibernate.Providers
 {
     public class ArticleProvider : Provider<Article>, IArticleProvider
     {
-        public ArticleProvider(SessionManager sessionManager) : base(sessionManager)
+        public ArticleProvider(SessionContainerFactory sessionFactory) : base(sessionFactory)
         {
+
         }
 
-        public Task<IList<Article>> GetListSegment(int count, DateTime startDate, bool newFirst)
+        public async Task<IList<Article>> GetListSegment(int count, DateTime startDate, bool newFirst)
         {
-            var criteria = sessionManager.GetExistingOrOpenSession().CreateCriteria<Article>();
+            using (var container = sessionFactory.CreateSessionContainer())
+            {
+                var criteria = container.Session.CreateCriteria<Article>();
 
-            if (newFirst)
-                criteria.AddOrder(Order.Desc("Date"))
-                        .Add(Restrictions.Lt("Date", startDate));
-            else
-                criteria.AddOrder(Order.Asc("Date"))
-                        .Add(Restrictions.Gt("Date", startDate));
+                if (newFirst)
+                    criteria.AddOrder(Order.Desc(nameof(Article.Date)))
+                            .Add(Restrictions.Lt(nameof(Article.Date), startDate));
+                else
+                    criteria.AddOrder(Order.Asc(nameof(Article.Date)))
+                            .Add(Restrictions.Gt(nameof(Article.Date), startDate));
 
-            return criteria.SetMaxResults(count).ListAsync<Article>();
+                return await criteria.SetMaxResults(count).ListAsync<Article>();
+            }
         }
 
-        public Task<IList<Article>> GetPage(int count, int pageNumber, bool newFirst)
+        public async Task<IList<Article>> GetPage(int count, int pageNumber, bool newFirst)
         {
-            var criteria = sessionManager.GetExistingOrOpenSession().CreateCriteria<Article>();
+            using (var container = sessionFactory.CreateSessionContainer())
+            {
+                var criteria = container.Session.CreateCriteria<Article>();
 
-            if (newFirst)
-                criteria.AddOrder(Order.Desc("Date"));
-            else
-                criteria.AddOrder(Order.Asc("Date"));
-            criteria.SetFirstResult(count * pageNumber);
-            criteria.SetMaxResults(count * pageNumber);
-            return criteria.SetMaxResults(count).ListAsync<Article>();
+                if (newFirst)
+                    criteria.AddOrder(Order.Desc(nameof(Article.Date)));
+                else
+                    criteria.AddOrder(Order.Asc(nameof(Article.Date)));
 
+                criteria.SetFirstResult(count * pageNumber);
+                criteria.SetMaxResults(count);
+
+                return await criteria.ListAsync<Article>();
+            }
         }
     }
 }

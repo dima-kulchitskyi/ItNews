@@ -19,7 +19,7 @@ namespace ItNews.Web.DependencyInjection
             Nhibernate.Configuration.RegisterDependencies(container);
 
             container
-            .RegisterTypeInRequestScope<Nhibernate.SessionManager, Nhibernate.SessionManager>()
+            .RegisterTypeInRequestScope<Nhibernate.SessionContainerFactory, Nhibernate.SessionContainerFactory>()
 
             .RegisterType<IUnitOfWorkFactory, Nhibernate.UnitOfWorkFactory>()
             .RegisterType<IUnitOfWork, Nhibernate.UnitOfWork>()

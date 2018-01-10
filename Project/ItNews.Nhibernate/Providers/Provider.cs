@@ -13,14 +13,14 @@ namespace ItNews.Nhibernate.Providers
     public class Provider<T> : IProvider<T>
         where T : class, IEntity
     {
-        protected SessionManager sessionManager;
+        protected SessionContainerFactory sessionFactory;
 
-        public Provider(SessionManager sessionManager)
+        public Provider(SessionContainerFactory sessionFactory)
         {
-            this.sessionManager = sessionManager;
+            this.sessionFactory = sessionFactory;
         }
 
-        public Task Delete(T instance)
+        public async Task Delete(T instance)
         {
             if (instance == null)
                 throw new ArgumentNullException(nameof(instance));
@@ -28,26 +28,26 @@ namespace ItNews.Nhibernate.Providers
             if (string.IsNullOrEmpty(instance?.Id))
                 throw new ArgumentNullException("Id");
 
-            if (sessionManager.GetExistingOrOpenSession().Transaction?.IsActive != true)
-                throw new InvalidOperationException("Transaction required");
-
-            return sessionManager.GetExistingOrOpenSession().DeleteAsync(instance);
+            using (var sessionContainer = sessionFactory.CreateSessionContainer())
+                await sessionContainer.Session.DeleteAsync(instance);
         }
 
-        public Task<T> Get(string id)
+        public async Task<T> Get(string id)
         {
-            return sessionManager.GetExistingOrOpenSession().GetAsync<T>(id);
+            using (var sessionContainer = sessionFactory.CreateSessionContainer())
+                return await sessionContainer.Session.GetAsync<T>(id);
         }
 
-        public Task<int> GetCount()
+        public async Task<int> GetCount()
         {
-            return sessionManager.GetExistingOrOpenSession().QueryOver<T>().RowCountAsync();
+            using (var sessionContainer = sessionFactory.CreateSessionContainer())
+                return await sessionContainer.Session.QueryOver<T>().RowCountAsync();
         }
 
-
-        public Task<IList<T>> GetList()
+        public async Task<IList<T>> GetList()
         {
-            return sessionManager.GetExistingOrOpenSession().QueryOver<T>().ListAsync();
+            using (var sessionContainer = sessionFactory.CreateSessionContainer())
+                return await sessionContainer.Session.QueryOver<T>().ListAsync();
         }
 
         public async Task<T> SaveOrUpdate(T instance)
@@ -55,13 +55,12 @@ namespace ItNews.Nhibernate.Providers
             if (instance == null)
                 throw new ArgumentNullException(nameof(instance));
 
-            if (sessionManager.GetExistingOrOpenSession().Transaction?.IsActive != true)
-                throw new InvalidOperationException("Transaction required");
-
             if (string.IsNullOrEmpty(instance.Id))
                 instance.Id = Guid.NewGuid().ToString();
-            
-            await sessionManager.GetExistingOrOpenSession().SaveOrUpdateAsync(instance);
+
+            using (var sessionContainer = sessionFactory.CreateSessionContainer())
+                await sessionContainer.Session.SaveOrUpdateAsync(instance);
+
             return instance;
         }
     }

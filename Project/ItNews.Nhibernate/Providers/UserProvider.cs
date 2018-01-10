@@ -12,14 +12,15 @@ namespace ItNews.Nhibernate.Providers
 {
     public class UserProvider : Provider<AppUser>, IUserProvider
     {
-        public UserProvider(SessionManager sessionManager) : base(sessionManager)
+        public UserProvider(SessionContainerFactory sessionFactory) : base(sessionFactory)
         {
 
         }
 
-        public Task<AppUser> GetByUserName(string userName)
+        public async Task<AppUser> GetByUserName(string userName)
         {
-            return sessionManager.GetExistingOrOpenSession().QueryOver<AppUser>().Where(it => it.UserName == userName).SingleOrDefaultAsync();
+            using (var sessionContainer = sessionFactory.CreateSessionContainer())
+                return await sessionContainer.Session.QueryOver<AppUser>().Where(it => it.UserName == userName).SingleOrDefaultAsync();
         }
     }
 }
