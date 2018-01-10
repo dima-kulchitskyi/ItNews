@@ -1,7 +1,6 @@
 ﻿using ItNews.Business.Entities;
 using ItNews.Business.Managers;
 using ItNews.Mvc.ViewModels.Article;
-using ItNews.Mvc.ModelBinders;
 using Microsoft.AspNet.Identity;
 using System;
 using System.IO;
@@ -9,6 +8,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Configuration;
 using System.Web.Mvc;
+using ItNews.Mvc.ModelBinders.Article;
+using ItNews.Mvc.ModelBinders.Article;
 
 namespace ItNews.Controllers
 {
@@ -23,13 +24,10 @@ namespace ItNews.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Index([ModelBinder(typeof(PageNumberModelBinder))]int page, int itemsCount = 0)
+        public async Task<ActionResult> Index(
+            [ModelBinder(typeof(PageNumberModelBinder))]int page, 
+            [ModelBinder(typeof(ItemsOnPageCountModelBinder))]int itemsCount)
         {
-            var defaultItemsCount = int.Parse(WebConfigurationManager.AppSettings["NewsListItemsOnPageDefaultCount"]);
-
-            if (itemsCount <= 0)
-                itemsCount = defaultItemsCount;
-
             var articles = await articleManager.GetPage(itemsCount, page, true);
 
             var previewLength = int.Parse(WebConfigurationManager.AppSettings["ArticleTextPreviewLength"]);

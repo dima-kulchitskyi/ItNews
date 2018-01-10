@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
-namespace ItNews.Mvc.ModelBinders
+namespace ItNews.Mvc.ModelBinders.Article
 {
     public class PageNumberModelBinder : IModelBinder
     {
@@ -17,8 +17,7 @@ namespace ItNews.Mvc.ModelBinders
             if (pageNumberField == null)
                 return 0;
 
-            var value = (int)pageNumberField?.ConvertTo(typeof(int)) - 1;
-
+            var value = (int)pageNumberField.ConvertTo(typeof(int)) - 1;
             return value > 0 ? value : 0;
         }
     }

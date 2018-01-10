@@ -32,7 +32,7 @@ namespace ItNews.Nhibernate
             if (transaction != null && transaction.IsActive)
                 throw new InvalidOperationException("Transaction is already open");
 
-            transaction = sessionContainer.Session.Transaction;
+            transaction = sessionContainer.Session.BeginTransaction();
         }
 
         public void Commit()
