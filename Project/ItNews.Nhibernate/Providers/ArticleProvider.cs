@@ -28,7 +28,9 @@ namespace ItNews.Nhibernate.Providers
                     criteria.AddOrder(Order.Asc(nameof(Article.Date)))
                             .Add(Restrictions.Gt(nameof(Article.Date), startDate));
 
-                return await criteria.SetMaxResults(count).ListAsync<Article>();
+                criteria.SetMaxResults(count);
+
+                return await criteria.ListAsync<Article>();
             }
         }
 

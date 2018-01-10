@@ -136,7 +136,7 @@ namespace ItNews.Controllers
             };
 
             if (article.ImagePath != null)
-                model.OldImagePath = Url.Content(Path.Combine(ImagesFolderPath, article.ImagePath));
+                model.OldImagePath = Path.Combine(WebConfigurationManager.AppSettings["ImagesFolder"], article.ImagePath);
 
             return View(model);
         }
@@ -164,7 +164,7 @@ namespace ItNews.Controllers
             if (model.UploadedImage != null)
             {
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.UploadedImage.FileName);
-                model.UploadedImage.SaveAs(Path.Combine(Server.MapPath(Url.Content(ImagesFolderPath)), fileName));
+                model.UploadedImage.SaveAs(Path.Combine(Server.MapPath(WebConfigurationManager.AppSettings["ImagesFolder"]), fileName));
 
                 updatedArticle.ImagePath = fileName;
             }
