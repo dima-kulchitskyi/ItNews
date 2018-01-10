@@ -115,6 +115,7 @@
     <Compile Include="ViewModels\Article\ArticlesListPageItem.cs" />
     <Compile Include="ViewModels\Article\ArticleDetailsViewModel.cs" />
     <Compile Include="ViewModels\Article\CreateViewModel.cs" />
+    <Compile Include="ViewModels\Article\EditViewModel.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
