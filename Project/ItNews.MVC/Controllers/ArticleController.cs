@@ -1,6 +1,7 @@
 ﻿using ItNews.Business.Entities;
 using ItNews.Business.Managers;
 using ItNews.Mvc.ViewModels.Article;
+using ItNews.MVC.ViewModels.Article;
 using Microsoft.AspNet.Identity;
 using System;
 using System.IO;
@@ -83,6 +84,7 @@ namespace ItNews.Controllers
 
             return View(model);
         }
+
 
         [Authorize]
         [HttpGet]
@@ -170,10 +172,56 @@ namespace ItNews.Controllers
 
                 updatedArticle.ImagePath = fileName;
             }
-            
+
             await articleManager.UpdateArticle(updatedArticle, User.Identity.GetUserId());
-           
+
             return RedirectToAction("Index");
         }
+
+        [Authorize]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> DeleteConfirmartion(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return HttpNotFound();
+
+            var article = await articleManager.GetArticle(id);
+
+            if (article.Author.Id != User.Identity.GetUserId())
+                return HttpNotFound();
+
+            await articleManager.DeleteArticle(article, article.Id);
+
+            return RedirectToAction("Index");
+        }
+
+        [Authorize]
+        [HttpGet]
+        public async Task<ActionResult> Delete(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+                return HttpNotFound();
+
+            var article = await articleManager.GetArticle(id);
+
+            if (article == null)
+                return HttpNotFound();
+
+            var model = new DeleteViewModel
+            {
+                ImagePath = article.ImagePath,
+                Title = article.Title,
+                Text = article.Text,
+                Date = article.Date.ToString("f")
+            };
+
+            if (!string.IsNullOrEmpty(article.ImagePath))
+            {
+                model.ImagePath = Url.Content(Path.Combine(ImagesFolderPath, article.ImagePath)); 
+            }
+            return View(model);
+        }
+
     }
 }

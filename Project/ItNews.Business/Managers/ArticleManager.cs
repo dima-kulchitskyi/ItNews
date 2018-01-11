@@ -82,7 +82,7 @@ namespace ItNews.Business.Managers
                 throw new ArgumentException("Article does not exists");
 
             var author = await userProvider.Get(authorId);
-            if (author == null)
+            if (author == null) 
                 throw new ArgumentException($"User with {nameof(authorId)} does not exists");
 
             if (oldArticle.Author.Id != authorId)
@@ -94,6 +94,18 @@ namespace ItNews.Business.Managers
             using (var uow = unitOfWorkFactory.GetUnitOfWork().BeginTransaction())
             {
                 await articleProvider.SaveOrUpdate(article);
+                uow.Commit();
+            }
+        }
+
+        public async Task DeleteArticle(Article article, string authorId)
+        {
+            if (string.IsNullOrEmpty(authorId))
+                throw new ArgumentNullException(nameof(authorId));
+
+            using (var uow = unitOfWorkFactory.GetUnitOfWork().BeginTransaction())
+            {
+                await articleProvider.Delete(article);
                 uow.Commit();
             }
         }

@@ -20,7 +20,7 @@
             </dt>
 
             <dd>
-                <img src="@Model.Image" alt="Image" style="width:600px; height: auto;"/>
+                <img src="@Model.Image" alt="Image" style="width:350px; height: auto;"/>
             </dd>
         }
         <dt>
@@ -45,5 +45,8 @@
 </div>
 <p>
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
+
+    @Html.ActionLink("Delete", "Delete", new { id = Model.Id }) |
+
     @Html.ActionLink("Back to List", "Index")
 </p>

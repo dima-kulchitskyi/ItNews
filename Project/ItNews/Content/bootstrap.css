@@ -4230,6 +4230,7 @@ textarea.input-group-sm > .input-group-btn > .btn {
 
 .navbar-toggle .icon-bar + .icon-bar {
   margin-top: 4px;
+  margin-left: 4px;
 }
 
 @media (min-width: 768px) {

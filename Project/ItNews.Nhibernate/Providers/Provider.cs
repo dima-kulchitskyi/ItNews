@@ -44,7 +44,6 @@ namespace ItNews.Nhibernate.Providers
             return sessionManager.GetExistingOrOpenSession().QueryOver<T>().RowCountAsync();
         }
 
-
         public Task<IList<T>> GetList()
         {
             return sessionManager.GetExistingOrOpenSession().QueryOver<T>().ListAsync();
