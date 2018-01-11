@@ -34,7 +34,7 @@ namespace ItNews.Mvc.ViewModels.Article
         [ScaffoldColumn(false)]
         public bool ControlsAvailable { get; set; }
 
-        [ScafoldColumn(false)]
+        [ScaffoldColumn(false)]
         public IList<CommentViewModel> Comments { set; get; }
  
     }
