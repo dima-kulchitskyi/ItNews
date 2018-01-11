@@ -18,9 +18,8 @@
             <dt>
                 @Html.DisplayNameFor(model => model.Image)
             </dt>
-
             <dd>
-                <img src="@Url.Content(Model.Image)" alt="Image" style="width:600px; height: auto;" />
+                @Html.DisplayFor(model => model.Image,  new { htmlAttributes = new { style = "width:600px; height: auto;" } })
             </dd>
         }
         <dt>
@@ -44,7 +43,7 @@
     </dl>
 </div>
 <p>
-    @if (Model.CanEdit)
+    @if (Model.ControlsAvailable)
     {
         @Html.ActionLink("Edit", "Edit", new { id = Model.Id })
     }

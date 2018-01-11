@@ -12,13 +12,13 @@ namespace ItNews.Mvc.CustomValidationAttributes
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public class FileTypeAttribute : ValidationAttribute, IClientValidatable
     {
-        private const string DefaultErrorMessage = "Only the following file types are allowed: {0}";
+        private readonly string defaultErrorMessage = "Only the following file types are allowed: {0}";
         private IEnumerable<string> validExtensions;
 
         public FileTypeAttribute(string validTypes)
         {
             validExtensions = validTypes.Split(',', ';', '|').Select(s => s.Trim().ToLower());
-            ErrorMessage = string.Format(DefaultErrorMessage, string.Join(", ", validExtensions));
+            ErrorMessage = ErrorMessage ?? string.Format(defaultErrorMessage, string.Join(", ", validExtensions));
         }
 
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)

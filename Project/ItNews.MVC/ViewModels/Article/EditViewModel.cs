@@ -21,7 +21,8 @@ namespace ItNews.Mvc.ViewModels.Article
         public string Title { get; set; }
 
         [Display(Name = "Old Image")]
-        public string OldImagePath { get; set; }
+        [UIHint("Image")]
+        public string OldImageName { get; set; }
 
         [DataType(DataType.Upload)]
         [FileType("JPG,PNG")]

@@ -70,7 +70,7 @@ namespace ItNews.Controllers
                 AuthorName = article.Author.UserName,
                 Date = article.Date.ToString("f"),
                 Content = article.Text,
-                CanEdit = (User.Identity.IsAuthenticated && article.Author.Id == User.Identity.GetUserId())
+                ControlsAvailable = (User.Identity.IsAuthenticated && article.Author.Id == User.Identity.GetUserId())
             };
 
             if (!string.IsNullOrEmpty(article.ImagePath))
@@ -136,7 +136,7 @@ namespace ItNews.Controllers
             };
 
             if (article.ImagePath != null)
-                model.OldImagePath = Path.Combine(WebConfigurationManager.AppSettings["ImagesFolder"], article.ImagePath);
+                model.OldImageName = Path.Combine(WebConfigurationManager.AppSettings["ImagesFolder"], article.ImagePath);
 
             return View(model);
         }
