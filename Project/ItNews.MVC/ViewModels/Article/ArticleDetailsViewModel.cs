@@ -25,11 +25,11 @@ namespace ItNews.Mvc.ViewModels.Article
         [Display(Name = "Created")]
         public string Date { get; set; }
 
-        [ScaffoldColumn(false)]
-        public bool HasImage { get; set; }
-
         [Display(Name = "Content")]
         public string Content { get; set; }
+
+        [ScaffoldColumn(false)]
+        public bool HasImage { get; set; }
 
         [ScaffoldColumn(false)]
         public bool ControlsAvailable { get; set; }

@@ -12,7 +12,7 @@ namespace ItNews.Nhibernate.Mappings
             References(x => x.Author).Column("AuthorId").Cascade.None().Not.Nullable().Not.LazyLoad();
             Map(x => x.Title).Not.Nullable();
             Map(x => x.Text).CustomSqlType("ntext").Not.Nullable();
-            Map(x => x.ImagePath);
+            Map(x => x.ImageName);
             Map(x => x.Date).Not.Nullable();
         }
     }

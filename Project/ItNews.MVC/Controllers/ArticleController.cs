@@ -41,7 +41,7 @@ namespace ItNews.Controllers
                     Title = it.Title,
                     Id = it.Id,
                     Author = it.Author.UserName,
-                    ImagePath = it.ImagePath,
+                    ImageName = it.ImageName,
                     Date = it.Date,
                     TextPreview = (it.Text.Length > previewLength) ? it.Text.Substring(0, previewLength) + previewEnding : it.Text
                 }).ToList(),
@@ -73,10 +73,10 @@ namespace ItNews.Controllers
                 ControlsAvailable = (User.Identity.IsAuthenticated && article.Author.Id == User.Identity.GetUserId())
             };
 
-            if (!string.IsNullOrEmpty(article.ImagePath))
+            if (!string.IsNullOrEmpty(article.ImageName))
             {
                 model.HasImage = true;
-                model.Image = Path.Combine(WebConfigurationManager.AppSettings["ImagesFolder"], article.ImagePath);
+                model.Image = Path.Combine(WebConfigurationManager.AppSettings["ImagesFolder"], article.ImageName);
             }
 
             return View(model);
@@ -108,7 +108,7 @@ namespace ItNews.Controllers
                 var directory = Server.MapPath(WebConfigurationManager.AppSettings["ImagesFolder"]);
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.Image.FileName);
                 model.Image.SaveAs(Path.Combine(directory, fileName));
-                article.ImagePath = fileName;
+                article.ImageName = fileName;
             }
 
             await articleManager.CreateArticle(article, User.Identity.GetUserId());
@@ -135,8 +135,8 @@ namespace ItNews.Controllers
                 Title = article.Title,
             };
 
-            if (article.ImagePath != null)
-                model.OldImageName = Path.Combine(WebConfigurationManager.AppSettings["ImagesFolder"], article.ImagePath);
+            if (article.ImageName != null)
+                model.OldImageName = Path.Combine(WebConfigurationManager.AppSettings["ImagesFolder"], article.ImageName);
 
             return View(model);
         }
@@ -158,7 +158,8 @@ namespace ItNews.Controllers
             {
                 Id = model.Id,
                 Title = model.Title,
-                Text = model.Text
+                Text = model.Text,
+                ImageName = article.ImageName          
             };
 
             if (model.UploadedImage != null)
@@ -166,12 +167,12 @@ namespace ItNews.Controllers
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.UploadedImage.FileName);
                 model.UploadedImage.SaveAs(Path.Combine(Server.MapPath(WebConfigurationManager.AppSettings["ImagesFolder"]), fileName));
 
-                updatedArticle.ImagePath = fileName;
+                updatedArticle.ImageName = fileName;
             }
             
             await articleManager.UpdateArticle(updatedArticle, User.Identity.GetUserId());
-           
-            return RedirectToAction("Index");
+
+            return RedirectToAction("Details", new { id = article.Id });
         }
     }
 }

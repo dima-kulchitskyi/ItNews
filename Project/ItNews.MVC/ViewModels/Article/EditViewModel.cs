@@ -17,6 +17,7 @@ namespace ItNews.Mvc.ViewModels.Article
         public string Id { get; set; }
 
         [Required]
+        [Display(Name = "Title")]
         [MaxLength(255, ErrorMessage = "Ostanovites`")]
         public string Title { get; set; }
 
@@ -24,11 +25,13 @@ namespace ItNews.Mvc.ViewModels.Article
         [UIHint("Image")]
         public string OldImageName { get; set; }
 
+        [Display(Name = "New Image")]
         [DataType(DataType.Upload)]
         [FileType("JPG,PNG")]
         public HttpPostedFileBase UploadedImage { get; set; }
 
         [Required]
+        [Display(Name = "Content")]
         [DataType(DataType.MultilineText)]
         public string Text { get; set; }
     }
