@@ -28,7 +28,7 @@ namespace ItNews.Controllers
 
         [HttpGet]
         public async Task<ActionResult> Index(
-            [ModelBinder(typeof(PageNumberModelBinder))]int page, 
+            [ModelBinder(typeof(PageNumberModelBinder))]int page,
             [ModelBinder(typeof(ItemsOnPageCountModelBinder))]int itemsCount)
         {
             var articles = await articleManager.GetPage(itemsCount, page, true);
@@ -66,7 +66,14 @@ namespace ItNews.Controllers
             if (article == null)
                 return HttpNotFound();
 
-            var comment = await commentManager.GetArticleComments(id);
+            var comments = (await commentManager.GetArticleComments(id))
+               .Select(comment => new CommentViewModel
+               {
+                   Author = comment.Author.UserName,
+                   Id = comment.Id,
+                   Date = comment.Date,
+                   Text = comment.Text
+               }).ToList();
 
             var model = new ArticleDetailsViewModel
             {
@@ -75,7 +82,8 @@ namespace ItNews.Controllers
                 AuthorName = article.Author.UserName,
                 Date = article.Date.ToString("f"),
                 Content = article.Text,
-                ControlsAvailable = (User.Identity.IsAuthenticated && article.Author.Id == User.Identity.GetUserId())
+                ControlsAvailable = (User.Identity.IsAuthenticated && article.Author.Id == User.Identity.GetUserId()),
+                Comments = comments
             };
 
             if (!string.IsNullOrEmpty(article.ImageName))
@@ -165,7 +173,7 @@ namespace ItNews.Controllers
                 Id = model.Id,
                 Title = model.Title,
                 Text = model.Text,
-                ImageName = article.ImageName          
+                ImageName = article.ImageName
             };
 
             if (model.UploadedImage != null)
@@ -184,7 +192,7 @@ namespace ItNews.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmartion(string id)
+        public async Task<ActionResult> DeleteConfirmation(string id)
         {
             if (string.IsNullOrEmpty(id))
                 return HttpNotFound();
@@ -213,18 +221,37 @@ namespace ItNews.Controllers
 
             var model = new DeleteViewModel
             {
-                ImagePath = article.ImagePath,
+                ImagePath = article.ImageName,
                 Title = article.Title,
                 Text = article.Text,
                 Date = article.Date.ToString("f")
             };
 
-            if (!string.IsNullOrEmpty(article.ImagePath))
+            if (!string.IsNullOrEmpty(article.ImageName))
             {
-                model.ImagePath = Url.Content(Path.Combine(ImagesFolderPath, article.ImagePath)); 
+                model.ImagePath = Url.Content(Path.Combine(WebConfigurationManager.AppSettings["ImagesFolder"], article.ImageName));
             }
             return View(model);
         }
 
+        [HttpPost]
+        [Authorize]
+        public async Task<ActionResult> CreateComment(CreateCommentViewModel model)
+        {
+            if (string.IsNullOrEmpty(model.ArticleId))
+                return HttpNotFound();
+
+            var article = await articleManager.GetArticle(model.ArticleId);
+            if (article == null)
+                return HttpNotFound();
+            var comment = new Comment
+            {
+                Text = model.Text
+            };
+
+            await commentManager.CreateComment(comment, User.Identity.GetUserId(), model.ArticleId);
+
+            return RedirectToAction("Details", new { id = model.ArticleId });
+        }
     }
 }

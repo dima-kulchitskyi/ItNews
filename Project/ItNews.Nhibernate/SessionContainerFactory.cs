@@ -5,11 +5,6 @@ namespace ItNews.Nhibernate
 {
     public class SessionContainerFactory
     {
-        public SessionContainerFactory()
-        {
-
-        }
-
         private SessionContainer currentContainer;
 
         public SessionContainer Current
@@ -34,6 +29,5 @@ namespace ItNews.Nhibernate
         {
             return Current = new SessionContainer(Current);
         }
-
     }
 }

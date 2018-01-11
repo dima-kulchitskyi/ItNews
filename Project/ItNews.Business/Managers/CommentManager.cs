@@ -20,12 +20,13 @@ namespace ItNews.Business.Managers
             this.userProvider = userProvider;
             this.articleProvider = articleProvider;
         }
+
         public async Task CreateComment(Comment comment, string authorId, string articleId)
         {
             using (var uow = unitOfWorkFactory.GetUnitOfWork())
             {
                 var user = await userProvider.Get(authorId);
-                Article article = await articleProvider.Get(articleId);
+                var article = await articleProvider.Get(articleId);
                 comment.Author = user ?? throw new InvalidOperationException("No user with given id");
                 comment.Article = article ?? throw new InvalidOperationException("No exist article with this ID");
                 comment.Date = DateTime.Now;
@@ -34,9 +35,10 @@ namespace ItNews.Business.Managers
                 uow.Commit();
             }
         }
-        public Task<Comment> GetArticleComments(string id)
+
+        public Task<IList<Comment>> GetArticleComments(string id)
         {
-            return commentProvider.Get(id);
+            return commentProvider.GetArticleComments(id);
         }
     }
 }

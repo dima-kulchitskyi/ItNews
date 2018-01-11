@@ -10,15 +10,16 @@ namespace ItNews.Nhibernate.Providers
 {
     public class CommentProvider : Provider<Comment>, ICommentProvider
     {
-        public CommentProvider(SessionManager sessionManager) : base(sessionManager)
+        public CommentProvider(SessionContainerFactory sessionFactory) : base(sessionFactory)
         {
         }
 
-        public Task<IList<Comment>> GetArticleComments(string articleId)
+        public async Task<IList<Comment>> GetArticleComments(string articleId)
         {
-            var criteria = sessionManager.GetExistingOrOpenSession().CreateCriteria<Comment>();
-            criteria.Add(Restrictions.Eq("Article", articleId));
-            return criteria.ListAsync<Comment>();
+            using (var container = sessionFactory.CreateSessionContainer())
+            {
+                return await container.Session.QueryOver<Comment>().Where(comment => comment.Article.Id == articleId).ListAsync();
+            }
         }
     }
 }

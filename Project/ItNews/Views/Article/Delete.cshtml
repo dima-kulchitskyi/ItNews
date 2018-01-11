@@ -16,7 +16,7 @@
             @Html.DisplayFor(model => model.Title)
         </dd>
 
-       
+
         @if (!string.IsNullOrEmpty(Model.ImagePath))
         {
             <dt>
@@ -50,7 +50,10 @@
         @Html.AntiForgeryToken()
         @Html.HiddenFor(model => model.Id)
         <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
+            <input type="submit" value="Delete" class="btn btn-default" />
+
+        </div>
+        <div class="form-actions no-color">
             @Html.ActionLink("Back to List", "Index")
         </div>
     }

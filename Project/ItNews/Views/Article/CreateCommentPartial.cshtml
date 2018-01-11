@@ -2,6 +2,16 @@
 
 @using (Html.BeginForm("CreateComment", "Article"))
 {
+    <hr />
+    <h3>Comments</h3>
     @Html.HiddenFor(model => model.ArticleId)
-    @Html.EditorFor(model => model.Text)
+    <div class="form-group">
+        @Html.LabelFor(model => model.Text, htmlAttributes: new { @class = "control-label col-md-2" })
+        <div class="col-md-10">
+            @Html.TextBoxFor(model => model.Text, new { @class = "form-control" })
+            @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })
+        </div>
+        <input type="submit" value="Submit" class="btn btn-default">
+    </div>
+    
 }
