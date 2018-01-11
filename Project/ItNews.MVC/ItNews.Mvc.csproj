@@ -103,6 +103,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\ArticleController.cs" />
     <Compile Include="CustomValidationAttributes\FileTypeAttribute.cs" />
+    <Compile Include="HtmlHelpers\HtmlAttributesExtensions.cs" />
     <Compile Include="Identity\IdentityUser.cs" />
     <Compile Include="Identity\Mangers\IdentitySignInManager.cs" />
     <Compile Include="Identity\Mangers\IdentityUserManager.cs" />

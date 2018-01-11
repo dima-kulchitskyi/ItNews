@@ -1,10 +1,10 @@
 ﻿@model string
 @{
-    var htmlAttributes= "";
+    object htmlAttributes = null;
     var name = ViewData.ModelMetadata.DisplayName ?? ViewData.ModelMetadata.PropertyName;
     if (ViewData.ContainsKey("htmlAttributes"))
     {
-        htmlAttributes = string.Join(" ", HtmlHelper.AnonymousObjectToHtmlAttributes(ViewData["htmlAttributes"]).Select(pair => $"{pair.Key}=\"{pair.Value}\""));
+        htmlAttributes = ViewData["htmlAttributes"];
     }
 }
-<img src="@Url.Content(Model)" alt="@name" @Html.Raw(htmlAttributes) /> 
+<img src="@Url.Content(Model)" alt="@name" @Html.HtmlAttributes(htmlAttributes) /> 
