@@ -19,7 +19,9 @@ namespace ItNews.Mvc.Identity.Mangers
         }
         public async override Task<IdentityResult> CreateAsync(IdentityUser user, string password)
         {
-            using (var uow = unitOfWorkFactory.GetUnitOfWork().BeginTransaction()) {
+            using (var uow = unitOfWorkFactory.GetUnitOfWork())
+            {
+                uow.BeginTransaction();
                 var result = await base.CreateAsync(user, password);
                 uow.Commit();
                 return result;

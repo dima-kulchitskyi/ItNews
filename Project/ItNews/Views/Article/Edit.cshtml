@@ -7,7 +7,7 @@
 <h2>View</h2>
 
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("Edit", "Article", FormMethod.Post, new { enctype = "multipart/form-data" }))
 {
     @Html.AntiForgeryToken()
     
@@ -25,12 +25,12 @@
         </div>
     </div>
 
-    @if (Model.OldImagePath != null)
+    @if (Model.OldImageName != null)
     {
         <div class="form-group">
-            @Html.LabelFor(model => model.OldImagePath, htmlAttributes: new { @class = "control-label col-md-2" })
+            @Html.LabelFor(model => model.OldImageName, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                <img src="@Model.OldImagePath" alt="Image" style="width: 350px; height: auto;">
+                @Html.DisplayFor(model => model.OldImageName, new { htmlAttributes = new { style = "width: 300px; height: auto;" } })
             </div>
         </div>     
     }

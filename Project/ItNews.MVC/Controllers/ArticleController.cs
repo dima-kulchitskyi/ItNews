@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Configuration;
 using System.Web.Mvc;
+using ItNews.Mvc.ModelBinders.Article;
 
 namespace ItNews.Controllers
 {
@@ -16,37 +17,36 @@ namespace ItNews.Controllers
     {
         private ArticleManager articleManager;
 
-        private readonly int defaultItemsOnPageCount = int.Parse(WebConfigurationManager.AppSettings["NewsListItemsOnPageDefaultCount"]);
+        private CommentManager commentManager;
 
-        private readonly int articleTextPreviewLength = int.Parse(WebConfigurationManager.AppSettings["ArticleTextPreviewLength"]);
 
-        private readonly string ImagesFolderPath = WebConfigurationManager.AppSettings["ImagesFolder"];
-
-        public ArticleController(ArticleManager articleManager)
+        public ArticleController(ArticleManager articleManager, CommentManager commentManager)
         {
             this.articleManager = articleManager;
+            this.commentManager = commentManager;
         }
 
         [HttpGet]
-        public async Task<ActionResult> Index(int page = 1, int itemsCount = 0)
+        public async Task<ActionResult> Index(
+            [ModelBinder(typeof(PageNumberModelBinder))]int page, 
+            [ModelBinder(typeof(ItemsOnPageCountModelBinder))]int itemsCount)
         {
-            if (itemsCount <= 0)
-                itemsCount = defaultItemsOnPageCount;
+            var articles = await articleManager.GetPage(itemsCount, page, true);
 
-            var articles = await articleManager.GetPage(itemsCount, page - 1, true);
+            var previewLength = int.Parse(WebConfigurationManager.AppSettings["ArticleTextPreviewLength"]);
+            var previewEnding = WebConfigurationManager.AppSettings["ArticleTextPreviewEnding"];
 
             var model = new ArticlesListViewModel
             {
                 PageCount = Convert.ToInt32(Math.Ceiling(await articleManager.GetCount() / (double)itemsCount)),
-                Articles = articles.Select(it =>
-                new ArticlesListPageItem
+                Articles = articles.Select(it => new ArticlesListPageItem
                 {
                     Title = it.Title,
                     Id = it.Id,
                     Author = it.Author.UserName,
-                    ImagePath = it.ImagePath,
+                    ImageName = it.ImageName,
                     Date = it.Date,
-                    TextPreview = it.Text.Substring(0, articleTextPreviewLength > it.Text.Length ? it.Text.Length : articleTextPreviewLength)
+                    TextPreview = (it.Text.Length > previewLength) ? it.Text.Substring(0, previewLength) + previewEnding : it.Text
                 }).ToList(),
                 PageSize = itemsCount,
                 PageNumber = page
@@ -58,7 +58,6 @@ namespace ItNews.Controllers
         [HttpGet]
         public async Task<ActionResult> Details(string id)
         {
-
             if (string.IsNullOrEmpty(id))
                 return HttpNotFound();
 
@@ -67,19 +66,22 @@ namespace ItNews.Controllers
             if (article == null)
                 return HttpNotFound();
 
+            var comment = await commentManager.GetArticleComments(id);
+
             var model = new ArticleDetailsViewModel
             {
                 Id = article.Id,
                 Title = article.Title,
                 AuthorName = article.Author.UserName,
                 Date = article.Date.ToString("f"),
-                Content = article.Text
+                Content = article.Text,
+                ControlsAvailable = (User.Identity.IsAuthenticated && article.Author.Id == User.Identity.GetUserId())
             };
 
-            if (!string.IsNullOrEmpty(article.ImagePath))
+            if (!string.IsNullOrEmpty(article.ImageName))
             {
                 model.HasImage = true;
-                model.Image = Url.Content(Path.Combine(ImagesFolderPath, article.ImagePath));
+                model.Image = Path.Combine(WebConfigurationManager.AppSettings["ImagesFolder"], article.ImageName);
             }
 
             return View(model);
@@ -98,11 +100,10 @@ namespace ItNews.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(CreateViewModel model)
         {
-
             if (!ModelState.IsValid)
                 return View(model);
 
-            var item = new Article
+            var article = new Article
             {
                 Text = model.Text,
                 Title = model.Title
@@ -110,14 +111,15 @@ namespace ItNews.Controllers
 
             if (model.Image != null && model.Image.ContentLength > 0)
             {
+                var directory = Server.MapPath(WebConfigurationManager.AppSettings["ImagesFolder"]);
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.Image.FileName);
-                model.Image.SaveAs(Path.Combine(Server.MapPath(Url.Content(ImagesFolderPath)), fileName));
-                item.ImagePath = fileName;
+                model.Image.SaveAs(Path.Combine(directory, fileName));
+                article.ImageName = fileName;
             }
 
-            await articleManager.CreateArticle(item, User.Identity.GetUserId());
+            await articleManager.CreateArticle(article, User.Identity.GetUserId());
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Details", new { id = article.Id });
         }
 
         [Authorize]
@@ -139,8 +141,8 @@ namespace ItNews.Controllers
                 Title = article.Title,
             };
 
-            if (article.ImagePath != null)
-                model.OldImagePath = Url.Content(Path.Combine(ImagesFolderPath, article.ImagePath));
+            if (article.ImageName != null)
+                model.OldImageName = Path.Combine(WebConfigurationManager.AppSettings["ImagesFolder"], article.ImageName);
 
             return View(model);
         }
@@ -162,20 +164,21 @@ namespace ItNews.Controllers
             {
                 Id = model.Id,
                 Title = model.Title,
-                Text = model.Text
+                Text = model.Text,
+                ImageName = article.ImageName          
             };
 
             if (model.UploadedImage != null)
             {
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(model.UploadedImage.FileName);
-                model.UploadedImage.SaveAs(Path.Combine(Server.MapPath(Url.Content(ImagesFolderPath)), fileName));
+                model.UploadedImage.SaveAs(Path.Combine(Server.MapPath(WebConfigurationManager.AppSettings["ImagesFolder"]), fileName));
 
-                updatedArticle.ImagePath = fileName;
+                updatedArticle.ImageName = fileName;
             }
 
             await articleManager.UpdateArticle(updatedArticle, User.Identity.GetUserId());
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Details", new { id = article.Id });
         }
 
         [Authorize]

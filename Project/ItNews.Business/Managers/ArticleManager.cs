@@ -76,14 +76,9 @@ namespace ItNews.Business.Managers
             if (string.IsNullOrEmpty(authorId))
                 throw new ArgumentNullException(nameof(authorId));
 
+            var oldArticle = await articleProvider.Get(article.Id) ?? throw new ArgumentException("Article does not exists"); ;
 
-            var oldArticle = await articleProvider.Get(article.Id);
-            if (oldArticle == null)
-                throw new ArgumentException("Article does not exists");
-
-            var author = await userProvider.Get(authorId);
-            if (author == null) 
-                throw new ArgumentException($"User with {nameof(authorId)} does not exists");
+            var author = await userProvider.Get(authorId) ?? throw new ArgumentException($"User with {nameof(authorId)} does not exists");
 
             if (oldArticle.Author.Id != authorId)
                 throw new InvalidOperationException($"Article is not owned by user with {nameof(authorId)}");
@@ -91,8 +86,9 @@ namespace ItNews.Business.Managers
             article.Date = DateTime.Now;
             article.Author = author;
 
-            using (var uow = unitOfWorkFactory.GetUnitOfWork().BeginTransaction())
+            using (var uow = unitOfWorkFactory.GetUnitOfWork())
             {
+                uow.BeginTransaction();
                 await articleProvider.SaveOrUpdate(article);
                 uow.Commit();
             }
@@ -103,8 +99,9 @@ namespace ItNews.Business.Managers
             if (string.IsNullOrEmpty(authorId))
                 throw new ArgumentNullException(nameof(authorId));
 
-            using (var uow = unitOfWorkFactory.GetUnitOfWork().BeginTransaction())
+            using (var uow = unitOfWorkFactory.GetUnitOfWork())
             {
+                uow.BeginTransaction();
                 await articleProvider.Delete(article);
                 uow.Commit();
             }

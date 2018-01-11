@@ -1,0 +1,7 @@
+﻿@model CreateCommentViewModel
+
+@using (Html.BeginForm("CreateComment", "Article"))
+{
+    @Html.HiddenFor(model => model.ArticleId)
+    @Html.EditorFor(model => model.Text)
+}

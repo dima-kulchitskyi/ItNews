@@ -182,6 +182,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.cs" />
+    <Compile Include="App_Start\BundleOrderers\СoherentBundleOrderer.cs" />
     <Compile Include="App_Start\DependencyInjection\UnityBindExtensions.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
@@ -193,6 +194,7 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <None Include="Views\Article\CreateCommentPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
@@ -245,6 +247,8 @@
     <Content Include="Views\Shared\LoginPartial.cshtml" />
     <Content Include="Views\Article\Create.cshtml" />
     <Content Include="Views\Article\Edit.cshtml" />
+    <Content Include="Scripts\jquery.validate.fileExtensions.js" />
+    <Content Include="Views\Shared\DisplayTemplates\Image.cshtml" />
     <Content Include="Views\Article\Delete.cshtml" />
   </ItemGroup>
   <ItemGroup>

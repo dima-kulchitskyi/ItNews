@@ -16,50 +16,43 @@ using ItNews.Mvc.Identity;
 
 namespace ItNews.Mvc.Controllers
 {
-
     public class AccountController : Controller
     {
         private UserManager<IdentityUser, string> userManager;
         private SignInManager<IdentityUser, string> signInManager;
         private IAuthenticationManager authenticationManager;
 
-        public AccountController(IdentityUserManager identityUserManager, 
-            IdentitySignInManager identitySignInManager, 
+        public AccountController(IdentityUserManager identityUserManager,
+            IdentitySignInManager identitySignInManager,
             IAuthenticationManager identityAuthenticationManager)
         {
             userManager = identityUserManager;
             signInManager = identitySignInManager;
             authenticationManager = identityAuthenticationManager;
         }
-        
+
 
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)
         {
-            ViewBag.ReturnUrl = returnUrl;
-            return View();
+            return View(new LoginViewModel { ReturnUrl = returnUrl });
         }
-        
+
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
             if (!ModelState.IsValid)
-            {
                 return View(model);
-            }
 
-            // This doesn't count login failures towards account lockout 
-            // To enable password failures to trigger account lockout, change to shouldLockout: true 
             var result = await signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
                     if (Url.IsLocalUrl(returnUrl))
-                    {
                         return Redirect(returnUrl);
-                    }
+
                     return RedirectToAction("Index", "Article");
                 case SignInStatus.Failure:
                 default:
@@ -67,13 +60,13 @@ namespace ItNews.Mvc.Controllers
                     return View(model);
             }
         }
-        
+
         [AllowAnonymous]
         public ActionResult Register()
         {
             return View();
         }
-        
+
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -88,12 +81,13 @@ namespace ItNews.Mvc.Controllers
                     await signInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                     return RedirectToAction("Index", "Article");
                 }
-                //TODO fix
-                ModelState.AddModelError("", result.Errors.First());
+
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError("", error);
             }
             return View(model);
         }
-        
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Logout()

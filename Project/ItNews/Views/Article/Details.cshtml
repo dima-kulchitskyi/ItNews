@@ -20,7 +20,7 @@
             </dt>
 
             <dd>
-                <img src="@Model.Image" alt="Image" style="width:350px; height: auto;"/>
+                @Html.DisplayFor(model => model.Image,  new { htmlAttributes = new { style = "width: 350px; height: auto;" } })
             </dd>
         }
         <dt>
@@ -43,10 +43,27 @@
         </dd>
     </dl>
 </div>
+<div>
+    @Html.Partial("CreateCommentPartial", new CreateCommentViewModel { ArticleId = Model.Id })
+    <dl class="dl-horizontal">
+        @foreach (var comment in Model.Comments)
+        {
+            <dt>
+                @Html.DisplayNameFor(model => comment.Author)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => comment.Text)
+            </dd>
+        }
+    </dl>
+</div>
+
 <p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-
-    @Html.ActionLink("Delete", "Delete", new { id = Model.Id }) |
-
+    @if (Model.ControlsAvailable)
+    {
+        @Html.ActionLink("Edit", "Edit", new { id = Model.Id })
+        @Html.ActionLink("Delete", "Delete", new { id = Model.Id }) |
+    }
     @Html.ActionLink("Back to List", "Index")
 </p>
+

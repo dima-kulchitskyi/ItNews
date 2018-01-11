@@ -4,8 +4,6 @@ using System.Web.Mvc;
 using Unity;
 using Unity.AspNet.Mvc;
 
-
-
 namespace ItNews.Web.DependencyInjection
 {
     /// <summary>
@@ -13,7 +11,6 @@ namespace ItNews.Web.DependencyInjection
     /// </summary>
     public static class UnityConfiguration
     {
-
         #region Unity Container
         private static Lazy<IUnityContainer> container = new Lazy<IUnityContainer>(() =>
         {
@@ -37,6 +34,5 @@ namespace ItNews.Web.DependencyInjection
 
             DependencyResolver.SetResolver(new UnityDependencyResolver(Container));
         }
-
     }
 }

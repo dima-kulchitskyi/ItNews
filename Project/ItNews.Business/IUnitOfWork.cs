@@ -8,7 +8,7 @@ namespace ItNews.Business
 {
     public interface IUnitOfWork : IDisposable
     {
-        IUnitOfWork BeginTransaction();
+        void BeginTransaction();
         void Rollback();
         void Commit();
         bool IsActive { get; }

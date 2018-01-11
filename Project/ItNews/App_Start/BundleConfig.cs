@@ -1,4 +1,5 @@
-﻿using System.Web;
+﻿using ItNews.BundleOrderers;
+using System.Web;
 using System.Web.Optimization;
 
 namespace ItNews.Web
@@ -10,9 +11,15 @@ namespace ItNews.Web
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
+            var validationBundle = new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate.js",
-                        "~/Scripts/jquery.validate.unobtrusive.js"));
+                        "~/Scripts/jquery.validate.unobtrusive.js",
+                        "~/Scripts/jquery.unobtrusive-ajax.js",
+                        "~/Scripts/jquery.validate.fileExtensions.js"
+                        );
+            validationBundle.Orderer = new DeclarationOrderBundleOrderer();
+
+            bundles.Add(validationBundle);
 
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
                         "~/Scripts/modernizr-*"));
