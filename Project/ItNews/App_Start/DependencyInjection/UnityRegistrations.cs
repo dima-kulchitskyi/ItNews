@@ -26,6 +26,7 @@ namespace ItNews.Web.DependencyInjection
 
             .RegisterType<IArticleProvider, Nhibernate.Providers.ArticleProvider>()
             .RegisterType<IUserProvider, Nhibernate.Providers.UserProvider>()
+            .RegisterType<ICommentProvider, Nhibernate.Providers.CommentProvider>()
 
             //Identity
             .RegisterType<IUserStore<IdentityUser, string>, Mvc.Identity.Stores.IdentityUserStore>()

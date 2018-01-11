@@ -87,7 +87,19 @@ namespace ItNews.Controllers
 
             return View(model);
         }
+        [HttpPost]
+        [Authorize]
+        public async Task<ActionResult> Details(CommentViewModel commentViewModel)
+        {
+            var item = new Comment
+            {
+                Text = commentViewModel.Text
+            };
 
+            await commentManager.CreateComment(item, User.Identity.GetUserId(), commentViewModel.Id);
+
+            return View(commentViewModel);
+        }
         [Authorize]
         [HttpGet]
         public ActionResult Create()
