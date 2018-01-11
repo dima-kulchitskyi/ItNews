@@ -28,12 +28,9 @@ namespace ItNews.Mvc.HtmlHelpers
             if (htmlAttributes == null)
                 return new HtmlString(string.Empty);
 
-            return new HtmlString(FromDictionary(HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes)));
-        }
+            var htmlAttributesDictionary = (htmlAttributes as IDictionary<string, object>) ?? HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes);
 
-        public static HtmlString HtmlAttributes(this HtmlHelper helper, Dictionary<string, object> htmlAttributes)
-        {
-            return new HtmlString(FromDictionary(htmlAttributes));
+            return new HtmlString(FromDictionary(htmlAttributesDictionary));
         }
     }
 }

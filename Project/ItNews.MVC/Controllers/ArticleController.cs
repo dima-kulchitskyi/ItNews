@@ -9,7 +9,6 @@ using System.Threading.Tasks;
 using System.Web.Configuration;
 using System.Web.Mvc;
 using ItNews.Mvc.ModelBinders.Article;
-using ItNews.Mvc.ModelBinders.Article;
 
 namespace ItNews.Controllers
 {
