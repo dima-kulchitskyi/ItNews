@@ -19,7 +19,7 @@ namespace ItNews.Mvc.ViewModels.Article
         [UIHint("Image")]
         public string Image { get; set; }
 
-        [Display(Name= "Author")]
+        [Display(Name = "Author")]
         public string AuthorName { get; set; }
 
         [Display(Name = "Created")]
@@ -33,5 +33,9 @@ namespace ItNews.Mvc.ViewModels.Article
 
         [ScaffoldColumn(false)]
         public bool ControlsAvailable { get; set; }
+
+        [ScafoldColumn(false)]
+        public IList<CommentViewModel> Comments { set; get; }
+ 
     }
 }

@@ -18,6 +18,7 @@
             <dt>
                 @Html.DisplayNameFor(model => model.Image)
             </dt>
+
             <dd>
                 @Html.DisplayFor(model => model.Image,  new { htmlAttributes = new { style = "width:600px; height: auto;" } })
             </dd>
@@ -42,6 +43,21 @@
         </dd>
     </dl>
 </div>
+<div>
+    @Html.Partial("CreateCommentPartial", new CreateCommentViewModel { ArticleId = Model.Id })
+    <dl class="dl-horizontal">
+        @foreach (var comment in Model.Comments)
+        {
+            <dt>
+                @Html.DisplayNameFor(model => comment.Author)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => comment.Text)
+            </dd>
+        }
+    </dl>
+</div>
+
 <p>
     @if (Model.ControlsAvailable)
     {
@@ -49,3 +65,4 @@
     }
     @Html.ActionLink("Back to List", "Index")
 </p>
+

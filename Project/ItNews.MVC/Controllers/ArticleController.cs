@@ -16,10 +16,13 @@ namespace ItNews.Controllers
     {
         private ArticleManager articleManager;
 
+        private CommentManager commentManager;
 
-        public ArticleController(ArticleManager articleManager)
+
+        public ArticleController(ArticleManager articleManager, CommentManager commentManager)
         {
             this.articleManager = articleManager;
+            this.commentManager = commentManager;
         }
 
         [HttpGet]
@@ -62,6 +65,8 @@ namespace ItNews.Controllers
             if (article == null)
                 return HttpNotFound();
 
+            var comment = await commentManager.GetArticleComments(id);
+
             var model = new ArticleDetailsViewModel
             {
                 Id = article.Id,
@@ -80,6 +85,7 @@ namespace ItNews.Controllers
 
             return View(model);
         }
+
 
         [Authorize]
         [HttpGet]
