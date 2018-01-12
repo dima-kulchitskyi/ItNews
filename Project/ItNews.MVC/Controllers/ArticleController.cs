@@ -253,5 +253,21 @@ namespace ItNews.Controllers
 
             return RedirectToAction("Details", new { id = model.ArticleId });
         }
+        [Authorize]
+        [HttpGet]
+        public async Task<ActionResult> DeleteComment(string id, string articleId)
+        {
+            if (string.IsNullOrEmpty(id))
+                return HttpNotFound();
+
+            var comment = await commentManager.GetComment(id);
+
+            if (comment.Author.Id != User.Identity.GetUserId())
+                return HttpNotFound();
+
+            await commentManager.DeleteComment(comment, comment.Id);
+
+            return RedirectToAction("Details", new { id = articleId });
+        }
     }
 }

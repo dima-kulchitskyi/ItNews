@@ -18,7 +18,7 @@ namespace ItNews.Nhibernate.Providers
         {
             using (var container = sessionFactory.CreateSessionContainer())
             {
-                return await container.Session.QueryOver<Comment>().Where(comment => comment.Article.Id == articleId).ListAsync();
+                return await container.Session.QueryOver<Comment>().Where(comment => comment.Article.Id == articleId).OrderBy(m => m.Date).Desc.ListAsync();
             }
         }
     }
