@@ -14,11 +14,17 @@ namespace ItNews.Nhibernate.Providers
         {
         }
 
-        public async Task<IList<Comment>> GetArticleComments(string articleId)
+        public async Task<int> GetArticleCommentsCount(string articleId)
+        {
+            using (var sessionContainer = sessionFactory.CreateSessionContainer())
+                return await sessionContainer.Session.QueryOver<Comment>().Where(comment => comment.Article.Id == articleId).RowCountAsync();
+        }
+
+        public async Task<IList<Comment>> GetArticleCommentsPage(string articleId, int itemsCount, int commentPage)
         {
             using (var container = sessionFactory.CreateSessionContainer())
             {
-                return await container.Session.QueryOver<Comment>().Where(comment => comment.Article.Id == articleId).OrderBy(m => m.Date).Desc.ListAsync();
+                return await container.Session.QueryOver<Comment>().Where(comment => comment.Article.Id == articleId).OrderBy(m => m.Date).Desc.Skip(commentPage).Take(itemsCount).ListAsync();
             }
         }
     }

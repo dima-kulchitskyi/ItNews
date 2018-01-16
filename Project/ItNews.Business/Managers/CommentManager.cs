@@ -36,9 +36,13 @@ namespace ItNews.Business.Managers
             }
         }
 
-        public Task<IList<Comment>> GetArticleComments(string id)
+        public Task<IList<Comment>> GetArticleComments(string id, int itemsCount, int commentPage)
         {
-            return commentProvider.GetArticleComments(id);
+            return commentProvider.GetArticleCommentsPage(id, itemsCount, commentPage);
+        }
+        public Task<int> GetArticleCommentsCount(string id)
+        {
+            return commentProvider.GetArticleCommentsCount(id);
         }
         public async Task UpdateComment(Comment comment, string authorId)
         {
@@ -78,6 +82,10 @@ namespace ItNews.Business.Managers
         public Task<Comment> GetComment(string id)
         {
             return commentProvider.Get(id);
+        }
+        public Task<int> GetCount()
+        {
+            return commentProvider.GetCount();
         }
     }
 }
