@@ -9,7 +9,11 @@ using System.Threading.Tasks;
 
 namespace ItNews.Mvc.Identity.Stores
 {
-    public class IdentityUserStore : IUserStore<IdentityUser, string>, IUserPasswordStore<IdentityUser>, IUserLockoutStore<IdentityUser, string>, IUserTwoFactorStore<IdentityUser, string>
+    public class IdentityUserStore : IUserStore<IdentityUser, string>,
+        IUserPasswordStore<IdentityUser>,
+        IUserLockoutStore<IdentityUser, string>,
+        IUserTwoFactorStore<IdentityUser, string>,
+        IUserRoleStore<IdentityUser, string>
     {
         private IUserProvider userProvider;
 
@@ -18,10 +22,15 @@ namespace ItNews.Mvc.Identity.Stores
             this.userProvider = userProvider;
         }
 
+        public Task AddToRoleAsync(IdentityUser user, string roleName)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task CreateAsync(IdentityUser user)
         {
             var appUserInstance = user.ToAppUser();
-            await  userProvider.SaveOrUpdate(appUserInstance);
+            await userProvider.SaveOrUpdate(appUserInstance);
             user.Id = appUserInstance.Id;
         }
 
@@ -43,7 +52,7 @@ namespace ItNews.Mvc.Identity.Stores
         public async Task<IdentityUser> FindByNameAsync(string userName)
         {
             var user = await userProvider.GetByUserName(userName);
-            return user != null ? new IdentityUser().Initialize(user) : null; 
+            return user != null ? new IdentityUser().Initialize(user) : null;
         }
 
         public Task<int> GetAccessFailedCountAsync(IdentityUser user)
@@ -66,6 +75,15 @@ namespace ItNews.Mvc.Identity.Stores
             return Task.FromResult(user.PasswordHash);
         }
 
+        public Task<IList<string>> GetRolesAsync(IdentityUser user)
+        {
+            IList<string> roles = new List<string>
+            {
+                user.Role
+            };
+            return Task.FromResult(roles);
+        }
+
         public Task<bool> GetTwoFactorEnabledAsync(IdentityUser user)
         {
             return Task.FromResult(false);
@@ -81,6 +99,19 @@ namespace ItNews.Mvc.Identity.Stores
             return Task.FromResult(++user.AccessFailedCount);
         }
 
+        public Task<bool> IsInRoleAsync(IdentityUser user, string roleName)
+        {
+            return Task.FromResult(user.Role == roleName);
+        }
+
+        public Task RemoveFromRoleAsync(IdentityUser user, string roleName)
+        {
+            if (user.Role == roleName)
+                user.Role = "";
+
+            return Task.CompletedTask;
+        }
+
         public Task ResetAccessFailedCountAsync(IdentityUser user)
         {
             return Task.FromResult(user.AccessFailedCount = 0);
@@ -93,7 +124,7 @@ namespace ItNews.Mvc.Identity.Stores
 
         public Task SetLockoutEndDateAsync(IdentityUser user, DateTimeOffset lockoutEnd)
         {
-            return Task.FromResult(user.LockoutEndDate =  lockoutEnd);
+            return Task.FromResult(user.LockoutEndDate = lockoutEnd);
         }
 
         public Task SetPasswordHashAsync(IdentityUser user, string passwordHash)

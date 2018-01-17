@@ -8,6 +8,7 @@ namespace ItNews.Business.Entities
         public virtual string Id { get; set; }
         public virtual string UserName { get; set; }
         public virtual string Email { get; set; }
+        public virtual string Role { get; set; }
 
         public virtual string PasswordHash { get; set; }
         public virtual DateTimeOffset LockoutEndDate { get; set; }
