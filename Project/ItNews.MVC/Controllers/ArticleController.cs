@@ -56,7 +56,7 @@ namespace ItNews.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Details(string id)
+        public async Task<ActionResult> Details(string id, [ModelBinder(typeof(PageNumberModelBinder))]int commentPage)
         {
             if (string.IsNullOrEmpty(id))
                 return HttpNotFound();
@@ -66,7 +66,7 @@ namespace ItNews.Controllers
             if (article == null)
                 return HttpNotFound();
 
-            var comments = (await commentManager.GetArticleComments(id))
+            var comments = (await commentManager.GetArticleComments(id, 10, commentPage))
                .Select(comment => new CommentViewModel
                {
                    Author = comment.Author.UserName,
@@ -83,7 +83,10 @@ namespace ItNews.Controllers
                 Date = article.Date.ToString("f"),
                 Content = article.Text,
                 ControlsAvailable = (User.Identity.IsAuthenticated && article.Author.Id == User.Identity.GetUserId()),
-                Comments = comments
+                Comments = comments,
+                UserName = User.Identity.Name,
+                commentPageCount = Convert.ToInt32(Math.Ceiling(await commentManager.GetArticleCommentsCount(id) / 10.0)),
+                commentPageNumber = commentPage
             };
 
             if (!string.IsNullOrEmpty(article.ImageName))
@@ -252,6 +255,22 @@ namespace ItNews.Controllers
             await commentManager.CreateComment(comment, User.Identity.GetUserId(), model.ArticleId);
 
             return RedirectToAction("Details", new { id = model.ArticleId });
+        }
+        [Authorize]
+        [HttpGet]
+        public async Task<ActionResult> DeleteComment(string id, string articleId)
+        {
+            if (string.IsNullOrEmpty(id))
+                return HttpNotFound();
+
+            var comment = await commentManager.GetComment(id);
+
+            if (comment.Author.Id != User.Identity.GetUserId())
+                return HttpNotFound();
+
+            await commentManager.DeleteComment(comment, comment.Id);
+
+            return RedirectToAction("Details", new { id = articleId });
         }
     }
 }

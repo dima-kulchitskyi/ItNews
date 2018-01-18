@@ -36,9 +36,56 @@ namespace ItNews.Business.Managers
             }
         }
 
-        public Task<IList<Comment>> GetArticleComments(string id)
+        public Task<IList<Comment>> GetArticleComments(string id, int itemsCount, int commentPage)
         {
-            return commentProvider.GetArticleComments(id);
+            return commentProvider.GetArticleCommentsPage(id, itemsCount, commentPage);
+        }
+        public Task<int> GetArticleCommentsCount(string id)
+        {
+            return commentProvider.GetArticleCommentsCount(id);
+        }
+        public async Task UpdateComment(Comment comment, string authorId)
+        {
+            if (string.IsNullOrEmpty(authorId))
+                throw new ArgumentNullException(nameof(authorId));
+
+            var oldComment = await commentProvider.Get(comment.Id) ?? throw new ArgumentException("Comment does not exists"); ;
+
+            var author = await userProvider.Get(authorId) ?? throw new ArgumentException($"User with {nameof(authorId)} does not exists");
+
+            if (oldComment.Author.Id != authorId)
+                throw new InvalidOperationException($"Comment is not owned by user with {nameof(authorId)}");
+
+            comment.Date = DateTime.Now;
+            comment.Author = author;
+
+            using (var uow = unitOfWorkFactory.GetUnitOfWork())
+            {
+                uow.BeginTransaction();
+                await commentProvider.SaveOrUpdate(comment);
+                uow.Commit();
+            }
+        }
+
+        public async Task DeleteComment(Comment comment, string authorId)
+        {
+            if (string.IsNullOrEmpty(authorId))
+                throw new ArgumentNullException(nameof(authorId));
+
+            using (var uow = unitOfWorkFactory.GetUnitOfWork())
+            {
+                uow.BeginTransaction();
+                await commentProvider.Delete(comment);
+                uow.Commit();
+            }
+        }
+        public Task<Comment> GetComment(string id)
+        {
+            return commentProvider.Get(id);
+        }
+        public Task<int> GetCount()
+        {
+            return commentProvider.GetCount();
         }
     }
 }

@@ -11,14 +11,15 @@ namespace ItNews.Mvc.Identity
 {
     public class IdentityUser : IUser
     {
-        public virtual string Id { get; set; }
-        public virtual string UserName { get; set; }
-        public virtual string Email { get; set; }
+        public string Id { get; set; }
+        public string UserName { get; set; }
+        public string Email { get; set; }
+        public string Role { get; set; }
 
-        public virtual string PasswordHash { get; set; }
-        public virtual DateTimeOffset LockoutEndDate { get; set; }
-        public virtual bool LockoutEnabled { get; set; }
-        public virtual int AccessFailedCount { get; set; }
+        public string PasswordHash { get; set; }
+        public DateTimeOffset LockoutEndDate { get; set; }
+        public bool LockoutEnabled { get; set; }
+        public int AccessFailedCount { get; set; }
 
         public IdentityUser Initialize(AppUser user)
         {
@@ -32,6 +33,7 @@ namespace ItNews.Mvc.Identity
             LockoutEndDate = user.LockoutEndDate;
             LockoutEnabled = user.LockoutEnabled;
             AccessFailedCount = user.AccessFailedCount;
+            Role = user.Role;
             return this;
         }
 
@@ -45,7 +47,8 @@ namespace ItNews.Mvc.Identity
                 PasswordHash = PasswordHash,
                 LockoutEndDate = LockoutEndDate,
                 LockoutEnabled = LockoutEnabled,
-                AccessFailedCount = AccessFailedCount
+                AccessFailedCount = AccessFailedCount,
+                Role = Role
             };
         }
     }

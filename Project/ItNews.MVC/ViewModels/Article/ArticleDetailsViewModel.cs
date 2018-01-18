@@ -36,6 +36,12 @@ namespace ItNews.Mvc.ViewModels.Article
 
         [ScaffoldColumn(false)]
         public IList<CommentViewModel> Comments { set; get; }
- 
+
+        public string UserName { set; get; }
+
+        public int commentPageCount { set; get; }
+
+        public int commentPageNumber { set; get; }
+
     }
 }
