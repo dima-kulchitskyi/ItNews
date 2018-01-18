@@ -19,26 +19,22 @@ namespace ItNews.Nhibernate
 
         public bool IsRolledBack => transaction?.WasRolledBack ?? false;
 
-        public UnitOfWork(SessionContainerFactory sessionManager)
+        public UnitOfWork(SessionContainerFactory sessionFactory)
         {
-            this.sessionManager = sessionManager;
-            sessionContainer = sessionManager.CreateSessionContainer();
+            this.sessionManager = sessionFactory;
+            sessionContainer = sessionFactory.CreateSessionContainer();
         }
 
         public void BeginTransaction()
         {
-            transaction = sessionContainer.Session.Transaction;
-
-            if (transaction != null && transaction.IsActive)
-                throw new InvalidOperationException("Transaction is already open");
-
-            transaction = sessionContainer.Session.BeginTransaction();
+            if (transaction == null || !transaction.IsActive)
+                transaction = sessionContainer.Session.BeginTransaction();
         }
 
         public void Commit()
         {
             if (transaction == null || !transaction.IsActive)
-                throw new InvalidOperationException("Transaction is not active");
+                return;
 
             try
             {
@@ -57,7 +53,7 @@ namespace ItNews.Nhibernate
         public void Rollback()
         {
             if (transaction == null || !transaction.IsActive)
-                throw new InvalidOperationException("Transaction is not active");
+                return;
 
             try
             {
@@ -78,7 +74,7 @@ namespace ItNews.Nhibernate
                 throw new InvalidOperationException("Transaction is still active, maybe you forgot to commit it?");
             }
 
-            sessionContainer?.Dispose();
+            sessionContainer.Dispose();
         }
     }
 }

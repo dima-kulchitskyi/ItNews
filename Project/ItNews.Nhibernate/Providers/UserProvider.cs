@@ -17,6 +17,12 @@ namespace ItNews.Nhibernate.Providers
 
         }
 
+        public async  Task<IList<AppUser>> GetAllUsers()
+        {
+            using (var sessionContainer = sessionFactory.CreateSessionContainer())
+                return await sessionContainer.Session.QueryOver<AppUser>().OrderBy(m => m.UserName).Asc.ListAsync();
+        }
+
         public async Task<AppUser> GetByUserName(string userName)
         {
             using (var sessionContainer = sessionFactory.CreateSessionContainer())
