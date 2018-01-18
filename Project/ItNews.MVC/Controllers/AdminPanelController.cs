@@ -17,6 +17,7 @@ namespace ItNews.Mvc.Controllers
         {
             this.appUserManager = appUserManager;
         }
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Panel()
         {
             var users = await appUserManager.GetAllUsers();

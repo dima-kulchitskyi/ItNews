@@ -20,12 +20,19 @@
                 @Html.ActionLink("ItNews", "Index", "Article", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
+                <ul class="nav navbar-nav" >
+
                     @if (User.Identity.IsAuthenticated)
                     {
                         <li>@Html.ActionLink("Create Article", "Create", "Article", new { }, new { @class = "navbar-brand" })</li>
                     }
-                    @Html.Partial("LoginPartial")
+                    <li style="margin-left:10px;margin-right:10px;">
+                        @Html.Partial("LoginPartial")
+                    </li>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                       <li>@Html.ActionLink("Admin Panel", "Panel", "AdminPanel", new { }, new { @class = "navbar-brand" })</li>
+                    }
                 </ul>
             </div>
         </div>
