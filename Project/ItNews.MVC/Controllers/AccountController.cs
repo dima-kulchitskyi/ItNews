@@ -82,7 +82,7 @@ namespace ItNews.Mvc.Controllers
                     return RedirectToAction("Index", "Article");
                 }
 
-                foreach (var error in result.Errors)
+                foreach (var error in result.Errors)    
                     ModelState.AddModelError("", error);
             }
             return View(model);
@@ -94,12 +94,6 @@ namespace ItNews.Mvc.Controllers
         {
             authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             return RedirectToAction("Index", "Article");
-        }
-
-        [Authorize(Roles = "Admin")]
-        public ActionResult Test()
-        {
-            return Content("admin rules");
         }
     }
 }

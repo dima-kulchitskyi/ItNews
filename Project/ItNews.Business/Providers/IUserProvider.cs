@@ -10,6 +10,7 @@ namespace ItNews.Business.Providers
     public interface IUserProvider : IProvider<AppUser>
     {
         Task<AppUser> GetByUserName(string userName);
+        Task<IList<AppUser>> GetAllUsers();
 
     }
 }

@@ -1,0 +1,20 @@
+﻿@model ItNews.Mvc.ViewModels.AdminPanel.PanelViewModel
+
+@{
+    ViewBag.Title = "View";
+}
+<div>
+@foreach (var user in Model.UserName)
+{
+    <p>
+        <br>
+        @user.UserName
+        <text>|</text>
+        @Html.ActionLink("DeleteUser", "Delete", new{id = user.Id})
+    </p>
+}
+</div>
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
