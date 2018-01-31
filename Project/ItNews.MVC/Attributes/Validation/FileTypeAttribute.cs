@@ -26,13 +26,18 @@ namespace ItNews.Mvc.CustomValidationAttributes
             if (value is IEnumerable<HttpPostedFileBase> files)
             {
                 foreach (var file in files)
+                {
                     if (file != null && !validExtensions.Any(e => file.FileName.EndsWith(e, StringComparison.OrdinalIgnoreCase)))
                         return new ValidationResult(ErrorMessageString);
+                }
             }
-            else if (value is HttpPostedFileBase file)
+            else
             {
-                if (!validExtensions.Any(e => file.FileName.EndsWith(e, StringComparison.OrdinalIgnoreCase)))
-                    return new ValidationResult(ErrorMessageString);
+                if (value is HttpPostedFileBase file)
+                {
+                    if (!validExtensions.Any(e => file.FileName.EndsWith(e, StringComparison.OrdinalIgnoreCase)))
+                        return new ValidationResult(ErrorMessageString);
+                }
             }
 
             return ValidationResult.Success;

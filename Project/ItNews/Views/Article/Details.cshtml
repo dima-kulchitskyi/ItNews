@@ -42,39 +42,49 @@
             @Html.DisplayFor(model => model.Date)
         </dd>
     </dl>
+
+    <p>
+        @if (Model.ControlsAvailable)
+        {
+            @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) <text>|</text>
+            @Html.ActionLink("Delete", "Delete", new { id = Model.Id }) <text>|</text>
+        }
+        @Html.ActionLink("Back to List", "Index")
+    </p>
 </div>
 
-@if (User.Identity.IsAuthenticated)
-{
-    <div>
-        @Html.Partial("CreateCommentPartial", new CreateCommentViewModel { ArticleId = Model.Id })
-        <dl class="dl-horizontal">
-            @foreach (var comment in Model.Comments)
-            {
-                <hr />
-                <dt>
-                    @Html.DisplayNameFor(model => comment.Author)
-                </dt>
-                <dd>
-                    @Html.DisplayFor(model => comment.Author)
-                </dd>
-                <dt>
-                    @Html.DisplayNameFor(model => comment.Text)
-                </dt>
-                <dd>
-                    @Html.DisplayFor(model => comment.Text)
-                </dd>
-            }
-        </dl>
-    </div>
-}
 
-<p>
-    @if (Model.ControlsAvailable)
+<div>
+    @if (User.Identity.IsAuthenticated)
     {
-        @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) <text>|</text>
-        @Html.ActionLink("Delete", "Delete", new { id = Model.Id }) <text>|</text>
+        @Html.Partial("CreateCommentPartial", new CreateCommentViewModel { ArticleId = Model.Id })
     }
-    @Html.ActionLink("Back to List", "Index")
-</p>
+
+    <dl class="dl-horizontal">
+        @foreach (var comment in Model.Comments)
+        {
+            <hr />
+            <dt>
+                @Html.DisplayNameFor(model => comment.Author)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => comment.Author)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => comment.Text)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => comment.Text)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => comment.Date)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => comment.Date)
+            </dd>
+        }
+    </dl>
+</div>
+
+
 

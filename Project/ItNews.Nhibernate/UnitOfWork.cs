@@ -7,8 +7,6 @@ namespace ItNews.Nhibernate
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
-        protected SessionContainerFactory sessionManager;
-
         protected ITransaction transaction;
 
         protected SessionContainer sessionContainer;
@@ -19,10 +17,9 @@ namespace ItNews.Nhibernate
 
         public bool IsRolledBack => transaction?.WasRolledBack ?? false;
 
-        public UnitOfWork(SessionContainerFactory sessionManager)
+        public UnitOfWork()
         {
-            this.sessionManager = sessionManager;
-            sessionContainer = sessionManager.CreateSessionContainer();
+            sessionContainer = SessionContainer.Open();
         }
 
         public void BeginTransaction()

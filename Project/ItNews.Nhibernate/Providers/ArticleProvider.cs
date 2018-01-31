@@ -10,14 +10,9 @@ namespace ItNews.Nhibernate.Providers
 {
     public class ArticleProvider : Provider<Article>, IArticleProvider
     {
-        public ArticleProvider(SessionContainerFactory sessionFactory) : base(sessionFactory)
-        {
-
-        }
-
         public async Task<IList<Article>> GetListSegment(int count, DateTime startDate, bool newFirst)
         {
-            using (var container = sessionFactory.CreateSessionContainer())
+            using (var container = SessionContainer.Open())
             {
                 var criteria = container.Session.CreateCriteria<Article>();
 
@@ -36,7 +31,7 @@ namespace ItNews.Nhibernate.Providers
 
         public async Task<IList<Article>> GetPage(int count, int pageNumber, bool newFirst)
         {
-            using (var container = sessionFactory.CreateSessionContainer())
+            using (var container = SessionContainer.Open())
             {
                 var criteria = container.Session.CreateCriteria<Article>();
 

@@ -20,13 +20,5 @@ namespace ItNews.Web
                 defaults: new { controller = "Article", action = "Index", id = UrlParameter.Optional }
             );
         }
-
-        public static void SetRoutesDefaultNamespace(RouteCollection routes)
-        {
-            var defaultNamespace = WebConfigurationManager.AppSettings["DefaultRoutesNamespace"];
-            foreach (Route r in routes)
-                if (r.DataTokens != null && !r.DataTokens.ContainsKey("Namespaces"))
-                    r.DataTokens.Add("Namespaces", new string[] { defaultNamespace });
-        }
     }
 }

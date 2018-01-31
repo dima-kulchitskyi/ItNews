@@ -1,19 +1,24 @@
-﻿using ItNews.Business.Entities;
+﻿using System.Threading;
+using ItNews.Business.Entities;
 using ItNews.Business.Providers;
+using System.Threading.Tasks;
 
 namespace ItNews.Business.Managers
 {
-    public class Manager<T>
+    public abstract class Manager<T, TProvider>
         where T : IEntity
+        where TProvider : IProvider<T>
     {
-        protected IProvider<T> provider;
+        protected TProvider provider;
 
-        protected IUnitOfWorkFactory unitOfWorkFactory;
-
-        public Manager(IProvider<T> provider, IUnitOfWorkFactory unitOfWorkFactory)
+        public Manager(TProvider provider)
         {
             this.provider = provider;
-            this.unitOfWorkFactory = unitOfWorkFactory;
+        }
+
+        public Task<T> GetById(string id)
+        {
+            return provider.Get(id);
         }
     }
 }

@@ -8,6 +8,7 @@ namespace ItNews.Business.Providers
     public interface IProvider<T> 
         where T : IEntity
     {
+        IUnitOfWork GetUnitOfWork();
         Task<T> Get(string id);
         Task<T> SaveOrUpdate(T instance);
         Task Delete(T instance);

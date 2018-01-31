@@ -8,52 +8,49 @@ using ItNews.Business.Providers;
 
 namespace ItNews.Business.Managers
 {
-    public class ArticleManager : Manager<Article>
+    public class ArticleManager : Manager<Article, IArticleProvider>
     {
-        private IArticleProvider articleProvider;
+        private AppUserManager userManager;
 
-        private IUserProvider userProvider;
-
-        public ArticleManager(IArticleProvider articleProvider, IUserProvider userProvider, IUnitOfWorkFactory unitOfWorkFactory)
-            : base(articleProvider, unitOfWorkFactory)
+        public ArticleManager(IArticleProvider articleProvider, AppUserManager userManager)
+            : base(articleProvider)
         {
-            this.articleProvider = articleProvider;
-            this.userProvider = userProvider;
+            this.userManager = userManager;
         }
 
         public Task<IList<Article>> GetListSegmentAsync(int count, DateTime startDate, bool newFirst)
         {
-            return articleProvider.GetListSegment(count, startDate, newFirst);
+            return provider.GetListSegment(count, startDate, newFirst);
         }
 
         public Task<IList<Article>> GetPage(int count, int pageNumber, bool newFirst)
         {
-            return articleProvider.GetPage(count, pageNumber, newFirst);
+            return provider.GetPage(count, pageNumber, newFirst);
         }
 
         public Task<Article> GetArticle(string id)
         {
-            return articleProvider.Get(id);
+            return provider.Get(id);
         }
 
         public async Task CreateArticle(Article article, string authorId)
         {
-            using (var uow = unitOfWorkFactory.GetUnitOfWork())
+            using (var uow = provider.GetUnitOfWork())
             {
-                var user = await userProvider.Get(authorId);
+                var user = await userManager.GetById(authorId);
 
                 article.Author = user ?? throw new InvalidOperationException("No user with given id");
                 article.Date = DateTime.Now;
 
                 uow.BeginTransaction();
-                await articleProvider.SaveOrUpdate(article);
+                await provider.SaveOrUpdate(article);
                 uow.Commit();
             }
         }
 
         public Task<int> GetCount()
         {
-            return articleProvider.GetCount();
+            return provider.GetCount();
         }
 
         public async Task<bool> IsOwnedBy(string articleId, string userId)
@@ -64,11 +61,9 @@ namespace ItNews.Business.Managers
             if (string.IsNullOrEmpty(userId))
                 throw new ArgumentNullException(nameof(userId));
 
-            var article = await articleProvider.Get(articleId);
-            if (article == null)
-                return false;
+            var article = await provider.Get(articleId);
 
-            return (article.Author?.Id == userId);
+            return (article?.Author.Id == userId);
         }
 
         public async Task UpdateArticle(Article article, string authorId)
@@ -76,20 +71,20 @@ namespace ItNews.Business.Managers
             if (string.IsNullOrEmpty(authorId))
                 throw new ArgumentNullException(nameof(authorId));
 
-            var oldArticle = await articleProvider.Get(article.Id) ?? throw new ArgumentException("Article does not exists"); ;
-
-            var author = await userProvider.Get(authorId) ?? throw new ArgumentException($"User with {nameof(authorId)} does not exists");
-
-            if (oldArticle.Author.Id != authorId)
-                throw new InvalidOperationException($"Article is not owned by user with {nameof(authorId)}");
-
-            article.Date = DateTime.Now;
-            article.Author = author;
-
-            using (var uow = unitOfWorkFactory.GetUnitOfWork())
+            using (var uow = provider.GetUnitOfWork())
             {
+                var oldArticle = await provider.Get(article.Id) ?? throw new ArgumentException("Article with given id does not exists"); 
+
+                var author = await userManager.GetById(authorId) ?? throw new ArgumentException("User with given id does not exists");
+
+                if (oldArticle.Author.Id != authorId)
+                    throw new InvalidOperationException("Article is not owned by current user");
+
+                article.Date = DateTime.Now;
+                article.Author = author;
+
                 uow.BeginTransaction();
-                await articleProvider.SaveOrUpdate(article);
+                await provider.SaveOrUpdate(article);
                 uow.Commit();
             }
         }
@@ -99,10 +94,10 @@ namespace ItNews.Business.Managers
             if (string.IsNullOrEmpty(authorId))
                 throw new ArgumentNullException(nameof(authorId));
 
-            using (var uow = unitOfWorkFactory.GetUnitOfWork())
+            using (var uow = provider.GetUnitOfWork())
             {
                 uow.BeginTransaction();
-                await articleProvider.Delete(article);
+                await provider.Delete(article);
                 uow.Commit();
             }
         }

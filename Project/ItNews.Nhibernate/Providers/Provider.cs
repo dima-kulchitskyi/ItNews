@@ -7,17 +7,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Mvc;
 
 namespace ItNews.Nhibernate.Providers
 {
     public class Provider<T> : IProvider<T>
         where T : class, IEntity
     {
-        protected SessionContainerFactory sessionFactory;
-
-        public Provider(SessionContainerFactory sessionFactory)
+        public IUnitOfWork GetUnitOfWork()
         {
-            this.sessionFactory = sessionFactory;
+            return DependencyResolver.Current.GetService<IUnitOfWork>();
         }
 
         public async Task Delete(T instance)
@@ -28,25 +27,25 @@ namespace ItNews.Nhibernate.Providers
             if (string.IsNullOrEmpty(instance?.Id))
                 throw new ArgumentNullException("Id");
 
-            using (var sessionContainer = sessionFactory.CreateSessionContainer())
+            using (var sessionContainer = SessionContainer.Open())
                 await sessionContainer.Session.DeleteAsync(instance);
         }
 
         public async Task<T> Get(string id)
         {
-            using (var sessionContainer = sessionFactory.CreateSessionContainer())
+            using (var sessionContainer = SessionContainer.Open())
                 return await sessionContainer.Session.GetAsync<T>(id);
         }
 
         public async Task<int> GetCount()
         {
-            using (var sessionContainer = sessionFactory.CreateSessionContainer())
+            using (var sessionContainer = SessionContainer.Open())
                 return await sessionContainer.Session.QueryOver<T>().RowCountAsync();
         }
 
         public async Task<IList<T>> GetList()
         {
-            using (var sessionContainer = sessionFactory.CreateSessionContainer())
+            using (var sessionContainer = SessionContainer.Open())
                 return await sessionContainer.Session.QueryOver<T>().ListAsync();
         }
 
@@ -58,7 +57,7 @@ namespace ItNews.Nhibernate.Providers
             if (string.IsNullOrEmpty(instance.Id))
                 instance.Id = Guid.NewGuid().ToString();
 
-            using (var sessionContainer = sessionFactory.CreateSessionContainer())
+            using (var sessionContainer = SessionContainer.Open())
                 await sessionContainer.Session.SaveOrUpdateAsync(instance);
 
             return instance;

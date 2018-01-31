@@ -23,7 +23,8 @@ namespace ItNews.Mvc.ViewModels.Article
         public string AuthorName { get; set; }
 
         [Display(Name = "Created")]
-        public string Date { get; set; }
+        [DataType(DataType.DateTime)]
+        public DateTime Date { get; set; }
 
         [Display(Name = "Content")]
         public string Content { get; set; }
@@ -36,6 +37,5 @@ namespace ItNews.Mvc.ViewModels.Article
 
         [ScaffoldColumn(false)]
         public IList<CommentViewModel> Comments { set; get; }
- 
     }
 }

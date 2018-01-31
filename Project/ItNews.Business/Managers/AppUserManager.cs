@@ -8,11 +8,11 @@ using ItNews.Business.Providers;
 
 namespace ItNews.Business.Managers
 {
-    public class AppUserManager : Manager<AppUser>
+    public class AppUserManager : Manager<AppUser, IUserProvider>
     {
         private IUserProvider UserProvider;
 
-        public AppUserManager(IUserProvider provider, IUnitOfWorkFactory unitOfWorkFactory) : base(provider, unitOfWorkFactory)
+        public AppUserManager(IUserProvider provider) : base(provider)
         {
             UserProvider = provider;
         }
