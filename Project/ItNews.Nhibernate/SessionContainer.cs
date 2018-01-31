@@ -13,28 +13,29 @@ namespace ItNews.Nhibernate
 {
     public class SessionContainer : IDisposable
     {
-        private const string CurrentSessionKey = "asdasdad";
+        private const string CurrentSessionKey = "CurrentSessionContainerKey";
 
         private RequestDataStorage requestDataStorage;
+
+        private readonly SessionContainer parent;
 
         public SessionContainer()
         {
             requestDataStorage = DependencyResolver.Current.GetService<RequestDataStorage>();
 
-            Parent = requestDataStorage.GetValue<SessionContainer>(CurrentSessionKey);
+            parent = requestDataStorage.GetValue<SessionContainer>(CurrentSessionKey);
             requestDataStorage.SetValue(CurrentSessionKey, this);
 
-            Session = IsBaseContainer ? DependencyResolver.Current.GetService<ISessionFactory>().OpenSession() : Parent.Session;
+            Session = IsBaseContainer ? DependencyResolver.Current.GetService<ISessionFactory>().OpenSession() : parent.Session;
         }
+        
+        public ISession Session { get;  }
 
-        public SessionContainer Parent { get; }
-
-        public ISession Session { get; }
-
-        private bool IsBaseContainer => Parent == null;
+        private bool IsBaseContainer => parent == null;
 
         public static SessionContainer Open()
         {
+          
             return new SessionContainer();
         }
 
@@ -43,7 +44,7 @@ namespace ItNews.Nhibernate
             if (IsBaseContainer)
                 Session.Dispose();
 
-            requestDataStorage.SetValue(CurrentSessionKey, Parent);
+            requestDataStorage.SetValue(CurrentSessionKey, parent);
         }
     }
 }
