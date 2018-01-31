@@ -9,13 +9,22 @@ using System.Threading.Tasks;
 
 namespace ItNews.Mvc.Identity.Stores
 {
-    public class IdentityUserStore : IUserStore<IdentityUser, string>, IUserPasswordStore<IdentityUser>, IUserLockoutStore<IdentityUser, string>, IUserTwoFactorStore<IdentityUser, string>
+    public class IdentityUserStore : IUserStore<IdentityUser, string>,
+        IUserPasswordStore<IdentityUser>,
+        IUserLockoutStore<IdentityUser, string>,
+        IUserTwoFactorStore<IdentityUser, string>,
+        IUserRoleStore<IdentityUser, string>
     {
         private IUserProvider userProvider;
 
         public IdentityUserStore(IUserProvider userProvider)
         {
             this.userProvider = userProvider;
+        }
+
+        public Task AddToRoleAsync(IdentityUser user, string roleName)
+        {
+            throw new NotImplementedException();
         }
 
         public async Task CreateAsync(IdentityUser user)
@@ -69,6 +78,15 @@ namespace ItNews.Mvc.Identity.Stores
             return Task.FromResult(user.PasswordHash);
         }
 
+        public Task<IList<string>> GetRolesAsync(IdentityUser user)
+        {
+            IList<string> roles = new List<string>
+            {
+                user.Role
+            };
+            return Task.FromResult(roles);
+        }
+
         public Task<bool> GetTwoFactorEnabledAsync(IdentityUser user)
         {
             return Task.FromResult(false);
@@ -82,6 +100,19 @@ namespace ItNews.Mvc.Identity.Stores
         public Task<int> IncrementAccessFailedCountAsync(IdentityUser user)
         {
             return Task.FromResult(++user.AccessFailedCount);
+        }
+
+        public Task<bool> IsInRoleAsync(IdentityUser user, string roleName)
+        {
+            return Task.FromResult(user.Role == roleName);
+        }
+
+        public Task RemoveFromRoleAsync(IdentityUser user, string roleName)
+        {
+            if (user.Role == roleName)
+                user.Role = "";
+
+            return Task.CompletedTask;
         }
 
         public Task ResetAccessFailedCountAsync(IdentityUser user)

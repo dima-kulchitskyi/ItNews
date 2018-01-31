@@ -10,11 +10,20 @@ namespace ItNews.Nhibernate.Providers
 {
     public class CommentProvider : Provider<Comment>, ICommentProvider
     {
-        public async Task<IList<Comment>> GetArticleComments(string articleId)
+       
+        public async Task<int> GetArticleCommentsCount(string articleId)
+        {
+            using (var sessionContainer = SessionContainer.Open())
+            {
+                return await sessionContainer.Session.QueryOver<Comment>().Where(comment => comment.Article.Id == articleId).RowCountAsync();
+            }
+        }
+
+        public async Task<IList<Comment>> GetArticleCommentsPage(string articleId, int itemsCount, int commentPage)
         {
             using (var container = SessionContainer.Open())
             {
-                return await container.Session.QueryOver<Comment>().Where(comment => comment.Article.Id == articleId).ListAsync();
+                return await container.Session.QueryOver<Comment>().Where(comment => comment.Article.Id == articleId).OrderBy(m => m.Date).Desc.Skip(commentPage).Take(itemsCount).ListAsync();
             }
         }
     }

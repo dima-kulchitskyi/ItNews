@@ -100,7 +100,7 @@ namespace ItNews.Mvc.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = model.UserName, Email = model.Email };
+                var user = new IdentityUser { UserName = model.UserName, Email = model.Email, Role = "User" };
                 var result = await userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -108,7 +108,7 @@ namespace ItNews.Mvc.Controllers
                     return RedirectToAction("Index", "Article");
                 }
 
-                foreach (var error in result.Errors)
+                foreach (var error in result.Errors)    
                     ModelState.AddModelError("", error);
             }
             return View(model);

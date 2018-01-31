@@ -48,9 +48,56 @@ namespace ItNews.Business.Managers
             }
         }
 
-        public Task<IList<Comment>> GetArticleComments(string articleId)
+        public Task<IList<Comment>> GetArticleComments(string id, int itemsCount, int commentPage)
         {
-            return provider.GetArticleComments(articleId);
+            return provider.GetArticleCommentsPage(id, itemsCount, commentPage);
+        }
+        public Task<int> GetArticleCommentsCount(string id)
+        {
+            return provider.GetArticleCommentsCount(id);
+        }
+        public async Task UpdateComment(Comment comment, string authorId)
+        {
+            if (string.IsNullOrEmpty(authorId))
+                throw new ArgumentNullException(nameof(authorId));
+
+            var oldComment = await provider.Get(comment.Id) ?? throw new ArgumentException("Comment does not exists"); ;
+
+            var author = await userManager.GetById(authorId) ?? throw new ArgumentException($"User does not exists");
+
+            if (oldComment.Author.Id != authorId)
+                throw new InvalidOperationException($"Comment is not owned by user with {nameof(authorId)}");
+
+            comment.Date = DateTime.Now;
+            comment.Author = author;
+
+            using (var uow = commentProvider.GetUnitOfWork())
+            {
+                uow.BeginTransaction();
+                await provider.SaveOrUpdate(comment);
+                uow.Commit();
+            }
+        }
+
+        public async Task DeleteComment(Comment comment, string authorId)
+        {
+            if (string.IsNullOrEmpty(authorId))
+                throw new ArgumentNullException(nameof(authorId));
+
+            using (var uow = commentProvider.GetUnitOfWork())
+            {
+                uow.BeginTransaction();
+                await provider.Delete(comment);
+                uow.Commit();
+            }
+        }
+        public Task<Comment> GetComment(string id)
+        {
+            return provider.Get(id);
+        }
+        public Task<int> GetCount()
+        {
+            return provider.GetCount();
         }
     }
 }
