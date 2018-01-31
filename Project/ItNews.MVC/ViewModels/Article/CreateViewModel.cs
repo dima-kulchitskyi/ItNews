@@ -17,7 +17,6 @@ namespace ItNews.Mvc.ViewModels.Article
 
         [DataType(DataType.Upload)]
         [FileType("JPG,PNG")]
-
         public HttpPostedFileBase Image { get; set; }
 
         [Required]

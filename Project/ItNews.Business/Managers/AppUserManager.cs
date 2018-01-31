@@ -12,7 +12,6 @@ namespace ItNews.Business.Managers
     {
         private IUserProvider UserProvider;
 
-
         public AppUserManager(IUserProvider provider, IUnitOfWorkFactory unitOfWorkFactory) : base(provider, unitOfWorkFactory)
         {
             UserProvider = provider;

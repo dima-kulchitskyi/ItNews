@@ -256,6 +256,7 @@ namespace ItNews.Controllers
 
             return RedirectToAction("Details", new { id = model.ArticleId });
         }
+
         [Authorize]
         [HttpGet]
         public async Task<ActionResult> DeleteComment(string id, string articleId)
