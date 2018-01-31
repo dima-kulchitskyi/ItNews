@@ -52,9 +52,6 @@ namespace ItNews.Mvc.Controllers
                 count++;
             }
             var result = (string)Thread.GetData(Thread.GetNamedDataSlot("123"));
-
-
-
             return Content(equals.ToString() + " " + count);
         }
 
@@ -78,7 +75,6 @@ namespace ItNews.Mvc.Controllers
                 case SignInStatus.Success:
                     if (Url.IsLocalUrl(returnUrl))
                         return Redirect(returnUrl);
-
                     return RedirectToAction("Index", "Article");
                 case SignInStatus.Failure:
                 default:

@@ -10,16 +10,13 @@ namespace ItNews.Business.Managers
 {
     public class AppUserManager : Manager<AppUser, IUserProvider>
     {
-        private IUserProvider userProvider;
-
         public AppUserManager(IUserProvider provider) : base(provider)
-        {
-            userProvider = provider;
+        {   
         }
 
         public Task<AppUser> GetUser(string id)
         {
-            return userProvider.Get(id);
+            return provider.Get(id);
         }
 
         public async Task DeleteAsync(AppUser user, string authorId)
@@ -27,16 +24,16 @@ namespace ItNews.Business.Managers
             if (string.IsNullOrEmpty(authorId))
                 throw new ArgumentNullException(nameof(authorId));
 
-            using (var uow = userProvider.GetUnitOfWork())
+            using (var uow = provider.GetUnitOfWork())
             {
                 uow.BeginTransaction();
-                await userProvider.Delete(user);
+                await provider.Delete(user);
                 uow.Commit();
             }
         }
         public Task<IList<AppUser>> GetAllUsers()
         {
-            return userProvider.GetAllUsers();
+            return provider.GetAllUsers();
         }
     }
 }

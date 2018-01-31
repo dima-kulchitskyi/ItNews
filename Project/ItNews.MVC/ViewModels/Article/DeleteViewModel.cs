@@ -11,8 +11,6 @@ namespace ItNews.MVC.ViewModels.Article
     public class DeleteViewModel
     {
         public string Id { get; set; }
-        //public AppUser Author { get; set; }
-
         public string Title { get; set; }
         public string ImagePath { get; set; }
         public string Text { get; set; }

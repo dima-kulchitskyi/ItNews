@@ -71,7 +71,7 @@ namespace ItNews.Business.Managers
             comment.Date = DateTime.Now;
             comment.Author = author;
 
-            using (var uow = commentProvider.GetUnitOfWork())
+            using (var uow = provider.GetUnitOfWork())
             {
                 uow.BeginTransaction();
                 await provider.SaveOrUpdate(comment);
@@ -84,7 +84,7 @@ namespace ItNews.Business.Managers
             if (string.IsNullOrEmpty(authorId))
                 throw new ArgumentNullException(nameof(authorId));
 
-            using (var uow = commentProvider.GetUnitOfWork())
+            using (var uow = provider.GetUnitOfWork())
             {
                 uow.BeginTransaction();
                 await provider.Delete(comment);

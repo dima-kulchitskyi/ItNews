@@ -86,9 +86,8 @@ namespace ItNews.Controllers
                 Content = article.Text,
                 ControlsAvailable = (User.Identity.IsAuthenticated && article.Author.Id == User.Identity.GetUserId()),
                 Comments = comments,
-                UserName = User.Identity.Name,
-                commentPageCount = Convert.ToInt32(Math.Ceiling(await commentManager.GetArticleCommentsCount(id) / 10.0)),
-                commentPageNumber = commentPage
+                CommentPagesCount = (int)Math.Ceiling(await commentManager.GetArticleCommentsCount(id) / 10.0),
+                CommentPageNumber = commentPage
             };
 
             if (!string.IsNullOrEmpty(article.ImageName))

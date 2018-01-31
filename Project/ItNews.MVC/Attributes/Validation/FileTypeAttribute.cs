@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
-namespace ItNews.Mvc.CustomValidationAttributes
+namespace ItNews.Mvc.Attributes.Validation
 {
     [AttributeUsage(AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
     public class FileTypeAttribute : ValidationAttribute, IClientValidatable

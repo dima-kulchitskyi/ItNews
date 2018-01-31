@@ -1,24 +1,30 @@
-﻿using NHibernate;
+﻿using ItNews.Mvc;
+using NHibernate;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
 
 namespace ItNews.Nhibernate
 {
     public class SessionContainer : IDisposable
     {
-        private const string CurrentSessionThearKey = "asdasdad";
+        private const string CurrentSessionKey = "asdasdad";
+
+        private RequestDataStorage requestDataStorage;
 
         public SessionContainer()
         {
-            Parent = (SessionContainer)Thread.GetData(Thread.GetNamedDataSlot(CurrentSessionThearKey));
-            Session = IsBaseContainer ? DependencyResolver.Current.GetService<ISessionFactory>().OpenSession() : Parent.Session;
+            requestDataStorage = DependencyResolver.Current.GetService<RequestDataStorage>();
 
-            Thread.SetData(Thread.GetNamedDataSlot(CurrentSessionThearKey), this);
+            Parent = requestDataStorage.GetValue<SessionContainer>(CurrentSessionKey);
+            requestDataStorage.SetValue(CurrentSessionKey, this);
+
+            Session = IsBaseContainer ? DependencyResolver.Current.GetService<ISessionFactory>().OpenSession() : Parent.Session;
         }
 
         public SessionContainer Parent { get; }
@@ -29,7 +35,7 @@ namespace ItNews.Nhibernate
 
         public static SessionContainer Open()
         {
-           return new SessionContainer();
+            return new SessionContainer();
         }
 
         public void Dispose()
@@ -37,7 +43,7 @@ namespace ItNews.Nhibernate
             if (IsBaseContainer)
                 Session.Dispose();
 
-            Thread.SetData(Thread.GetNamedDataSlot(CurrentSessionThearKey), Parent);
+            requestDataStorage.SetValue(CurrentSessionKey, Parent);
         }
     }
 }
