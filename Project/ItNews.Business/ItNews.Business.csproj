@@ -63,7 +63,6 @@
     <Compile Include="Entities\Comment.cs" />
     <Compile Include="Entities\IEntity.cs" />
     <Compile Include="IUnitOfWork.cs" />
-    <Compile Include="IUnitOfWorkFactory.cs" />
     <Compile Include="Managers\AppUserManager.cs" />
     <Compile Include="Managers\ArticleManager.cs" />
     <Compile Include="Managers\CommentManager.cs" />

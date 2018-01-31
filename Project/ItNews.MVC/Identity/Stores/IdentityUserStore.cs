@@ -30,13 +30,16 @@ namespace ItNews.Mvc.Identity.Stores
         public async Task CreateAsync(IdentityUser user)
         {
             var appUserInstance = user.ToAppUser();
-            await userProvider.SaveOrUpdate(appUserInstance);
+            using (var uow = userProvider.GetUnitOfWork())
+                await userProvider.SaveOrUpdate(appUserInstance);
+
             user.Id = appUserInstance.Id;
         }
 
         public Task DeleteAsync(IdentityUser user)
         {
-            return userProvider.Delete(user.ToAppUser());
+            using (var uow = userProvider.GetUnitOfWork())
+                return userProvider.Delete(user.ToAppUser());
         }
 
         public void Dispose()
@@ -140,7 +143,8 @@ namespace ItNews.Mvc.Identity.Stores
 
         public Task UpdateAsync(IdentityUser user)
         {
-            return userProvider.SaveOrUpdate(user.ToAppUser());
+            using (var uow = userProvider.GetUnitOfWork())
+                return userProvider.SaveOrUpdate(user.ToAppUser());
         }
     }
 }

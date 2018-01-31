@@ -13,13 +13,16 @@ using ItNews.Business.Entities;
 using ItNews.Business.Managers;
 using ItNews.Mvc.Identity.Mangers;
 using ItNews.Mvc.Identity;
+using System.Threading;
 
 namespace ItNews.Mvc.Controllers
 {
     public class AccountController : Controller
     {
         private UserManager<IdentityUser, string> userManager;
+
         private SignInManager<IdentityUser, string> signInManager;
+
         private IAuthenticationManager authenticationManager;
 
         public AccountController(IdentityUserManager identityUserManager,
@@ -31,6 +34,29 @@ namespace ItNews.Mvc.Controllers
             authenticationManager = identityAuthenticationManager;
         }
 
+        public async Task<ActionResult> Test()
+        {
+            var thread1 = Thread.CurrentThread;
+            Thread.SetData(Thread.GetNamedDataSlot("123"), "DIMAS");
+
+            var result2 = (string)Thread.GetData(Thread.GetNamedDataSlot("123"));
+
+            bool equals = true;
+            int count = 0;
+            while (equals)
+            {
+                await Task.Run(() => Thread.Sleep(200));
+                var thread2 = Thread.CurrentThread;
+
+                equals = thread1 == thread2;
+                count++;
+            }
+            var result = (string)Thread.GetData(Thread.GetNamedDataSlot("123"));
+
+
+
+            return Content(equals.ToString() + " " + count);
+        }
 
         [AllowAnonymous]
         public ActionResult Login(string returnUrl)

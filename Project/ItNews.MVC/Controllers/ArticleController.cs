@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using System.Web.Configuration;
 using System.Web.Mvc;
 using ItNews.Mvc.ModelBinders.Article;
+using System.Net;
+using ItNews.Mvc.Attributes;
 
 namespace ItNews.Controllers
 {
@@ -28,7 +30,7 @@ namespace ItNews.Controllers
 
         [HttpGet]
         public async Task<ActionResult> Index(
-            [ModelBinder(typeof(PageNumberModelBinder))]int page,
+            [PageNumber]int page,
             [ModelBinder(typeof(ItemsOnPageCountModelBinder))]int itemsCount)
         {
             var articles = await articleManager.GetPage(itemsCount, page, true);
@@ -38,7 +40,7 @@ namespace ItNews.Controllers
 
             var model = new ArticlesListViewModel
             {
-                PageCount = Convert.ToInt32(Math.Ceiling(await articleManager.GetCount() / (double)itemsCount)),
+                PageCount = (int)Math.Ceiling(await articleManager.GetCount() / (double)itemsCount),
                 Articles = articles.Select(it => new ArticlesListPageItem
                 {
                     Title = it.Title,
@@ -74,13 +76,13 @@ namespace ItNews.Controllers
                    Date = comment.Date,
                    Text = comment.Text
                }).ToList();
-
+            
             var model = new ArticleDetailsViewModel
             {
                 Id = article.Id,
                 Title = article.Title,
                 AuthorName = article.Author.UserName,
-                Date = article.Date.ToString("f"),
+                Date = article.Date,
                 Content = article.Text,
                 ControlsAvailable = (User.Identity.IsAuthenticated && article.Author.Id == User.Identity.GetUserId()),
                 Comments = comments,
@@ -97,7 +99,6 @@ namespace ItNews.Controllers
 
             return View(model);
         }
-
 
         [Authorize]
         [HttpGet]
@@ -169,7 +170,7 @@ namespace ItNews.Controllers
             var article = await articleManager.GetArticle(model.Id);
 
             if (article.Author.Id != User.Identity.GetUserId())
-                return HttpNotFound();
+                return new HttpStatusCodeResult(HttpStatusCode.Forbidden, "Forbidden");
 
             var updatedArticle = new Article
             {
@@ -203,7 +204,7 @@ namespace ItNews.Controllers
             var article = await articleManager.GetArticle(id);
 
             if (article.Author.Id != User.Identity.GetUserId())
-                return HttpNotFound();
+                return new HttpStatusCodeResult(HttpStatusCode.Forbidden, "Forbidden");
 
             await articleManager.DeleteArticle(article, article.Id);
 
@@ -247,12 +248,8 @@ namespace ItNews.Controllers
             var article = await articleManager.GetArticle(model.ArticleId);
             if (article == null)
                 return HttpNotFound();
-            var comment = new Comment
-            {
-                Text = model.Text
-            };
 
-            await commentManager.CreateComment(comment, User.Identity.GetUserId(), model.ArticleId);
+            await commentManager.CreateComment(model.Text, User.Identity.GetUserId(), model.ArticleId);
 
             return RedirectToAction("Details", new { id = model.ArticleId });
         }

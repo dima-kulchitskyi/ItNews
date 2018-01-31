@@ -42,15 +42,24 @@
             @Html.DisplayFor(model => model.Date)
         </dd>
     </dl>
-    @if (Model.ControlsAvailable)
-    {
-        @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) <text>|</text>
-        @Html.ActionLink("Delete", "Delete", new { id = Model.Id })
-    }
+
+    <p>
+        @if (Model.ControlsAvailable)
+        {
+            @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) <text>|</text>
+            @Html.ActionLink("Delete", "Delete", new { id = Model.Id }) <text>|</text>
+        }
+        @Html.ActionLink("Back to List", "Index")
+    </p>
 </div>
 
+
 <div>
-    @Html.Partial("CreateCommentPartial", new CreateCommentViewModel { ArticleId = Model.Id })
+    @if (User.Identity.IsAuthenticated)
+    {
+        @Html.Partial("CreateCommentPartial", new CreateCommentViewModel { ArticleId = Model.Id })
+    }
+
     <dl class="dl-horizontal">
         @foreach (var comment in Model.Comments)
         {
@@ -67,30 +76,15 @@
             <dd>
                 @Html.DisplayFor(model => comment.Text)
             </dd>
-            <p>
-                @if (comment.Author == Model.UserName)
-                {
-                    @Html.ActionLink("Delete", "DeleteComment", new { id = comment.Id, articleId = Model.Id })
-                }
-            </p>
+            <dt>
+                @Html.DisplayNameFor(model => comment.Date)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => comment.Date)
+            </dd>
         }
     </dl>
-    @for (int i = 0; i < Model.commentPageCount; i++)
-    {
-        string pageNumberText = (i + 1).ToString();
-        if (i == Model.commentPageNumber)
-        {
-            @pageNumberText
-        }
-        else
-        {
-            @Html.ActionLink(pageNumberText, "Details", new {  id = Model.Id, commentPage = i+1 });
-        }
-    }
 </div>
 
-<p>
-    
-    @Html.ActionLink("Back to List", "Index")
-</p>
- 
+
+

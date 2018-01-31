@@ -120,10 +120,8 @@
     <Compile Include="Providers\UserProvider.cs" />
     <Compile Include="Providers\Provider.cs" />
     <Compile Include="SessionContainer.cs" />
-    <Compile Include="SessionContainerFactory.cs" />
     <Compile Include="TransactionContainer.cs" />
     <Compile Include="UnitOfWork.cs" />
-    <Compile Include="UnitOfWorkFactory.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ItNews.Business\ItNews.Business.csproj">

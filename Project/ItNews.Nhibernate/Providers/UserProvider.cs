@@ -12,20 +12,15 @@ namespace ItNews.Nhibernate.Providers
 {
     public class UserProvider : Provider<AppUser>, IUserProvider
     {
-        public UserProvider(SessionContainerFactory sessionFactory) : base(sessionFactory)
-        {
-
-        }
-
         public async  Task<IList<AppUser>> GetAllUsers()
         {
-            using (var sessionContainer = sessionFactory.CreateSessionContainer())
+            using (var sessionContainer = SessionContainer.Open())
                 return await sessionContainer.Session.QueryOver<AppUser>().OrderBy(m => m.UserName).Asc.ListAsync();
         }
 
         public async Task<AppUser> GetByUserName(string userName)
         {
-            using (var sessionContainer = sessionFactory.CreateSessionContainer())
+            using (var sessionContainer = SessionContainer.Open())
                 return await sessionContainer.Session.QueryOver<AppUser>().Where(it => it.UserName == userName).SingleOrDefaultAsync();
         }
     }

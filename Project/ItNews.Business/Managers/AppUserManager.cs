@@ -8,18 +8,16 @@ using ItNews.Business.Providers;
 
 namespace ItNews.Business.Managers
 {
-    public class AppUserManager : Manager<AppUser>
+    public class AppUserManager : Manager<AppUser, IUserProvider>
     {
-        private IUserProvider UserProvider;
-
-        public AppUserManager(IUserProvider provider, IUnitOfWorkFactory unitOfWorkFactory) : base(provider, unitOfWorkFactory)
+        public AppUserManager(IUserProvider provider) : base(provider)
         {
-            UserProvider = provider;
+           
         }
 
         public Task<AppUser> GetUser(string id)
         {
-            return UserProvider.Get(id);
+            return provider.Get(id);
         }
 
         public async Task DeleteAsync(AppUser user, string authorId)
@@ -27,16 +25,16 @@ namespace ItNews.Business.Managers
             if (string.IsNullOrEmpty(authorId))
                 throw new ArgumentNullException(nameof(authorId));
 
-            using (var uow = unitOfWorkFactory.GetUnitOfWork())
+            using (var uow = provider.GetUnitOfWork())
             {
                 uow.BeginTransaction();
-                await UserProvider.Delete(user);
+                await provider.Delete(user);
                 uow.Commit();
             }
         }
         public Task<IList<AppUser>> GetAllUsers()
         {
-            return UserProvider.GetAllUsers();
+            return provider.GetAllUsers();
         }
     }
 }

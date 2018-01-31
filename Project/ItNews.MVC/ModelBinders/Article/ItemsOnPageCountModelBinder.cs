@@ -16,10 +16,12 @@ namespace ItNews.Mvc.ModelBinders.Article
             var defaultItemsCount = int.Parse(WebConfigurationManager.AppSettings["NewsListItemsOnPageDefaultCount"]);
 
             var pageNumberField = bindingContext.ValueProvider.GetValue(name);
+
             if (pageNumberField == null)
                 return defaultItemsCount;
 
             var value = (int)pageNumberField.ConvertTo(typeof(int));
+
             return value > 0 ? value : defaultItemsCount;
         }
     }

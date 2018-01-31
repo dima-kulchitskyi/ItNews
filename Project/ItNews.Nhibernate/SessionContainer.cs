@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
@@ -10,50 +11,33 @@ namespace ItNews.Nhibernate
 {
     public class SessionContainer : IDisposable
     {
-        private ISessionFactory nhibernateSessionFactory;
+        private const string CurrentSessionThearKey = "asdasdad";
 
-        private ISession session;
-
-        private bool isBaseContainer;
-
-        public SessionContainer(SessionContainer parentContainer)
+        public SessionContainer()
         {
-            Parent = parentContainer;
-            isBaseContainer = parentContainer == null;
+            Parent = (SessionContainer)Thread.GetData(Thread.GetNamedDataSlot(CurrentSessionThearKey));
+            Session = IsBaseContainer ? DependencyResolver.Current.GetService<ISessionFactory>().OpenSession() : Parent.Session;
 
-            nhibernateSessionFactory = DependencyResolver.Current.GetService<ISessionFactory>();
+            Thread.SetData(Thread.GetNamedDataSlot(CurrentSessionThearKey), this);
         }
 
+        public SessionContainer Parent { get; }
 
-        public SessionContainer Parent { get; private set; }
+        public ISession Session { get; }
 
-        public ISession Session
+        private bool IsBaseContainer => Parent == null;
+
+        public static SessionContainer Open()
         {
-            get
-            {
-                if (isBaseContainer)
-                {
-                    if (session == null || !session.IsOpen)
-                        session = nhibernateSessionFactory.OpenSession();
-
-                    return session;
-                }
-
-                return Parent.Session;
-            }
+           return new SessionContainer();
         }
-
-        public bool Disposed { get; private set; }
 
         public void Dispose()
         {
-            if (Parent?.Disposed == true)
-                throw new InvalidOperationException("The parent container was disposed");
+            if (IsBaseContainer)
+                Session.Dispose();
 
-            if (isBaseContainer)
-                session?.Dispose();
-
-            Disposed = true;
+            Thread.SetData(Thread.GetNamedDataSlot(CurrentSessionThearKey), Parent);
         }
     }
 }

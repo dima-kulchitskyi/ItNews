@@ -15,8 +15,7 @@ namespace ItNews.Web
                         "~/Scripts/jquery.validate.js",
                         "~/Scripts/jquery.validate.unobtrusive.js",
                         "~/Scripts/jquery.unobtrusive-ajax.js",
-                        "~/Scripts/jquery.validate.fileExtensions.js"
-                        );
+                        "~/Scripts/jquery.validate.fileExtensions.js");
             validationBundle.Orderer = new DeclarationOrderBundleOrderer();
 
             bundles.Add(validationBundle);

@@ -9,9 +9,6 @@ using Unity.Injection;
 
 namespace ItNews.Web.DependencyInjection
 {
-    /// <summary>
-    /// Specifies the Unity configuration for the main container.
-    /// </summary>
     public static class UnityRegistrations
     {
         public static void RegisterTypes(IUnityContainer container)
@@ -19,9 +16,6 @@ namespace ItNews.Web.DependencyInjection
             Nhibernate.Configuration.RegisterDependencies(container);
 
             container
-            .RegisterTypeInRequestScope<Nhibernate.SessionContainerFactory, Nhibernate.SessionContainerFactory>()
-
-            .RegisterType<IUnitOfWorkFactory, Nhibernate.UnitOfWorkFactory>()
             .RegisterType<IUnitOfWork, Nhibernate.UnitOfWork>()
 
             .RegisterType<IArticleProvider, Nhibernate.Providers.ArticleProvider>()

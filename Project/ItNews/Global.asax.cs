@@ -1,4 +1,5 @@
-﻿using ItNews.Web;
+﻿using ItNews.Mvc.ModelBinders.Article;
+using ItNews.Web;
 using ItNews.Web.DependencyInjection;
 using System.Web;
 using System.Web.Mvc;
@@ -15,8 +16,10 @@ namespace ItNews
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
 
+            ModelBinders.Binders.Add(typeof(int), new PageNumberModelBinder());
+
+            ControllerBuilderConfig.RegisterNamespaces(ControllerBuilder.Current);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
-            RouteConfig.SetRoutesDefaultNamespace(RouteTable.Routes);
 
             UnityConfiguration.Initialize();
         }

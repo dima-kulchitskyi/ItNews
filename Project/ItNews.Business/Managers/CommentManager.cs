@@ -8,50 +8,62 @@ using System.Threading.Tasks;
 
 namespace ItNews.Business.Managers
 {
-    public class CommentManager : Manager<Comment>
+    public class CommentManager : Manager<Comment, ICommentProvider>
     {
-        private IUserProvider userProvider;
-        private IArticleProvider articleProvider;
-        private ICommentProvider commentProvider;
-        public CommentManager(ICommentProvider provider, IUnitOfWorkFactory unitOfWorkFactory, IUserProvider userProvider, IArticleProvider articleProvider)
-            : base(provider, unitOfWorkFactory)
+        private AppUserManager userManager;
+
+        private ArticleManager articleManager;
+
+        public CommentManager(ICommentProvider commentProvider, AppUserManager userManager, ArticleManager articleManager)
+            : base(commentProvider)
         {
-            commentProvider = provider;
-            this.userProvider = userProvider;
-            this.articleProvider = articleProvider;
+            this.userManager = userManager;
+            this.articleManager = articleManager;
         }
 
-        public async Task CreateComment(Comment comment, string authorId, string articleId)
+        public async Task CreateComment(string commentText, string authorId, string articleId)
         {
-            using (var uow = unitOfWorkFactory.GetUnitOfWork())
+            if (string.IsNullOrEmpty(authorId))
+                throw new ArgumentNullException(nameof(commentText));
+
+            if (string.IsNullOrEmpty(authorId))
+                throw new ArgumentNullException(nameof(authorId));
+
+            if (string.IsNullOrEmpty(authorId))
+                throw new ArgumentNullException(nameof(articleId));
+
+            using (var uow = provider.GetUnitOfWork())
             {
-                var user = await userProvider.Get(authorId);
-                var article = await articleProvider.Get(articleId);
-                comment.Author = user ?? throw new InvalidOperationException("No user with given id");
-                comment.Article = article ?? throw new InvalidOperationException("No exist article with this ID");
-                comment.Date = DateTime.Now;
+                var comment = new Comment
+                {
+                    Text = commentText,
+                    Author = await userManager.GetById(authorId) ?? throw new InvalidOperationException("No user with given id"),
+                    Article = await articleManager.GetById(articleId) ?? throw new InvalidOperationException("No article with given id"),
+                    Date = DateTime.Now
+                };
+
                 uow.BeginTransaction();
-                await commentProvider.SaveOrUpdate(comment);
+                await provider.SaveOrUpdate(comment);
                 uow.Commit();
             }
         }
 
         public Task<IList<Comment>> GetArticleComments(string id, int itemsCount, int commentPage)
         {
-            return commentProvider.GetArticleCommentsPage(id, itemsCount, commentPage);
+            return provider.GetArticleCommentsPage(id, itemsCount, commentPage);
         }
         public Task<int> GetArticleCommentsCount(string id)
         {
-            return commentProvider.GetArticleCommentsCount(id);
+            return provider.GetArticleCommentsCount(id);
         }
         public async Task UpdateComment(Comment comment, string authorId)
         {
             if (string.IsNullOrEmpty(authorId))
                 throw new ArgumentNullException(nameof(authorId));
 
-            var oldComment = await commentProvider.Get(comment.Id) ?? throw new ArgumentException("Comment does not exists"); ;
+            var oldComment = await provider.Get(comment.Id) ?? throw new ArgumentException("Comment does not exists"); ;
 
-            var author = await userProvider.Get(authorId) ?? throw new ArgumentException($"User with {nameof(authorId)} does not exists");
+            var author = await userManager.GetById(authorId) ?? throw new ArgumentException($"User does not exists");
 
             if (oldComment.Author.Id != authorId)
                 throw new InvalidOperationException($"Comment is not owned by user with {nameof(authorId)}");
@@ -59,10 +71,10 @@ namespace ItNews.Business.Managers
             comment.Date = DateTime.Now;
             comment.Author = author;
 
-            using (var uow = unitOfWorkFactory.GetUnitOfWork())
+            using (var uow = commentProvider.GetUnitOfWork())
             {
                 uow.BeginTransaction();
-                await commentProvider.SaveOrUpdate(comment);
+                await provider.SaveOrUpdate(comment);
                 uow.Commit();
             }
         }
@@ -72,20 +84,20 @@ namespace ItNews.Business.Managers
             if (string.IsNullOrEmpty(authorId))
                 throw new ArgumentNullException(nameof(authorId));
 
-            using (var uow = unitOfWorkFactory.GetUnitOfWork())
+            using (var uow = commentProvider.GetUnitOfWork())
             {
                 uow.BeginTransaction();
-                await commentProvider.Delete(comment);
+                await provider.Delete(comment);
                 uow.Commit();
             }
         }
         public Task<Comment> GetComment(string id)
         {
-            return commentProvider.Get(id);
+            return provider.Get(id);
         }
         public Task<int> GetCount()
         {
-            return commentProvider.GetCount();
+            return provider.GetCount();
         }
     }
 }
