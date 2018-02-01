@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+﻿@using ItNews.Business;
+@{
+    var currentProviderType = DependencyResolver.Current.GetService<ApplicationVariables>().DataSourceProviderType;
+}
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
@@ -37,8 +42,8 @@
                         @using (Html.BeginForm("ProviderType", "Configuration", FormMethod.Post, new { @class = "navbar-right" }))
                         {
                             <select name="providerType" style="margin-top: 10px">
-                                <option value="DB">DB</option>
-                                <option value="Memory">Memory</option>
+                                <option value="DB" @(currentProviderType == "DB" ? "selected" : "")>DB</option>
+                                <option value="Memory"@(currentProviderType == "Memory" ? "selected" : "")>Memory</option>
                             </select>
                             <input type="submit" class="btn" style="float: right; margin-left: 5px; margin-right: 20px; margin-top: 3px">
                         }
