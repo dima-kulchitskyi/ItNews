@@ -63,7 +63,7 @@ namespace ItNews.Controllers
             if (string.IsNullOrEmpty(id))
                 return HttpNotFound();
 
-            var article = await articleManager.GetArticle(id);
+            var article = await articleManager.GetById(id);
 
             if (article == null)
                 return HttpNotFound();
@@ -140,7 +140,7 @@ namespace ItNews.Controllers
             if (string.IsNullOrEmpty(id))
                 return HttpNotFound();
 
-            var article = await articleManager.GetArticle(id);
+            var article = await articleManager.GetById(id);
 
             if (article == null)
                 return HttpNotFound();
@@ -166,7 +166,7 @@ namespace ItNews.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var article = await articleManager.GetArticle(model.Id);
+            var article = await articleManager.GetById(model.Id);
 
             if (article.Author.Id != User.Identity.GetUserId())
                 return new HttpStatusCodeResult(HttpStatusCode.Forbidden, "Forbidden");
@@ -200,7 +200,7 @@ namespace ItNews.Controllers
             if (string.IsNullOrEmpty(id))
                 return HttpNotFound();
 
-            var article = await articleManager.GetArticle(id);
+            var article = await articleManager.GetById(id);
 
             if (article.Author.Id != User.Identity.GetUserId())
                 return new HttpStatusCodeResult(HttpStatusCode.Forbidden, "Forbidden");
@@ -217,7 +217,7 @@ namespace ItNews.Controllers
             if (string.IsNullOrEmpty(id))
                 return HttpNotFound();
 
-            var article = await articleManager.GetArticle(id);
+            var article = await articleManager.GetById(id);
 
             if (article == null)
                 return HttpNotFound();
@@ -244,7 +244,7 @@ namespace ItNews.Controllers
             if (string.IsNullOrEmpty(model.ArticleId))
                 return HttpNotFound();
 
-            var article = await articleManager.GetArticle(model.ArticleId);
+            var article = await articleManager.GetById(model.ArticleId);
             if (article == null)
                 return HttpNotFound();
 
@@ -260,7 +260,7 @@ namespace ItNews.Controllers
             if (string.IsNullOrEmpty(id))
                 return HttpNotFound();
 
-            var comment = await commentManager.GetComment(id);
+            var comment = await commentManager.GetById(id);
 
             if (comment.Author.Id != User.Identity.GetUserId())
                 return HttpNotFound();

@@ -5,13 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ItNews.Business.Providers;
+using ItNews.Business.Caching;
 
 namespace ItNews.Business.Managers
 {
-    public class AppUserManager : Manager<AppUser, IUserProvider>
+    public class AppUserManager : Manager<AppUser, IUserProvider, CacheProvider<AppUser>>
     {
-        public AppUserManager(IUserProvider provider) : base(provider)
-        {   
+        public AppUserManager(IUserProvider provider, CacheProvider<AppUser> cacheProvider) : base(provider, cacheProvider)
+        {
+            
         }
 
         public Task<AppUser> GetUser(string id)
@@ -30,7 +32,10 @@ namespace ItNews.Business.Managers
                 await provider.Delete(user);
                 uow.Commit();
             }
+
+            cacheProvider.Clear(user.Id);
         }
+
         public Task<IList<AppUser>> GetAllUsers()
         {
             return provider.GetAllUsers();

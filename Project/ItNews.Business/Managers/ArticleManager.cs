@@ -5,15 +5,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ItNews.Business.Providers;
+using ItNews.Business.Caching;
 
 namespace ItNews.Business.Managers
 {
-    public class ArticleManager : Manager<Article, IArticleProvider>
+    public class ArticleManager : Manager<Article, IArticleProvider, CacheProvider<Article>>
     {
         private AppUserManager userManager;
 
-        public ArticleManager(IArticleProvider articleProvider, AppUserManager userManager)
-            : base(articleProvider)
+        public ArticleManager(IArticleProvider provider, CacheProvider<Article> cacheProvider, AppUserManager userManager)
+            : base(provider, cacheProvider)
         {
             this.userManager = userManager;
         }
@@ -26,11 +27,6 @@ namespace ItNews.Business.Managers
         public Task<IList<Article>> GetPage(int count, int pageNumber, bool newFirst)
         {
             return provider.GetPage(count, pageNumber, newFirst);
-        }
-
-        public Task<Article> GetArticle(string id)
-        {
-            return provider.Get(id);
         }
 
         public async Task CreateArticle(Article article, string authorId)
@@ -87,6 +83,8 @@ namespace ItNews.Business.Managers
                 await provider.SaveOrUpdate(article);
                 uow.Commit();
             }
+
+            cacheProvider.Clear(article.Id);
         }
 
         public async Task DeleteArticle(Article article, string authorId)
@@ -100,6 +98,8 @@ namespace ItNews.Business.Managers
                 await provider.Delete(article);
                 uow.Commit();
             }
+
+            cacheProvider.Clear(article.Id);
         }
     }
 }

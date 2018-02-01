@@ -5,17 +5,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ItNews.Business.Caching;
 
 namespace ItNews.Business.Managers
 {
-    public class CommentManager : Manager<Comment, ICommentProvider>
+    public class CommentManager : Manager<Comment, ICommentProvider, CacheProvider<Comment>>
     {
         private AppUserManager userManager;
 
         private ArticleManager articleManager;
 
-        public CommentManager(ICommentProvider commentProvider, AppUserManager userManager, ArticleManager articleManager)
-            : base(commentProvider)
+        public CommentManager(ICommentProvider provider, CacheProvider<Comment> cacheProvider, AppUserManager userManager, ArticleManager articleManager)
+            : base(provider, cacheProvider)
         {
             this.userManager = userManager;
             this.articleManager = articleManager;
@@ -52,10 +53,12 @@ namespace ItNews.Business.Managers
         {
             return provider.GetArticleCommentsPage(id, itemsCount, commentPage);
         }
+
         public Task<int> GetArticleCommentsCount(string id)
         {
             return provider.GetArticleCommentsCount(id);
         }
+
         public async Task UpdateComment(Comment comment, string authorId)
         {
             if (string.IsNullOrEmpty(authorId))
@@ -77,6 +80,8 @@ namespace ItNews.Business.Managers
                 await provider.SaveOrUpdate(comment);
                 uow.Commit();
             }
+
+            cacheProvider.Clear(comment.Id);
         }
 
         public async Task DeleteComment(Comment comment, string authorId)
@@ -90,14 +95,14 @@ namespace ItNews.Business.Managers
                 await provider.Delete(comment);
                 uow.Commit();
             }
+
+            cacheProvider.Clear(comment.Id);
         }
-        public Task<Comment> GetComment(string id)
-        {
-            return provider.Get(id);
-        }
+        
         public Task<int> GetCount()
         {
             return provider.GetCount();
         }
+       
     }
 }

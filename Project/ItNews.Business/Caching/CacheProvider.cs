@@ -16,9 +16,15 @@ namespace ItNews.Business.Caching
             return MemoryCache.Default.Get(typeof(T).FullName + id) as T;
         }
 
-        public void Save(T entity)
+        public T Save(T entity)
         {
             MemoryCache.Default.Set(typeof(T).FullName + entity.Id, entity, DateTime.Now.AddMinutes(30));
+            return entity;
+        }
+
+        public void Clear(string id)
+        {
+            MemoryCache.Default.Remove(typeof(T).FullName + id);
         }
     }
 }
