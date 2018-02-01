@@ -15,7 +15,6 @@ namespace ItNews.Mvc.ViewModels.Article
         public string ArticleId { get; set; }
 
         [Required]
-        [StringLength(255)]
         [DataType(DataType.MultilineText)]
         public string Text { get; set; }
     }

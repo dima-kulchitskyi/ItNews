@@ -11,15 +11,16 @@ namespace ItNews.Business.Caching
     public class CacheProvider<T>
         where T : class, IEntity
     {
-        ApplicationVariables applicationVariables;
+        ApplicationVariables config;
 
         protected readonly string keyPrefix;
 
         public CacheProvider(IDependencyResolver dependencyResolver)
         {
-            applicationVariables = dependencyResolver.Resolve<ApplicationVariables>();
-            keyPrefix = applicationVariables.DataSourceProviderType + typeof(T).FullName;
+            config = dependencyResolver.Resolve<ApplicationVariables>();
+            keyPrefix = config.DataSourceProviderType + typeof(T).FullName;
         }
+
         public T GetById(string id)
         {
             return MemoryCache.Default.Get(keyPrefix + id) as T;

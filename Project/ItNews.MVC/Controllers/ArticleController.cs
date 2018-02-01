@@ -244,8 +244,11 @@ namespace ItNews.Controllers
         [Authorize]
         public async Task<ActionResult> CreateComment(CreateCommentViewModel model)
         {
-            if (string.IsNullOrEmpty(model.ArticleId))
+           if (string.IsNullOrEmpty(model.ArticleId))
                 return HttpNotFound();
+
+            if (!ModelState.IsValid)
+                return RedirectToAction("Details", "Article", new { Id = model.ArticleId });
 
             var article = await articleManager.GetById(model.ArticleId);
             if (article == null)
