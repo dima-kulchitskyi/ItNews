@@ -10,38 +10,27 @@ namespace ItNews.Nhibernate.Providers
 {
     public class ArticleProvider : Provider<Article>, IArticleProvider
     {
-        public async Task<IList<Article>> GetListSegment(int count, DateTime startDate, bool newFirst)
+        public async Task<IList<Article>> GetListSegment(int count, DateTime startDate)
         {
             using (var container = SessionContainer.Open())
             {
-                var criteria = container.Session.CreateCriteria<Article>();
-
-                if (newFirst)
-                    criteria.AddOrder(Order.Desc(nameof(Article.Date)))
-                            .Add(Restrictions.Lt(nameof(Article.Date), startDate));
-                else
-                    criteria.AddOrder(Order.Asc(nameof(Article.Date)))
-                            .Add(Restrictions.Gt(nameof(Article.Date), startDate));
-
-                criteria.SetMaxResults(count);
+                var criteria = container.Session.CreateCriteria<Article>()
+                        .AddOrder(Order.Desc(nameof(Article.Date)))
+                        .Add(Restrictions.Lt(nameof(Article.Date), startDate))
+                        .SetMaxResults(count);
 
                 return await criteria.ListAsync<Article>();
             }
         }
 
-        public async Task<IList<Article>> GetPage(int count, int pageNumber, bool newFirst)
+        public async Task<IList<Article>> GetPage(int count, int pageNumber)
         {
             using (var container = SessionContainer.Open())
             {
-                var criteria = container.Session.CreateCriteria<Article>();
-
-                if (newFirst)
-                    criteria.AddOrder(Order.Desc(nameof(Article.Date)));
-                else
-                    criteria.AddOrder(Order.Asc(nameof(Article.Date)));
-
-                criteria.SetFirstResult(count * pageNumber);
-                criteria.SetMaxResults(count);
+                var criteria = container.Session.CreateCriteria<Article>()
+                        .AddOrder(Order.Desc(nameof(Article.Date)))
+                        .SetFirstResult(count * pageNumber)
+                        .SetMaxResults(count);
 
                 return await criteria.ListAsync<Article>();
             }

@@ -14,10 +14,10 @@ namespace ItNews.Business.Managers
         protected TProvider provider;
         protected TCacheProvider cacheProvider;
 
-        public Manager(TProvider provider, TCacheProvider cacheProvider)
+        public Manager(IDependencyResolver dependencyResolver)
         {
-            this.provider = provider;
-            this.cacheProvider = cacheProvider;
+            provider = dependencyResolver.Resolve<TProvider>(dependencyResolver.Resolve<ApplicationVariables>().DataSourceProviderType);
+            cacheProvider = dependencyResolver.Resolve<TCacheProvider>();
         }
 
         public async Task<T> GetById(string id)

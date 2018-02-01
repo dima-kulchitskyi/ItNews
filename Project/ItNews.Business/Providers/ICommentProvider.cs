@@ -9,7 +9,7 @@ namespace ItNews.Business.Providers
 {
     public interface ICommentProvider : IProvider<Comment>
     {
-        Task<IList<Comment>> GetArticleCommentsPage(string ArticleId, int itemsCount, int commentPage);
-        Task<int> GetArticleCommentsCount(string ArticleId);
+        Task<IList<Comment>> GetArticleCommentsPageAsync(string ArticleId, int itemsCount, int commentPage);
+        Task<int> GetArticleCommentsCountAsync(string ArticleId);
     }
 }

@@ -11,7 +11,7 @@ namespace ItNews.Nhibernate.Providers
     public class CommentProvider : Provider<Comment>, ICommentProvider
     {
        
-        public async Task<int> GetArticleCommentsCount(string articleId)
+        public async Task<int> GetArticleCommentsCountAsync(string articleId)
         {
             using (var sessionContainer = SessionContainer.Open())
             {
@@ -19,7 +19,7 @@ namespace ItNews.Nhibernate.Providers
             }
         }
 
-        public async Task<IList<Comment>> GetArticleCommentsPage(string articleId, int itemsCount, int commentPage)
+        public async Task<IList<Comment>> GetArticleCommentsPageAsync(string articleId, int itemsCount, int commentPage)
         {
             using (var container = SessionContainer.Open())
             {

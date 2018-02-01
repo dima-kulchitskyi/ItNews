@@ -15,11 +15,11 @@ namespace ItNews.Business.Managers
 
         private ArticleManager articleManager;
 
-        public CommentManager(ICommentProvider provider, CacheProvider<Comment> cacheProvider, AppUserManager userManager, ArticleManager articleManager)
-            : base(provider, cacheProvider)
+        public CommentManager(IDependencyResolver dependencyResolver)
+            : base(dependencyResolver)
         {
-            this.userManager = userManager;
-            this.articleManager = articleManager;
+            userManager = dependencyResolver.Resolve<AppUserManager>();
+            articleManager = dependencyResolver.Resolve<ArticleManager>();
         }
 
         public async Task CreateComment(string commentText, string authorId, string articleId)
@@ -51,12 +51,12 @@ namespace ItNews.Business.Managers
 
         public Task<IList<Comment>> GetArticleComments(string id, int itemsCount, int commentPage)
         {
-            return provider.GetArticleCommentsPage(id, itemsCount, commentPage);
+            return provider.GetArticleCommentsPageAsync(id, itemsCount, commentPage);
         }
 
         public Task<int> GetArticleCommentsCount(string id)
         {
-            return provider.GetArticleCommentsCount(id);
+            return provider.GetArticleCommentsCountAsync(id);
         }
 
         public async Task UpdateComment(Comment comment, string authorId)
@@ -72,7 +72,7 @@ namespace ItNews.Business.Managers
                 throw new InvalidOperationException($"Comment is not owned by user with {nameof(authorId)}");
 
             comment.Date = DateTime.Now;
-            comment.Author = author;
+            comment.Author.Id = author.Id;
 
             using (var uow = provider.GetUnitOfWork())
             {
@@ -92,7 +92,7 @@ namespace ItNews.Business.Managers
             using (var uow = provider.GetUnitOfWork())
             {
                 uow.BeginTransaction();
-                await provider.Delete(comment);
+                await provider.DeleteAsync(comment);
                 uow.Commit();
             }
 

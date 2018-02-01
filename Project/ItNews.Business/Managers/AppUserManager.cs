@@ -11,9 +11,8 @@ namespace ItNews.Business.Managers
 {
     public class AppUserManager : Manager<AppUser, IUserProvider, CacheProvider<AppUser>>
     {
-        public AppUserManager(IUserProvider provider, CacheProvider<AppUser> cacheProvider) : base(provider, cacheProvider)
-        {
-            
+        public AppUserManager(IDependencyResolver dependencyResolver) : base(dependencyResolver)
+        {   
         }
 
         public Task<AppUser> GetUser(string id)
@@ -21,15 +20,43 @@ namespace ItNews.Business.Managers
             return provider.Get(id);
         }
 
-        public async Task DeleteAsync(AppUser user, string authorId)
+        public async Task SaveOrUpdate(AppUser user)
         {
-            if (string.IsNullOrEmpty(authorId))
-                throw new ArgumentNullException(nameof(authorId));
+            using (var uow = provider.GetUnitOfWork())
+                 await provider.SaveOrUpdate(user);
+
+            cacheProvider.Clear(user.Id);
+        }
+
+        public async Task Delete(string userId)
+        {
+            if (string.IsNullOrEmpty(userId))
+                throw new ArgumentNullException(nameof(userId));
+
+            var user = await provider.Get(userId);
+
+            if (user == null)
+                throw new InvalidOperationException("No such user");
+
+            await Delete(user);
+
+            cacheProvider.Clear(user.Id);
+        }
+
+        public Task<AppUser> GetByName(string name)
+        {
+            return provider.GetByUserNameAsync(name);
+        }
+
+        public async Task Delete(AppUser user)
+        {
+            if (user == null)
+                throw new ArgumentNullException(nameof(user));
 
             using (var uow = provider.GetUnitOfWork())
             {
                 uow.BeginTransaction();
-                await provider.Delete(user);
+                await provider.DeleteAsync(user);
                 uow.Commit();
             }
 
@@ -38,7 +65,7 @@ namespace ItNews.Business.Managers
 
         public Task<IList<AppUser>> GetAllUsers()
         {
-            return provider.GetAllUsers();
+            return provider.GetList();
         }
     }
 }

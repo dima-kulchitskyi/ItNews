@@ -1,4 +1,5 @@
-﻿using ItNews.Business.Managers;
+﻿using ItNews.Business;
+using ItNews.Business.Managers;
 using Microsoft.AspNet.Identity;
 using System;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace ItNews.Mvc.Controllers
         {
             this.appUserManager = appUserManager;
         }
-
+        
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult> Panel()
         {
@@ -35,10 +36,8 @@ namespace ItNews.Mvc.Controllers
         {
             if (string.IsNullOrEmpty(id))
                 return HttpNotFound();
-
-            var user = await appUserManager.GetUser(id);
             
-            await appUserManager.DeleteAsync(user, id);
+            await appUserManager.Delete(id);
 
             return RedirectToAction("Panel");
         }

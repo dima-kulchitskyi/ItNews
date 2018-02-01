@@ -13,20 +13,20 @@ namespace ItNews.Business.Managers
     {
         private AppUserManager userManager;
 
-        public ArticleManager(IArticleProvider provider, CacheProvider<Article> cacheProvider, AppUserManager userManager)
-            : base(provider, cacheProvider)
+        public ArticleManager(IDependencyResolver dependencyResolver)
+            : base(dependencyResolver)
         {
-            this.userManager = userManager;
+            userManager = dependencyResolver.Resolve<AppUserManager>();
         }
 
-        public Task<IList<Article>> GetListSegmentAsync(int count, DateTime startDate, bool newFirst)
+        public Task<IList<Article>> GetListSegmentAsync(int count, DateTime startDate)
         {
-            return provider.GetListSegment(count, startDate, newFirst);
+            return provider.GetListSegment(count, startDate);
         }
 
         public Task<IList<Article>> GetPage(int count, int pageNumber, bool newFirst)
         {
-            return provider.GetPage(count, pageNumber, newFirst);
+            return provider.GetPage(count, pageNumber);
         }
 
         public async Task CreateArticle(Article article, string authorId)
@@ -95,7 +95,7 @@ namespace ItNews.Business.Managers
             using (var uow = provider.GetUnitOfWork())
             {
                 uow.BeginTransaction();
-                await provider.Delete(article);
+                await provider.DeleteAsync(article);
                 uow.Commit();
             }
 
