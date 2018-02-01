@@ -24,7 +24,7 @@ namespace MemoryProvider
             fileName = Path.Combine(/*WebConfigurationManager.AppSettings["MemoryProviderFolder"]*/AppDomain.CurrentDomain.BaseDirectory, typeof(T).Name);
         }
 
-        public async Task DeleteAsync(T instance)
+        public async Task Delete(T instance)
         {
             autoResetEvent.WaitOne();
 

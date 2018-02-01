@@ -19,7 +19,7 @@ namespace ItNews.Nhibernate.Providers
             return DependencyResolver.Current.GetService<IUnitOfWork>();
         }
 
-        public async Task DeleteAsync(T instance)
+        public async Task Delete(T instance)
         {
             if (instance == null)
                 throw new ArgumentNullException(nameof(instance));

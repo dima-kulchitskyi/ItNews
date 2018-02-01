@@ -57,7 +57,7 @@ namespace ItNews.Business.Managers
             if (string.IsNullOrEmpty(userId))
                 throw new ArgumentNullException(nameof(userId));
 
-            var article = await provider.Get(articleId);
+            var article = await GetById(articleId);
 
             return (article?.Author.Id == userId);
         }
@@ -69,7 +69,7 @@ namespace ItNews.Business.Managers
 
             using (var uow = provider.GetUnitOfWork())
             {
-                var oldArticle = await provider.Get(article.Id) ?? throw new ArgumentException("Article with given id does not exists"); 
+                var oldArticle = await GetById(article.Id) ?? throw new ArgumentException("Article with given id does not exists"); 
 
                 var author = await userManager.GetById(authorId) ?? throw new ArgumentException("User with given id does not exists");
 
@@ -95,7 +95,7 @@ namespace ItNews.Business.Managers
             using (var uow = provider.GetUnitOfWork())
             {
                 uow.BeginTransaction();
-                await provider.DeleteAsync(article);
+                await provider.Delete(article);
                 uow.Commit();
             }
 

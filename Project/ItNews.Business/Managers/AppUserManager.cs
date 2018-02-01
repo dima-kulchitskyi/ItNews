@@ -15,11 +15,6 @@ namespace ItNews.Business.Managers
         {   
         }
 
-        public Task<AppUser> GetUser(string id)
-        {
-            return provider.Get(id);
-        }
-
         public async Task SaveOrUpdate(AppUser user)
         {
             using (var uow = provider.GetUnitOfWork())
@@ -33,7 +28,7 @@ namespace ItNews.Business.Managers
             if (string.IsNullOrEmpty(userId))
                 throw new ArgumentNullException(nameof(userId));
 
-            var user = await provider.Get(userId);
+            var user = await base.GetById(userId);
 
             if (user == null)
                 throw new InvalidOperationException("No such user");
@@ -56,7 +51,7 @@ namespace ItNews.Business.Managers
             using (var uow = provider.GetUnitOfWork())
             {
                 uow.BeginTransaction();
-                await provider.DeleteAsync(user);
+                await provider.Delete(user);
                 uow.Commit();
             }
 

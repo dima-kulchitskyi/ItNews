@@ -3,7 +3,7 @@
     using (Html.BeginForm("Logout", "Account", FormMethod.Post, new { @class = "navbar-right" }))
     {
         @Html.AntiForgeryToken()
-        <li><input type="submit" value="Logout" class="navbar-brand" /></li>
+        <li><input type="submit" value="Logout" class="btn btn-danger" style="margin-top: 8px;" /></li>
     }
 }
 else

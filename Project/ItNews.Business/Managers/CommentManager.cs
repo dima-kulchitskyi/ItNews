@@ -64,7 +64,7 @@ namespace ItNews.Business.Managers
             if (string.IsNullOrEmpty(authorId))
                 throw new ArgumentNullException(nameof(authorId));
 
-            var oldComment = await provider.Get(comment.Id) ?? throw new ArgumentException("Comment does not exists"); ;
+            var oldComment = await GetById(comment.Id) ?? throw new ArgumentException("Comment does not exists"); ;
 
             var author = await userManager.GetById(authorId) ?? throw new ArgumentException($"User does not exists");
 
@@ -92,7 +92,7 @@ namespace ItNews.Business.Managers
             using (var uow = provider.GetUnitOfWork())
             {
                 uow.BeginTransaction();
-                await provider.DeleteAsync(comment);
+                await provider.Delete(comment);
                 uow.Commit();
             }
 

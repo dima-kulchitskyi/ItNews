@@ -24,7 +24,9 @@ namespace ItNews.Business.Caching
 
         public void Clear(string id)
         {
-            MemoryCache.Default.Remove(typeof(T).FullName + id);
+            var key = typeof(T).FullName + id;
+            if (MemoryCache.Default.Contains(key))
+                MemoryCache.Default.Remove(key);
         }
     }
 }
