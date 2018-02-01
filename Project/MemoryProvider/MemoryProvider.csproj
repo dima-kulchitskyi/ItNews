@@ -49,6 +49,7 @@
     <Compile Include="CommentProvider.cs" />
     <Compile Include="MemoryProvider.cs" />
     <Compile Include="MemoryProviderUnitOfWork.cs" />
+    <Compile Include="MyASyncAutoResetEvent.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserProvider.cs" />
   </ItemGroup>

@@ -48,7 +48,8 @@ namespace ItNews.Mvc.Identity.Stores
 
         public async Task<IdentityUser> FindByIdAsync(string userId)
         {
-            return new IdentityUser().Initialize(await userManager.GetById(userId));
+            var user = await userManager.GetById(userId);
+            return user != null ? new IdentityUser().Initialize(user) : null;
         }
 
         public async Task<IdentityUser> FindByNameAsync(string userName)

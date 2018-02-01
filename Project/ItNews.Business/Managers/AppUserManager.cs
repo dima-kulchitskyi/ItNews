@@ -18,7 +18,11 @@ namespace ItNews.Business.Managers
         public async Task SaveOrUpdate(AppUser user)
         {
             using (var uow = provider.GetUnitOfWork())
-                 await provider.SaveOrUpdate(user);
+            {
+                uow.BeginTransaction();
+                await provider.SaveOrUpdate(user);
+                uow.Commit();
+            }
 
             cacheProvider.Clear(user.Id);
         }

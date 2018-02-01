@@ -16,7 +16,7 @@ namespace ItNews.Nhibernate.Providers
     {
         public IUnitOfWork GetUnitOfWork()
         {
-            return DependencyResolver.Current.GetService<IUnitOfWork>();
+            return new UnitOfWork();
         }
 
         public async Task Delete(T instance)
@@ -27,8 +27,15 @@ namespace ItNews.Nhibernate.Providers
             if (string.IsNullOrEmpty(instance?.Id))
                 throw new ArgumentNullException("Id");
 
-            using (var sessionContainer = SessionContainer.Open())
-                await sessionContainer.Session.DeleteAsync(instance);
+            using (var uow = GetUnitOfWork())
+            {
+                uow.BeginTransaction();
+
+                using (var sessionContainer = SessionContainer.Open())
+                    await sessionContainer.Session.DeleteAsync(instance);
+
+                uow.Commit();
+            }
         }
 
         public async Task<T> Get(string id)
@@ -57,8 +64,15 @@ namespace ItNews.Nhibernate.Providers
             if (string.IsNullOrEmpty(instance.Id))
                 instance.Id = Guid.NewGuid().ToString();
 
-            using (var sessionContainer = SessionContainer.Open())
-                await sessionContainer.Session.SaveOrUpdateAsync(instance);
+            using (var uow = GetUnitOfWork())
+            {
+                uow.BeginTransaction();
+
+                using (var sessionContainer = SessionContainer.Open())
+                    await sessionContainer.Session.SaveOrUpdateAsync(instance);
+
+                uow.Commit();
+            }
 
             return instance;
         }

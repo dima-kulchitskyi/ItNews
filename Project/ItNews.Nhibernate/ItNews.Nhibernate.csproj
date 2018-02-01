@@ -120,7 +120,6 @@
     <Compile Include="Providers\UserProvider.cs" />
     <Compile Include="Providers\Provider.cs" />
     <Compile Include="SessionContainer.cs" />
-    <Compile Include="TransactionContainer.cs" />
     <Compile Include="UnitOfWork.cs" />
   </ItemGroup>
   <ItemGroup>

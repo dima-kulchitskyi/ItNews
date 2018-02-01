@@ -98,11 +98,11 @@ namespace ItNews.Business.Managers
 
             cacheProvider.Clear(comment.Id);
         }
-        
+
         public Task<int> GetCount()
         {
             return provider.GetCount();
         }
-       
+
     }
 }

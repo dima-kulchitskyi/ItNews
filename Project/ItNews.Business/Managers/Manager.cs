@@ -20,8 +20,11 @@ namespace ItNews.Business.Managers
             cacheProvider = dependencyResolver.Resolve<TCacheProvider>();
         }
 
-        public async Task<T> GetById(string id)
+        public async Task<T> GetById(string id, bool useCache = true)
         {
+            if (!useCache)
+                return await provider.Get(id);
+
             return cacheProvider.GetById(id) ?? cacheProvider.Save(await provider.Get(id));
         }
     }

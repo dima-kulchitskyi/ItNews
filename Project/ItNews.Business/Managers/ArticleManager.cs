@@ -59,7 +59,7 @@ namespace ItNews.Business.Managers
 
             var article = await GetById(articleId);
 
-            return (article?.Author.Id == userId);
+            return article?.Author.Id == userId;
         }
 
         public async Task UpdateArticle(Article article, string authorId)

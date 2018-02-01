@@ -9,7 +9,7 @@ namespace ItNews.Nhibernate.Mappings
         {
             Table("Articles");
             Id(x => x.Id).GeneratedBy.Assigned();
-            References(x => x.Author).Column("AuthorId").Cascade.All().Not.Nullable().Not.LazyLoad();
+            References(x => x.Author).Column("AuthorId").Cascade.None().Not.Nullable().Not.LazyLoad();
             Map(x => x.Title).Not.Nullable();
             Map(x => x.Text).CustomSqlType("ntext").Not.Nullable();
             Map(x => x.ImageName);

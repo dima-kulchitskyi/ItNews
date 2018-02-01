@@ -198,7 +198,7 @@ namespace ItNews.Controllers
         [Authorize]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> DeleteConfirmartion(string id)
+        public async Task<ActionResult> DeleteConfirmation(string id)
         {
             if (string.IsNullOrEmpty(id))
                 return HttpNotFound();

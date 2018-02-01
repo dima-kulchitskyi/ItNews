@@ -14,7 +14,7 @@ namespace ItNews.Nhibernate
 {
     public class SessionContainer : IDisposable
     {
-        private const string CurrentSessionContainerKey = "CurrentSessionContainerKey";
+        private const string CurrentSessionContainerKey = "CurrentSessionContainer";
 
         private RequestDataStorage requestDataStorage;
 
@@ -34,11 +34,8 @@ namespace ItNews.Nhibernate
 
         private bool IsBaseContainer => parent == null;
 
-        public static SessionContainer Open()
-        {
-          
-            return new SessionContainer();
-        }
+        public static SessionContainer Open() => 
+            new SessionContainer();
 
         public void Dispose()
         {
