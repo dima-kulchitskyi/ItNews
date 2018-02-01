@@ -36,10 +36,8 @@ namespace ItNews.Mvc.Controllers
         {
             if (string.IsNullOrEmpty(id))
                 return HttpNotFound();
-
-            var user = await appUserManager.GetUser(id);
-
-            await appUserManager.DeleteAsync(user, id);
+            
+            await appUserManager.Delete(id);
 
             return RedirectToAction("Panel");
         }

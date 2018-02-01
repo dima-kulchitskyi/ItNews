@@ -16,11 +16,11 @@ namespace ItNews.Mvc.Identity.Stores
         IUserTwoFactorStore<IdentityUser, string>,
         IUserRoleStore<IdentityUser, string>
     {
-        private IUserProvider userProvider;
+        private AppUserManager userManager;
 
         public IdentityUserStore(AppUserManager userManager)
         {
-            userProvider = userManager.Provider;
+            this.userManager = userManager;
         }
 
         public Task AddToRoleAsync(IdentityUser user, string roleName)
@@ -32,31 +32,28 @@ namespace ItNews.Mvc.Identity.Stores
         public async Task CreateAsync(IdentityUser user)
         {
             var appUserInstance = user.ToAppUser();
-            using (var uow = userProvider.GetUnitOfWork())
-                await userProvider.SaveOrUpdate(appUserInstance);
-
+            await userManager.SaveOrUpdate(appUserInstance);
             user.Id = appUserInstance.Id;
         }
 
         public Task DeleteAsync(IdentityUser user)
         {
-            using (var uow = userProvider.GetUnitOfWork())
-                return userProvider.DeleteAsync(user.ToAppUser());
+            return userManager.Delete(user.ToAppUser());
         }
 
         public void Dispose()
         {
-            userProvider = null;
+            userManager = null;
         }
 
         public async Task<IdentityUser> FindByIdAsync(string userId)
         {
-            return new IdentityUser().Initialize(await userProvider.Get(userId));
+            return new IdentityUser().Initialize(await userManager.GetById(userId));
         }
 
         public async Task<IdentityUser> FindByNameAsync(string userName)
         {
-            var user = await userProvider.GetByUserNameAsync(userName);
+            var user = await userManager.GetByName(userName);
             return user != null ? new IdentityUser().Initialize(user) : null;
         }
 
@@ -145,8 +142,7 @@ namespace ItNews.Mvc.Identity.Stores
 
         public Task UpdateAsync(IdentityUser user)
         {
-            using (var uow = userProvider.GetUnitOfWork())
-                return userProvider.SaveOrUpdate(user.ToAppUser());
+            return userManager.SaveOrUpdate(user.ToAppUser());
         }
     }
 }

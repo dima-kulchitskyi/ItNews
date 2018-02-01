@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace ItNews.Business
 {
-    public class ServerVariables
+    public class ApplicationVariables
     {
-        public ServerVariables()
+        public ApplicationVariables()
         {
             DataSourceProviderType = ConfigurationManager.AppSettings["DefaultProviderType"];
         }

@@ -32,7 +32,7 @@ namespace ItNews.Business.Managers
             if (string.IsNullOrEmpty(authorId))
                 throw new ArgumentNullException(nameof(articleId));
 
-            using (var uow = Provider.GetUnitOfWork())
+            using (var uow = provider.GetUnitOfWork())
             {
                 var comment = new Comment
                 {
@@ -43,19 +43,19 @@ namespace ItNews.Business.Managers
                 };
 
                 uow.BeginTransaction();
-                await Provider.SaveOrUpdate(comment);
+                await provider.SaveOrUpdate(comment);
                 uow.Commit();
             }
         }
 
         public Task<IList<Comment>> GetArticleComments(string id, int itemsCount, int commentPage)
         {
-            return Provider.GetArticleCommentsPageAsync(id, itemsCount, commentPage);
+            return provider.GetArticleCommentsPageAsync(id, itemsCount, commentPage);
         }
 
         public Task<int> GetArticleCommentsCount(string id)
         {
-            return Provider.GetArticleCommentsCountAsync(id);
+            return provider.GetArticleCommentsCountAsync(id);
         }
 
         public async Task UpdateComment(Comment comment, string authorId)
@@ -63,7 +63,7 @@ namespace ItNews.Business.Managers
             if (string.IsNullOrEmpty(authorId))
                 throw new ArgumentNullException(nameof(authorId));
 
-            var oldComment = await Provider.Get(comment.Id) ?? throw new ArgumentException("Comment does not exists"); ;
+            var oldComment = await provider.Get(comment.Id) ?? throw new ArgumentException("Comment does not exists"); ;
 
             var author = await userManager.GetById(authorId) ?? throw new ArgumentException($"User does not exists");
 
@@ -73,10 +73,10 @@ namespace ItNews.Business.Managers
             comment.Date = DateTime.Now;
             comment.Author.Id = author.Id;
 
-            using (var uow = Provider.GetUnitOfWork())
+            using (var uow = provider.GetUnitOfWork())
             {
                 uow.BeginTransaction();
-                await Provider.SaveOrUpdate(comment);
+                await provider.SaveOrUpdate(comment);
                 uow.Commit();
             }
         }
@@ -86,22 +86,22 @@ namespace ItNews.Business.Managers
             if (string.IsNullOrEmpty(authorId))
                 throw new ArgumentNullException(nameof(authorId));
 
-            using (var uow = Provider.GetUnitOfWork())
+            using (var uow = provider.GetUnitOfWork())
             {
                 uow.BeginTransaction();
-                await Provider.DeleteAsync(comment);
+                await provider.DeleteAsync(comment);
                 uow.Commit();
             }
         }
 
         public Task<Comment> GetComment(string id)
         {
-            return Provider.Get(id);
+            return provider.Get(id);
         }
 
         public Task<int> GetCount()
         {
-            return Provider.GetCount();
+            return provider.GetCount();
         }
     }
 }

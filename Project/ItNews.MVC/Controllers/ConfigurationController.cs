@@ -14,7 +14,7 @@ namespace ItNews.Mvc.Controllers
         public ActionResult ProviderType(string providerType)
         {
             if (!string.IsNullOrEmpty(providerType))
-                DependencyResolver.Current.GetService<ServerVariables>().DataSourceProviderType = providerType;
+                DependencyResolver.Current.GetService<ApplicationVariables>().DataSourceProviderType = providerType;
 
             return RedirectToAction("Index", "Article");
         }

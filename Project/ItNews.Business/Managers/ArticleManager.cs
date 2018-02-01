@@ -20,22 +20,22 @@ namespace ItNews.Business.Managers
 
         public Task<IList<Article>> GetListSegmentAsync(int count, DateTime startDate)
         {
-            return Provider.GetListSegment(count, startDate);
+            return provider.GetListSegment(count, startDate);
         }
 
         public Task<IList<Article>> GetPage(int count, int pageNumber, bool newFirst)
         {
-            return Provider.GetPage(count, pageNumber);
+            return provider.GetPage(count, pageNumber);
         }
 
         public Task<Article> GetArticle(string id)
         {
-            return Provider.Get(id);
+            return provider.Get(id);
         }
 
         public async Task CreateArticle(Article article, string authorId)
         {
-            using (var uow = Provider.GetUnitOfWork())
+            using (var uow = provider.GetUnitOfWork())
             {
                 var user = await userManager.GetById(authorId);
 
@@ -43,14 +43,14 @@ namespace ItNews.Business.Managers
                 article.Date = DateTime.Now;
 
                 uow.BeginTransaction();
-                await Provider.SaveOrUpdate(article);
+                await provider.SaveOrUpdate(article);
                 uow.Commit();
             }
         }
 
         public Task<int> GetCount()
         {
-            return Provider.GetCount();
+            return provider.GetCount();
         }
 
         public async Task<bool> IsOwnedBy(string articleId, string userId)
@@ -61,7 +61,7 @@ namespace ItNews.Business.Managers
             if (string.IsNullOrEmpty(userId))
                 throw new ArgumentNullException(nameof(userId));
 
-            var article = await Provider.Get(articleId);
+            var article = await provider.Get(articleId);
 
             return (article?.Author.Id == userId);
         }
@@ -71,9 +71,9 @@ namespace ItNews.Business.Managers
             if (string.IsNullOrEmpty(authorId))
                 throw new ArgumentNullException(nameof(authorId));
 
-            using (var uow = Provider.GetUnitOfWork())
+            using (var uow = provider.GetUnitOfWork())
             {
-                var oldArticle = await Provider.Get(article.Id) ?? throw new ArgumentException("Article with given id does not exists"); 
+                var oldArticle = await provider.Get(article.Id) ?? throw new ArgumentException("Article with given id does not exists"); 
 
                 var author = await userManager.GetById(authorId) ?? throw new ArgumentException("User with given id does not exists");
 
@@ -84,7 +84,7 @@ namespace ItNews.Business.Managers
                 article.Author = author;
 
                 uow.BeginTransaction();
-                await Provider.SaveOrUpdate(article);
+                await provider.SaveOrUpdate(article);
                 uow.Commit();
             }
         }
@@ -94,10 +94,10 @@ namespace ItNews.Business.Managers
             if (string.IsNullOrEmpty(authorId))
                 throw new ArgumentNullException(nameof(authorId));
 
-            using (var uow = Provider.GetUnitOfWork())
+            using (var uow = provider.GetUnitOfWork())
             {
                 uow.BeginTransaction();
-                await Provider.DeleteAsync(article);
+                await provider.DeleteAsync(article);
                 uow.Commit();
             }
         }

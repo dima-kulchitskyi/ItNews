@@ -115,6 +115,7 @@
     <Compile Include="ModelBinders\Article\ItemsOnPageCountModelBinder.cs" />
     <Compile Include="ModelBinders\Article\PageNumberModelBinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RequestDataStorage.cs" />
     <Compile Include="ViewModels\Account\LoginViewModel.cs" />
     <Compile Include="ViewModels\Account\RegisterViewModel.cs" />
     <Compile Include="ViewModels\AdminPanel\PanelViewModel.cs" />

@@ -9,17 +9,16 @@ namespace ItNews.Business.Managers
         where T : IEntity
         where TProvider : IProvider<T>
     {
-        public TProvider Provider { get; protected set; }
+        protected TProvider provider;
 
         public Manager(IDependencyResolver dependencyResolver)
         {
-            var config = dependencyResolver.Resolve<ServerVariables>();
-            Provider = dependencyResolver.Resolve<TProvider>(config.DataSourceProviderType);
+            provider = dependencyResolver.Resolve<TProvider>(dependencyResolver.Resolve<ApplicationVariables>().DataSourceProviderType);
         }
 
         public Task<T> GetById(string id)
         {
-            return Provider.Get(id);
+            return provider.Get(id);
         }
     }
 }

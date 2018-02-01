@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ItNews.Business
+namespace ItNews.Mvc
 {
     public class RequestDataStorage
     {
