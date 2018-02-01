@@ -17,13 +17,16 @@ namespace ItNews.Controllers
 {
     public class ArticleController : Controller
     {
+        private AppUserManager userManager;
+
         private ArticleManager articleManager;
 
         private CommentManager commentManager;
 
 
-        public ArticleController(ArticleManager articleManager, CommentManager commentManager)
+        public ArticleController(AppUserManager userManager, ArticleManager articleManager, CommentManager commentManager)
         {
+            this.userManager = userManager;
             this.articleManager = articleManager;
             this.commentManager = commentManager;
         }

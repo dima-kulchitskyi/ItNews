@@ -1,4 +1,5 @@
-﻿using ItNews.Mvc;
+﻿using ItNews.Business;
+using ItNews.Mvc;
 using NHibernate;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace ItNews.Nhibernate
 {
     public class SessionContainer : IDisposable
     {
-        private const string CurrentSessionKey = "CurrentSessionContainerKey";
+        private const string CurrentSessionContainerKey = "CurrentSessionContainerKey";
 
         private RequestDataStorage requestDataStorage;
 
@@ -23,8 +24,8 @@ namespace ItNews.Nhibernate
         {
             requestDataStorage = DependencyResolver.Current.GetService<RequestDataStorage>();
 
-            parent = requestDataStorage.GetValue<SessionContainer>(CurrentSessionKey);
-            requestDataStorage.SetValue(CurrentSessionKey, this);
+            parent = requestDataStorage.GetValue<SessionContainer>(CurrentSessionContainerKey);
+            requestDataStorage.SetValue(CurrentSessionContainerKey, this);
 
             Session = IsBaseContainer ? DependencyResolver.Current.GetService<ISessionFactory>().OpenSession() : parent.Session;
         }
@@ -44,7 +45,7 @@ namespace ItNews.Nhibernate
             if (IsBaseContainer)
                 Session.Dispose();
 
-            requestDataStorage.SetValue(CurrentSessionKey, parent);
+            requestDataStorage.SetValue(CurrentSessionContainerKey, parent);
         }
     }
 }

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2008
+VisualStudioVersion = 15.0.27130.2020
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItNews.Web", "ItNews\ItNews.Web.csproj", "{AEF57439-20A2-4F36-8CA2-948237CA6132}"
 EndProject
@@ -10,6 +10,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItNews.Mvc", "ItNews.MVC\ItNews.Mvc.csproj", "{11E27AF2-93F2-47BE-9C71-47BC9504B01A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItNews.Nhibernate", "ItNews.Nhibernate\ItNews.Nhibernate.csproj", "{0FAA3B59-D1B6-4A13-BD2D-6B078F578434}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemoryProvider", "MemoryProvider\MemoryProvider.csproj", "{F071ACFB-E1A0-41AD-AFF9-032289F45BD2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{0FAA3B59-D1B6-4A13-BD2D-6B078F578434}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0FAA3B59-D1B6-4A13-BD2D-6B078F578434}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0FAA3B59-D1B6-4A13-BD2D-6B078F578434}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F071ACFB-E1A0-41AD-AFF9-032289F45BD2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F071ACFB-E1A0-41AD-AFF9-032289F45BD2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F071ACFB-E1A0-41AD-AFF9-032289F45BD2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F071ACFB-E1A0-41AD-AFF9-032289F45BD2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,4 +1,5 @@
 ﻿using ItNews.Business.Entities;
+using ItNews.Business.Managers;
 using ItNews.Business.Providers;
 using Microsoft.AspNet.Identity;
 using System;
@@ -17,14 +18,15 @@ namespace ItNews.Mvc.Identity.Stores
     {
         private IUserProvider userProvider;
 
-        public IdentityUserStore(IUserProvider userProvider)
+        public IdentityUserStore(AppUserManager userManager)
         {
-            this.userProvider = userProvider;
+            userProvider = userManager.Provider;
         }
 
         public Task AddToRoleAsync(IdentityUser user, string roleName)
         {
-            throw new NotImplementedException();
+            user.Role = roleName;
+            return Task.CompletedTask;
         }
 
         public async Task CreateAsync(IdentityUser user)
@@ -39,7 +41,7 @@ namespace ItNews.Mvc.Identity.Stores
         public Task DeleteAsync(IdentityUser user)
         {
             using (var uow = userProvider.GetUnitOfWork())
-                return userProvider.Delete(user.ToAppUser());
+                return userProvider.DeleteAsync(user.ToAppUser());
         }
 
         public void Dispose()
@@ -54,7 +56,7 @@ namespace ItNews.Mvc.Identity.Stores
 
         public async Task<IdentityUser> FindByNameAsync(string userName)
         {
-            var user = await userProvider.GetByUserName(userName);
+            var user = await userProvider.GetByUserNameAsync(userName);
             return user != null ? new IdentityUser().Initialize(user) : null;
         }
 

@@ -18,7 +18,7 @@ namespace ItNews.Nhibernate.Providers
                 return await sessionContainer.Session.QueryOver<AppUser>().OrderBy(m => m.UserName).Asc.ListAsync();
         }
 
-        public async Task<AppUser> GetByUserName(string userName)
+        public async Task<AppUser> GetByUserNameAsync(string userName)
         {
             using (var sessionContainer = SessionContainer.Open())
                 return await sessionContainer.Session.QueryOver<AppUser>().Where(it => it.UserName == userName).SingleOrDefaultAsync();

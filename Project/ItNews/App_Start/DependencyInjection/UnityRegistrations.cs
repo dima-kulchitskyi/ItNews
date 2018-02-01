@@ -1,7 +1,9 @@
 using ItNews.Business;
 using ItNews.Business.Providers;
+using ItNews.DependencyInjection;
 using ItNews.Mvc;
 using ItNews.Mvc.Identity;
+using MemoryProvider;
 using Microsoft.AspNet.Identity;
 using Microsoft.Owin.Security;
 using System.Web;
@@ -16,12 +18,17 @@ namespace ItNews.Web.DependencyInjection
         {
             Nhibernate.Configuration.RegisterDependencies(container);
 
-            container
-            .RegisterType<IUnitOfWork, Nhibernate.UnitOfWork>()
+            container.RegisterType<IDependencyResolver, DependencyResolver>()
 
-            .RegisterType<IArticleProvider, Nhibernate.Providers.ArticleProvider>()
-            .RegisterType<IUserProvider, Nhibernate.Providers.UserProvider>()
-            .RegisterType<ICommentProvider, Nhibernate.Providers.CommentProvider>()
+            //.RegisterType<IUnitOfWork, Nhibernate.UnitOfWork>()
+
+            .RegisterType<IArticleProvider, Nhibernate.Providers.ArticleProvider>("DB")
+            .RegisterType<IUserProvider, Nhibernate.Providers.UserProvider>("DB")
+            .RegisterType<ICommentProvider, Nhibernate.Providers.CommentProvider>("DB")
+
+            .RegisterType<IArticleProvider, ArticleProvider>("Memory")
+            .RegisterType<IUserProvider, UserProvider>("Memory")
+            .RegisterType<ICommentProvider, CommentProvider>("Memory")
 
             //Identity
             .RegisterType<IUserStore<IdentityUser, string>, Mvc.Identity.Stores.IdentityUserStore>()
@@ -30,7 +37,8 @@ namespace ItNews.Web.DependencyInjection
             .RegisterType<UserManager<IdentityUser, string>, Mvc.Identity.Mangers.IdentityUserManager>()
             .RegisterType<Microsoft.AspNet.Identity.Owin.SignInManager<IdentityUser, string>, Mvc.Identity.Mangers.IdentitySignInManager>()
 
-            .RegisterTypeInRequestScope<RequestDataStorage, RequestDataStorage>();
+            .RegisterTypeInRequestScope<RequestDataStorage, RequestDataStorage>()
+            .RegisterTypeInSingletonScope<ServerVariables, ServerVariables>();
         }
     }
 }

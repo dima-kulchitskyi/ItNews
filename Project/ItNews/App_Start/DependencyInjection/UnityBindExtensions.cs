@@ -9,14 +9,14 @@ namespace ItNews.Web.DependencyInjection
 {
     public static class UnityBindExtentions
     {
-        public static IUnityContainer RegisterTypeInRequestScope<TInterface, TImplementation>(this IUnityContainer container) where TImplementation : TInterface
+        public static IUnityContainer RegisterTypeInRequestScope<TInterface, TImplementation>(this IUnityContainer container, string name = null) where TImplementation : TInterface
         {
-            return container.RegisterType<TInterface, TImplementation>(new HierarchicalLifetimeManager());
+            return container.RegisterType<TInterface, TImplementation>(name, new HierarchicalLifetimeManager());
         }
 
-        public static IUnityContainer RegisterTypeInSingletonScope<TInterface, TImplementation>(this IUnityContainer container) where TImplementation : TInterface
+        public static IUnityContainer RegisterTypeInSingletonScope<TInterface, TImplementation>(this IUnityContainer container, string name = null) where TImplementation : TInterface
         {
-            return container.RegisterType<TInterface, TImplementation>(new ContainerControlledLifetimeManager());
+            return container.RegisterType<TInterface, TImplementation>(name, new ContainerControlledLifetimeManager());
         }
     }
 }
