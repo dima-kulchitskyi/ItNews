@@ -9,48 +9,29 @@ namespace ItNews.Nhibernate
 {
     public class UnitOfWork : IUnitOfWork, IDisposable
     {
-        private const string CurrentUnitOfWorkKey = "CurrentUnitOfWork";
-
-        private RequestDataStorage requestDataStorage;
-
-        private readonly UnitOfWork parent;
-
-        protected ITransaction transaction;
-
-        protected SessionContainer sessionContainer;
+        private TransactionContainer transaction;
 
         public UnitOfWork()
         {
-            sessionContainer = SessionContainer.Open();
-
-            requestDataStorage = DependencyResolver.Current.GetService<RequestDataStorage>();
-
-            parent = requestDataStorage.GetValue<UnitOfWork>(CurrentUnitOfWorkKey);
-            requestDataStorage.SetValue(CurrentUnitOfWorkKey, this);
+            transaction = new TransactionContainer();
         }
 
-        private bool IsBaseUnit => parent == null;
+        public bool IsActive => transaction.IsActive;
 
-        public bool IsActive => transaction?.IsActive ?? false;
+        public bool IsCommited => transaction.IsCommited;
 
-        public bool IsCommited => transaction?.WasCommitted ?? false;
-
-        public bool IsRolledBack => transaction?.WasRolledBack ?? false;
+        public bool IsRolledBack => transaction.IsRolledBack;
 
         public void BeginTransaction()
         {
-            if (!IsActive)
-                transaction = IsBaseUnit ? sessionContainer.Session.BeginTransaction() : parent.transaction;
+            transaction.Begin();
         }
 
         public void Commit()
         {
-            if (!IsActive) return;
-
             try
             {
-                if (IsBaseUnit)
-                    transaction.Commit();
+                transaction.Commit();
             }
             catch
             {
@@ -65,14 +46,9 @@ namespace ItNews.Nhibernate
 
         public void Rollback()
         {
-            if (!IsActive) return;
-
             try
             {
-                if (IsBaseUnit)
-                    transaction.Rollback();
-                else
-                    parent.Rollback();
+                transaction.RollBack();
             }
             finally
             {
@@ -82,15 +58,7 @@ namespace ItNews.Nhibernate
 
         public void Dispose()
         {
-            if (IsBaseUnit && IsActive)
-            {
-                transaction.Rollback();
-                throw new InvalidOperationException("Transaction is still active, maybe you forgot to commit it?");
-            }
-
-            requestDataStorage.SetValue(CurrentUnitOfWorkKey, parent);
-
-            sessionContainer.Dispose();
+            transaction.Dispose();
         }
     }
 }

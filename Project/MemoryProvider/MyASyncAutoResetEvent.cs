@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace MemoryProvider
+namespace ItNews.FileProvider
 {
     public class MyAsyncAutoResetEvent
     {

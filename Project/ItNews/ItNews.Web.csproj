@@ -287,9 +287,9 @@
       <Project>{0faa3b59-d1b6-4a13-bd2d-6b078f578434}</Project>
       <Name>ItNews.Nhibernate</Name>
     </ProjectReference>
-    <ProjectReference Include="..\MemoryProvider\MemoryProvider.csproj">
+    <ProjectReference Include="..\MemoryProvider\ItNews.FileProvider.csproj">
       <Project>{f071acfb-e1a0-41ad-aff9-032289f45bd2}</Project>
-      <Name>MemoryProvider</Name>
+      <Name>ItNews.FileProvider</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

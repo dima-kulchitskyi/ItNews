@@ -1,6 +1,7 @@
 ﻿using ItNews.Business.Entities;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Runtime.Caching;
 using System.Text;
@@ -14,9 +15,11 @@ namespace ItNews.Business.Caching
         ApplicationVariables config;
 
         protected readonly string keyPrefix;
+        protected int cacheDuration;
 
         public CacheProvider(IDependencyResolver dependencyResolver)
         {
+            cacheDuration = int.Parse(ConfigurationManager.AppSettings["CacheDuration"]);
             config = dependencyResolver.Resolve<ApplicationVariables>();
             keyPrefix = config.DataSourceProviderType + typeof(T).FullName;
         }
@@ -33,7 +36,7 @@ namespace ItNews.Business.Caching
                 if (string.IsNullOrEmpty(entity.Id))
                     throw new ArgumentException("Entity id required");
 
-                MemoryCache.Default.Set(keyPrefix + entity.Id, entity, DateTime.Now.AddMinutes(30));
+                MemoryCache.Default.Set(keyPrefix + entity.Id, entity, DateTime.Now.AddMinutes(cacheDuration));
             }
             return entity;
         }

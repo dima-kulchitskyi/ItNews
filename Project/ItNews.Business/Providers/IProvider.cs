@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 namespace ItNews.Business.Providers
 {
     public interface IProvider<T> 
-        where T : IEntity
+        where T : class, IEntity
     {
         IUnitOfWork GetUnitOfWork();
         Task<T> Get(string id);

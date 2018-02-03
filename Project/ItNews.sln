@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItNews.Mvc", "ItNews.MVC\It
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItNews.Nhibernate", "ItNews.Nhibernate\ItNews.Nhibernate.csproj", "{0FAA3B59-D1B6-4A13-BD2D-6B078F578434}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MemoryProvider", "MemoryProvider\MemoryProvider.csproj", "{F071ACFB-E1A0-41AD-AFF9-032289F45BD2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItNews.FileProvider", "MemoryProvider\ItNews.FileProvider.csproj", "{F071ACFB-E1A0-41AD-AFF9-032289F45BD2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

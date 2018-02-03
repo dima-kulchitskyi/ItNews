@@ -23,9 +23,9 @@ namespace ItNews.Web.DependencyInjection
             .RegisterType<IUserProvider, Nhibernate.Providers.UserProvider>("DB")
             .RegisterType<ICommentProvider, Nhibernate.Providers.CommentProvider>("DB")
 
-            .RegisterType<IArticleProvider, MemoryProvider.ArticleProvider>("Memory")
-            .RegisterType<IUserProvider, MemoryProvider.UserProvider>("Memory")
-            .RegisterType<ICommentProvider, MemoryProvider.CommentProvider>("Memory")
+            .RegisterType<IArticleProvider, FileProvider.ArticleProvider>("File")
+            .RegisterType<IUserProvider, FileProvider.UserProvider>("File")
+            .RegisterType<ICommentProvider, FileProvider.CommentProvider>("File")
 
             //Identity
             .RegisterType<IUserStore<IdentityUser, string>, Mvc.Identity.Stores.IdentityUserStore>()
