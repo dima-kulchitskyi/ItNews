@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ItNews.FileProvider
 {
-    public class CommentProvider : MemoryProvider<Comment>, ICommentProvider
+    public class CommentProvider : FileProvider<Comment>, ICommentProvider
     {
         private ArticleProvider articleProvider;
         private UserProvider userProvider;

@@ -24,7 +24,7 @@ namespace ItNews.FileProvider
                 }
                 else
                 {
-                    var tcs = new TaskCompletionSource<bool>();
+                    var tcs = new TaskCompletionSource<bool>(TaskCreationOptions.PreferFairness);
                     queue.Enqueue(tcs);
                     return tcs.Task;
                 }
@@ -33,17 +33,13 @@ namespace ItNews.FileProvider
 
         public void Set()
         {
-            TaskCompletionSource<bool> toRelease = null;
-
             lock (queue)
             {
                 if (queue.Count > 0)
-                    toRelease = queue.Dequeue();
-
-                signaled = true;
+                    queue.Dequeue().SetResult(true);
+                else
+                    signaled = true;
             }
-
-            toRelease?.SetResult(true);
         }
     }
 }

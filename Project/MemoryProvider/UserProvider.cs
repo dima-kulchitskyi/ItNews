@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace ItNews.FileProvider
 {
-    public class UserProvider : MemoryProvider<AppUser>, IUserProvider
+    public class UserProvider : FileProvider<AppUser>, IUserProvider
     {
         public async Task<AppUser> GetByUserNameAsync(string userName)
         {

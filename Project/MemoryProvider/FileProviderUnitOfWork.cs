@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ItNews.FileProvider
 {
-    public class MemoryProviderUnitOfWork : IUnitOfWork
+    public class FileProviderUnitOfWork : IUnitOfWork
     {
         public bool IsActive { get; private set; }
 

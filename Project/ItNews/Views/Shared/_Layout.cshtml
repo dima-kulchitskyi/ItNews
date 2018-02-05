@@ -41,6 +41,7 @@
                     <li style="margin-left: 500px; text-align: right; margin-top: 6px;">
                         @using (Html.BeginForm("ProviderType", "Configuration", FormMethod.Post, new { @class = "navbar-right" }))
                         {
+                            @Html.AntiForgeryToken();
                             <select name="providerType" style="margin-top: 10px">
                                 <option value="DB" @(currentProviderType == "DB" ? "selected" : "")>DB</option>
                                 <option value="File"@(currentProviderType == "File" ? "selected" : "")>File</option>

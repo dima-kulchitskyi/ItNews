@@ -14,6 +14,7 @@ namespace ItNews.Mvc.Controllers
     public class ConfigurationController : Controller
     {
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult ProviderType(string providerType)
         {
             if (string.IsNullOrEmpty(providerType))

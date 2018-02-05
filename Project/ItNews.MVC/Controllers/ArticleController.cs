@@ -23,7 +23,6 @@ namespace ItNews.Controllers
 
         private CommentManager commentManager;
 
-
         public ArticleController(AppUserManager userManager, ArticleManager articleManager, CommentManager commentManager)
         {
             this.userManager = userManager;
@@ -241,6 +240,7 @@ namespace ItNews.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         [Authorize]
         public async Task<ActionResult> CreateComment(CreateCommentViewModel model)
         {
