@@ -1,0 +1,17 @@
+﻿<div style="margin-bottom: 20px;">
+    <div id="searchDropdown" class="dropdown-content">
+        <input type="text" placeholder="Search.." class="searchInput" id="searchInput">
+        <div id="searchItemsContainer" style="display: none">
+
+        </div>
+    </div>
+</div>
+
+<script type="text/template" id="searchItemTemplate">
+    <div>
+        <h3><a href="/Article/Details/{Id}">{Title}</a></h3>
+        <p>{TextPreview}</p>
+        <p>Author: {Author}</p>
+        <p>{Date}</p>
+    </div>
+</script>

@@ -6,17 +6,21 @@ using System.Text;
 using System.Threading.Tasks;
 using ItNews.Business.Providers;
 using ItNews.Business.Caching;
+using ItNews.Business.Search;
 
 namespace ItNews.Business.Managers
 {
     public class ArticleManager : Manager<Article, IArticleProvider, CacheProvider<Article>>
     {
+        private IArticleSearchProvider searchProvider;
+
         private AppUserManager userManager;
 
         public ArticleManager(IDependencyResolver dependencyResolver)
             : base(dependencyResolver)
         {
             userManager = dependencyResolver.Resolve<AppUserManager>();
+            searchProvider = dependencyResolver.Resolve<IArticleSearchProvider>();
         }
 
         public Task<IList<Article>> GetListSegmentAsync(int count, DateTime startDate)
@@ -42,6 +46,8 @@ namespace ItNews.Business.Managers
                 await provider.SaveOrUpdate(article);
                 uow.Commit();
             }
+
+            searchProvider.AddOrUpdate(article);
         }
 
         public Task<int> GetCount()
@@ -84,6 +90,7 @@ namespace ItNews.Business.Managers
                 uow.Commit();
             }
 
+            searchProvider.AddOrUpdate(article);
             cacheProvider.Clear(article.Id);
         }
 
@@ -99,7 +106,18 @@ namespace ItNews.Business.Managers
                 uow.Commit();
             }
 
+            searchProvider.Clear(article.Id);
             cacheProvider.Clear(article.Id);
+        }
+
+        public async Task CreateSearchIndex()
+        {
+            searchProvider.AddOrUpdate(await provider.GetList());
+        }
+
+        public IEnumerable<Article> Search(string query, int maxResults = 0)
+        {
+            return searchProvider.Search(query, maxResults);
         }
     }
 }

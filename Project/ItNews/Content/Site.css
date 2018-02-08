@@ -22,3 +22,61 @@ select,
 textarea {
     max-width: 280px;
 }
+
+
+.searchInput {
+    box-sizing: border-box;
+    font-size: 16px;
+    padding: 14px 20px 12px 5px;
+    border: none;
+    border-bottom: 1px solid #ddd;
+    max-width: 100%;
+    width: 100%;
+}
+
+/* The search field when it gets focus/clicked on */
+.searchInput:focus {
+    outline: 3px solid #ddd;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+    display: block;
+    position: absolute;
+    background-color: #f6f6f6;
+    min-width: 500px;
+    border: 1px solid #ddd;
+    z-index: 1;
+}
+
+
+    .dropdown-content a {
+        display: block;
+    }
+
+    .dropdown-content div div {
+        color: black;
+        padding: 8px 8px;
+        text-decoration: none;
+        display: block;
+        border: 1px solid grey;
+        border-radius: 5px;
+        line-height: 0.6;
+        margin-bottom: 3px;
+    }
+
+    .dropdown-content div div h3 {
+        
+        margin-top: 5px;
+    }
+
+    /* Change color of dropdown links on hover */
+    .dropdown-content a:hover {
+        background-color: #f1f1f1
+    }

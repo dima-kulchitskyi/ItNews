@@ -75,7 +75,8 @@
     <Compile Include="Providers\IUserProvider.cs" />
     <Compile Include="Providers\IProvider.cs" />
     <Compile Include="ApplicationVariables.cs" />
-    <Compile Include="Search\SearchProvider.cs" />
+    <Compile Include="Search\IArticleSearchProvider.cs" />
+    <Compile Include="Search\ISearchProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

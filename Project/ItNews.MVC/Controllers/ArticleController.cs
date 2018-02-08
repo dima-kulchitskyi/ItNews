@@ -78,7 +78,7 @@ namespace ItNews.Controllers
                    Date = comment.Date,
                    Text = comment.Text
                }).ToList();
-            
+
             var model = new ArticleDetailsViewModel
             {
                 Id = article.Id,
@@ -244,7 +244,7 @@ namespace ItNews.Controllers
         [Authorize]
         public async Task<ActionResult> CreateComment(CreateCommentViewModel model)
         {
-           if (string.IsNullOrEmpty(model.ArticleId))
+            if (string.IsNullOrEmpty(model.ArticleId))
                 return HttpNotFound();
 
             if (!ModelState.IsValid)
@@ -274,6 +274,35 @@ namespace ItNews.Controllers
             await commentManager.DeleteComment(comment, comment.Id);
 
             return RedirectToAction("Details", new { id = articleId });
+        }
+
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult> CreateIndex()
+        {
+            await articleManager.CreateSearchIndex();
+            return Content("OK");
+        }
+
+        [HttpPost]
+        public ActionResult Search(string query)
+        {
+            if (!Request.IsAjaxRequest())
+                return HttpNotFound();
+
+            var previewLength = int.Parse(WebConfigurationManager.AppSettings["ArticleTextPreviewLength"]);
+            var previewEnding = WebConfigurationManager.AppSettings["ArticleTextPreviewEnding"];
+
+            var results = articleManager.Search(query);
+            var list = results.Select(it => new ArticleSearchItem
+            {
+                Id = it.Id,
+                Author = it.Author.UserName,
+                Date = it.Date,
+                TextPreview = (it.Text.Length > previewLength) ? it.Text.Substring(0, previewLength) + previewEnding : it.Text,
+                Title = it.Title
+            });
+
+            return Json(list, JsonRequestBehavior.AllowGet);
         }
     }
 }

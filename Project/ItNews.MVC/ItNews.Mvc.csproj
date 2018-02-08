@@ -119,6 +119,7 @@
     <Compile Include="ViewModels\Account\LoginViewModel.cs" />
     <Compile Include="ViewModels\Account\RegisterViewModel.cs" />
     <Compile Include="ViewModels\AdminPanel\PanelViewModel.cs" />
+    <Compile Include="ViewModels\Article\ArticleSearchItem.cs" />
     <Compile Include="ViewModels\Article\CommentViewModel.cs" />
     <Compile Include="ViewModels\Article\DeleteViewModel.cs" />
     <Compile Include="ViewModels\Article\ArticlesListViewModel.cs" />
