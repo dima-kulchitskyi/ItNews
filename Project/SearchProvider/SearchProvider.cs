@@ -23,11 +23,11 @@ namespace ItNews.SearchProvider
     public abstract class SearchProvider<T> : ISearchProvider<T>
         where T : class, IEntity
     {
-        protected const int SearchResultsLimit = 1000;
+        protected const int SearchResultsLimit = 100;
 
         private static readonly Dictionary<string, FSDirectory> directories = new Dictionary<string, FSDirectory>();
 
-        private readonly Version luceneVersion = Version.LUCENE_30;
+        protected readonly Version luceneVersion = Version.LUCENE_30;
 
         protected FSDirectory Directory
         {
@@ -68,12 +68,12 @@ namespace ItNews.SearchProvider
             }
         }
 
-        private IEnumerable<T> MapToDataList(IEnumerable<Document> hits)
+        protected IEnumerable<T> MapToDataList(IEnumerable<Document> hits)
         {
             return hits.Select(MapDocumentToInstance).ToList();
         }
 
-        private IEnumerable<T> MapToDataList(IEnumerable<ScoreDoc> hits, IndexSearcher searcher)
+        protected IEnumerable<T> MapToDataList(IEnumerable<ScoreDoc> hits, IndexSearcher searcher)
         {
             return hits.Select(hit => MapDocumentToInstance(searcher.Doc(hit.Doc))).ToList();
         }
@@ -92,7 +92,7 @@ namespace ItNews.SearchProvider
             return new IndexWriter(Directory, GetAnalyzer(), IndexWriter.MaxFieldLength.UNLIMITED);
         }
 
-        protected static Query ParseQuery(string searchQuery, QueryParser parser)
+        protected Query ParseQuery(string searchQuery, QueryParser parser)
         {
             Query query;
             try
@@ -136,11 +136,12 @@ namespace ItNews.SearchProvider
         {
             IEnumerable<T> results = new List<T>();
 
-            if (!string.IsNullOrEmpty(searchQuery))
-            {
-                searchQuery = string.Join(" ", searchQuery.Trim().Replace("-", " ").Split(' ')
-                  .Where(x => !string.IsNullOrEmpty(x)).Select(x => x.Trim() + "*"));
+            if (string.IsNullOrEmpty(searchQuery)) return results;
 
+            searchQuery = string.Join(" ", searchQuery.Trim().Replace("-", " ").Split(' ')
+             .Where(x => !string.IsNullOrEmpty(x)).Select(x => x.Trim() + "*"));
+
+            if (!string.IsNullOrWhiteSpace(searchQuery))
                 using (var searcher = new IndexSearcher(Directory, false))
                 {
                     var hitsLimit = maxResults <= 0 ? SearchResultsLimit : maxResults;
@@ -165,7 +166,6 @@ namespace ItNews.SearchProvider
                     }
                     analyzer.Close();
                 }
-            }
 
             return results;
         }

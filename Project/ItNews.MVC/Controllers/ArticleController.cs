@@ -276,7 +276,7 @@ namespace ItNews.Controllers
             return RedirectToAction("Details", new { id = articleId });
         }
 
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public async Task<ActionResult> CreateIndex()
         {
             await articleManager.CreateSearchIndex();
@@ -302,7 +302,7 @@ namespace ItNews.Controllers
                 Title = it.Title
             });
 
-            return Json(list, JsonRequestBehavior.AllowGet);
+            return Json(list, JsonRequestBehavior.DenyGet);
         }
     }
 }
