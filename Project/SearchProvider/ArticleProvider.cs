@@ -11,6 +11,11 @@ namespace ItNews.SearchProvider
 {
     public class ArticleProvider :  SearchProvider<Article>, IArticleSearchProvider
     {
+        protected override string[] GetSearchFields()
+        {
+            return new string[] { nameof(Article.Title), nameof(Article.Text), nameof(Article.Author) };
+        }
+
         protected override Article MapDocumentToInstance(Document doc)
         {
             return new Article
@@ -22,8 +27,8 @@ namespace ItNews.SearchProvider
                 ImageName = doc.Get(nameof(Article.ImageName)),
                 Author = new AppUser
                 {
-                    Id = doc.Get("AuthorId"),
-                    UserName = doc.Get("Author")
+                    Id = doc.Get(nameof(Article.Author) + "Id"),
+                    UserName = doc.Get(nameof(Article.Author))
                 }
             };
         }
@@ -35,9 +40,9 @@ namespace ItNews.SearchProvider
             doc.Add(new Field(nameof(Article.Id), instance.Id, Field.Store.YES, Field.Index.NOT_ANALYZED));
             doc.Add(new Field(nameof(Article.Date), instance.Date.ToString(), Field.Store.YES, Field.Index.NOT_ANALYZED));
             doc.Add(new Field(nameof(Article.ImageName), instance.ImageName ?? "", Field.Store.YES, Field.Index.NOT_ANALYZED));
-            doc.Add(new Field("AuthorId", instance.Author.Id, Field.Store.YES, Field.Index.NOT_ANALYZED));
+            doc.Add(new Field(nameof(Article.Author) + "Id", instance.Author.Id, Field.Store.YES, Field.Index.NOT_ANALYZED));
 
-            doc.Add(new Field("Author", instance.Author.UserName, Field.Store.YES, Field.Index.ANALYZED));
+            doc.Add(new Field(nameof(Article.Author), instance.Author.UserName, Field.Store.YES, Field.Index.ANALYZED));
             doc.Add(new Field(nameof(Article.Title), instance.Title, Field.Store.YES, Field.Index.ANALYZED));
             doc.Add(new Field(nameof(Article.Text), instance.Text, Field.Store.YES, Field.Index.ANALYZED));
 

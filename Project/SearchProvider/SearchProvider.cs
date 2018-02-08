@@ -82,6 +82,8 @@ namespace ItNews.SearchProvider
 
         protected abstract Document MapInstanceToDocument(T instance);
 
+        protected abstract string[] GetSearchFields();
+
         protected Analyzer GetAnalyzer()
         {
             return new StandardAnalyzer(luceneVersion);
@@ -157,7 +159,7 @@ namespace ItNews.SearchProvider
                     else
                     {
                         var parser = new MultiFieldQueryParser(luceneVersion,
-                            typeof(T).GetProperties().Where(p => !p.GetAccessors().Any(a => !a.IsPublic)).Select(p => p.Name).ToArray(),
+                            GetSearchFields(),//typeof(T).GetProperties().Where(p => !p.GetAccessors().Any(a => !a.IsPublic)).Select(p => p.Name).ToArray(),
                             analyzer);
 
                         var query = ParseQuery(searchQuery, parser);
