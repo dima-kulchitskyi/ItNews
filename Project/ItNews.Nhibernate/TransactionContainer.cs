@@ -48,15 +48,17 @@ namespace ItNews.Nhibernate
                 transaction = IsBaseContainer ? sessionContainer.Session.BeginTransaction() : parent.transaction;
         }
 
-        public void RollBack()
+        public Task RollBack()
         {
-            transaction.Rollback();
+            return transaction.RollbackAsync();
         }
 
-        public void Commit()
+        public Task Commit()
         {
             if (IsBaseContainer)
-                transaction.Commit();
+               return transaction.CommitAsync();
+
+            return Task.CompletedTask;
         }
 
         public void Dispose()

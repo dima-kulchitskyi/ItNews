@@ -1,5 +1,7 @@
 using ItNews.Business;
+using ItNews.Business.Entities;
 using ItNews.Business.Providers;
+using ItNews.Business.Search;
 using ItNews.DependencyInjection;
 using ItNews.Mvc;
 using ItNews.Mvc.Identity;
@@ -26,6 +28,8 @@ namespace ItNews.Web.DependencyInjection
             .RegisterType<IArticleProvider, FileProvider.ArticleProvider>("File")
             .RegisterType<IUserProvider, FileProvider.UserProvider>("File")
             .RegisterType<ICommentProvider, FileProvider.CommentProvider>("File")
+
+            .RegisterType<IArticleSearchProvider, SearchProvider.ArticleProvider>()
 
             //Identity
             .RegisterType<IUserStore<IdentityUser, string>, Mvc.Identity.Stores.IdentityUserStore>()

@@ -14,7 +14,7 @@ namespace ItNews.Mvc
             where T : class
         {
             if (dictionary.ContainsKey(key))
-                return dictionary[key] as T;
+                return (T)dictionary[key];
 
             return null;
         }

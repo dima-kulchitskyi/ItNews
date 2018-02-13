@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using ItNews.Nhibernate;
+using NHibernate.Criterion;
 
 namespace ItNews.Nhibernate.Providers
 {
@@ -31,29 +33,46 @@ namespace ItNews.Nhibernate.Providers
             {
                 uow.BeginTransaction();
 
-                using (var sessionContainer = SessionContainer.Open())
-                    await sessionContainer.Session.DeleteAsync(instance);
+                await ProviderHelper.GetSession(s =>
+                   s.DeleteAsync(instance));
 
-                uow.Commit();
+                await uow.Commit();
             }
         }
 
-        public async Task<T> Get(string id)
+        public Task<T> Get(string id)
         {
-            using (var sessionContainer = SessionContainer.Open())
-                return await sessionContainer.Session.GetAsync<T>(id);
+            return ProviderHelper.GetSession(s =>
+               s.GetAsync<T>(id));
         }
 
-        public async Task<int> GetCount()
+        public Task<IList<T>> Get(IEnumerable<string> ids)
         {
-            using (var sessionContainer = SessionContainer.Open())
-                return await sessionContainer.Session.QueryOver<T>().RowCountAsync();
+            if (ids == null)
+                throw new ArgumentNullException(nameof(ids));
+
+            if (ids.Count() == 0)
+                throw new ArgumentException($"{nameof(ids)} is empty");
+
+            return ProviderHelper.GetSession(async s =>
+           {
+               if (ids.Count() == 1)
+                   return new List<T> { await s.GetAsync<T>(ids.First()) };
+
+               return await s.QueryOver<T>().WhereRestrictionOn(it => it.Id).IsIn(ids.ToArray()).ListAsync();
+           });
         }
 
-        public async Task<IList<T>> GetList()
+        public Task<int> GetCount()
         {
-            using (var sessionContainer = SessionContainer.Open())
-                return await sessionContainer.Session.QueryOver<T>().ListAsync();
+            return ProviderHelper.GetSession(s =>
+               s.QueryOver<T>().RowCountAsync());
+        }
+
+        public Task<IList<T>> GetList()
+        {
+            return ProviderHelper.GetSession(s =>
+               s.QueryOver<T>().ListAsync());
         }
 
         public async Task<T> SaveOrUpdate(T instance)
@@ -68,10 +87,10 @@ namespace ItNews.Nhibernate.Providers
             {
                 uow.BeginTransaction();
 
-                using (var sessionContainer = SessionContainer.Open())
-                    await sessionContainer.Session.SaveOrUpdateAsync(instance);
+                await ProviderHelper.GetSession(async s =>
+                    await s.SaveOrUpdateAsync(instance));
 
-                uow.Commit();
+                await uow.Commit();
             }
 
             return instance;

@@ -9,6 +9,7 @@ namespace ItNews.Business.Providers
         where T : class, IEntity
     {
         IUnitOfWork GetUnitOfWork();
+        Task<IList<T>> Get(IEnumerable<string> ids);
         Task<T> Get(string id);
         Task<T> SaveOrUpdate(T instance);
         Task Delete(T instance);

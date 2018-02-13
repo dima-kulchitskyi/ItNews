@@ -63,9 +63,20 @@ namespace ItNews.FileProvider
             }
         }
 
-        public virtual async Task<T> Get(string id)
+        public async Task<T> Get(string id)
         {
             return (await GetList()).Where(it => it.Id == id).FirstOrDefault();
+        }
+
+        public async Task<IList<T>> Get(IEnumerable<string> ids)
+        {
+            if (ids == null)
+                throw new ArgumentNullException(nameof(ids));
+
+            if (ids.Count() == 0)
+                throw new ArgumentException($"{nameof(ids)} is empty");
+
+            return (await GetList()).Where(it => ids.Contains(it.Id)).ToList();
         }
 
         public async Task<int> GetCount()

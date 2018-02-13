@@ -6,17 +6,21 @@ using System.Text;
 using System.Threading.Tasks;
 using ItNews.Business.Providers;
 using ItNews.Business.Caching;
+using ItNews.Business.Search;
 
 namespace ItNews.Business.Managers
 {
     public class ArticleManager : Manager<Article, IArticleProvider, CacheProvider<Article>>
     {
+        private IArticleSearchProvider searchProvider;
+
         private AppUserManager userManager;
 
         public ArticleManager(IDependencyResolver dependencyResolver)
             : base(dependencyResolver)
         {
             userManager = dependencyResolver.Resolve<AppUserManager>();
+            searchProvider = dependencyResolver.Resolve<IArticleSearchProvider>();
         }
 
         public Task<IList<Article>> GetListSegmentAsync(int count, DateTime startDate)
@@ -40,8 +44,10 @@ namespace ItNews.Business.Managers
 
                 uow.BeginTransaction();
                 await provider.SaveOrUpdate(article);
-                uow.Commit();
+                await uow.Commit();
             }
+
+            searchProvider.AddOrUpdate(article);
         }
 
         public Task<int> GetCount()
@@ -69,7 +75,7 @@ namespace ItNews.Business.Managers
 
             using (var uow = provider.GetUnitOfWork())
             {
-                var oldArticle = await GetById(article.Id) ?? throw new ArgumentException("Article with given id does not exists"); 
+                var oldArticle = await GetById(article.Id) ?? throw new ArgumentException("Article with given id does not exists");
 
                 var author = await userManager.GetById(authorId) ?? throw new ArgumentException("User with given id does not exists");
 
@@ -81,9 +87,10 @@ namespace ItNews.Business.Managers
 
                 uow.BeginTransaction();
                 await provider.SaveOrUpdate(article);
-                uow.Commit();
+                await uow.Commit();
             }
 
+            searchProvider.AddOrUpdate(article);
             cacheProvider.Clear(article.Id);
         }
 
@@ -96,10 +103,23 @@ namespace ItNews.Business.Managers
             {
                 uow.BeginTransaction();
                 await provider.Delete(article);
-                uow.Commit();
+                await uow.Commit();
             }
 
+            searchProvider.Clear(article.Id);
             cacheProvider.Clear(article.Id);
+        }
+
+        public async Task CreateSearchIndex()
+        {
+            searchProvider.AddOrUpdate(await provider.GetList());
+        }
+
+        public async Task<IEnumerable<Article>> Search(string query, int maxResults = 0)
+        {
+            var idsList = searchProvider.Search(query, maxResults).ToList();
+
+            return await cacheProvider.GetMany(idsList, async ids => await provider.Get(ids));
         }
     }
 }

@@ -9,8 +9,8 @@ namespace ItNews.Business
     public interface IUnitOfWork : IDisposable
     {
         void BeginTransaction();
-        void Rollback();
-        void Commit();
+        Task Rollback();
+        Task Commit();
         bool IsActive { get; }
         bool IsCommited { get; }
         bool IsRolledBack { get;  }

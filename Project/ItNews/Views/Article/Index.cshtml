@@ -2,11 +2,14 @@
 @{
     ViewBag.Title = "News list";
 }
-<div>
+
+@Html.Partial("SearchFieldPartial")
+
+<div style="margin-top: 65px;">
     @foreach (var item in Model.Articles)
     {
         <hr />
-        <h4>@Html.ActionLink(item.Title,"Details", new { id = item.Id })</h4>
+        <h4>@Html.ActionLink(item.Title, "Details", new { id = item.Id })</h4>
         <p>@item.TextPreview</p>
         <p>@Html.DisplayNameFor(model => item.Author): @item.Author</p>
         <p>@Html.DisplayNameFor(model => item.Date): @item.Date</p>
@@ -29,3 +32,8 @@
         }
     </h4>
 </div>
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/SearchField.js")
+}
+

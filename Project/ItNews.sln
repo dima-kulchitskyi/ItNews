@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItNews.Nhibernate", "ItNews
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItNews.FileProvider", "MemoryProvider\ItNews.FileProvider.csproj", "{F071ACFB-E1A0-41AD-AFF9-032289F45BD2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SearchProvider", "SearchProvider\SearchProvider.csproj", "{990CFF64-7DBB-4D98-B238-9C00C2BCACEC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItNews.SearchProvider", "SearchProvider\ItNews.SearchProvider.csproj", "{990CFF64-7DBB-4D98-B238-9C00C2BCACEC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
