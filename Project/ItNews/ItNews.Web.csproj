@@ -197,6 +197,8 @@
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
+    <Content Include="Views\UserPanel\Panel.cshtml" />
+    <Content Include="Views\Account\UserProfile.cshtml" />
     <Content Include="Scripts\SearchField.js" />
     <Content Include="Views\AdminPanel\Panel.cshtml" />
     <None Include="Views\Article\CreateCommentPartial.cshtml" />
