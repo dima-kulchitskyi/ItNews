@@ -24,18 +24,18 @@ namespace ItNews.Nhibernate
 
         public void BeginTransaction()
         {
-            transaction.Begin();
+             transaction.Begin();
         }
 
-        public void Commit()
+        public async Task Commit()
         {
             try
             {
-                transaction.Commit();
+                await transaction.Commit();
             }
             catch
             {
-                Rollback();
+                await Rollback();
                 throw;
             }
             finally
@@ -44,11 +44,11 @@ namespace ItNews.Nhibernate
             }
         }
 
-        public void Rollback()
+        public async Task Rollback()
         {
             try
             {
-                transaction.RollBack();
+                await transaction.RollBack();
             }
             finally
             {

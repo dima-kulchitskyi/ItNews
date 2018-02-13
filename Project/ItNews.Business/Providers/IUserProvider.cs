@@ -9,6 +9,6 @@ namespace ItNews.Business.Providers
 {
     public interface IUserProvider : IProvider<AppUser>
     {
-        Task<AppUser> GetByUserNameAsync(string userName);
+        Task<AppUser> GetByUserName(string userName);
     }
 }

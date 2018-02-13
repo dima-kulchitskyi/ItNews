@@ -284,7 +284,7 @@ namespace ItNews.Controllers
         }
 
         [HttpPost]
-        public ActionResult Search(string query)
+        public async Task<ActionResult> Search(string query)
         {
             if (!Request.IsAjaxRequest())
                 return HttpNotFound();
@@ -292,7 +292,8 @@ namespace ItNews.Controllers
             var previewLength = int.Parse(WebConfigurationManager.AppSettings["ArticleTextPreviewLength"]);
             var previewEnding = WebConfigurationManager.AppSettings["ArticleTextPreviewEnding"];
 
-            var results = articleManager.Search(query);
+            var results = (await articleManager.Search(query)).ToList();
+
             var list = results.Select(it => new ArticleSearchItem
             {
                 Id = it.Id,

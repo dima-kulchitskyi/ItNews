@@ -11,8 +11,8 @@ namespace ItNews.Business.Search
     public interface ISearchProvider<T>
         where T : class, IEntity
     {
-        T SearchOne(string query, string searchField = "");
-        IEnumerable<T> Search(string query, int maxResults = 0, string searchField = "");
+        string SearchOne(string query, string searchField = "");
+        IEnumerable<string> Search(string query, int maxResults = 0, string searchField = "");
         void AddOrUpdate(T entity);
         void AddOrUpdate(IEnumerable<T> entities);
         void Clear(string id);

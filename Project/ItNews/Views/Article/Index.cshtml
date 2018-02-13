@@ -2,11 +2,9 @@
 @{
     ViewBag.Title = "News list";
 }
+
 @Html.Partial("SearchFieldPartial")
 
-@section Scripts {
-    @Scripts.Render("~/Scripts/SearchField.js")
-}
 <div style="margin-top: 65px;">
     @foreach (var item in Model.Articles)
     {
@@ -34,4 +32,8 @@
         }
     </h4>
 </div>
+
+@section Scripts {
+    @Scripts.Render("~/Scripts/SearchField.js")
+}
 

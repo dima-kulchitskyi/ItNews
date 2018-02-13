@@ -45,7 +45,7 @@ namespace ItNews.Business.Managers
 
                 uow.BeginTransaction();
                 await provider.SaveOrUpdate(comment);
-                uow.Commit();
+                await uow.Commit();
             }
         }
 
@@ -78,7 +78,7 @@ namespace ItNews.Business.Managers
             {
                 uow.BeginTransaction();
                 await provider.SaveOrUpdate(comment);
-                uow.Commit();
+                await uow.Commit();
             }
 
             cacheProvider.Clear(comment.Id);
@@ -93,7 +93,7 @@ namespace ItNews.Business.Managers
             {
                 uow.BeginTransaction();
                 await provider.Delete(comment);
-                uow.Commit();
+                await uow.Commit();
             }
 
             cacheProvider.Clear(comment.Id);

@@ -23,11 +23,21 @@ namespace ItNews.SearchProvider
     public abstract class SearchProvider<T> : ISearchProvider<T>
         where T : class, IEntity
     {
-        protected const int SearchResultsLimit = 100;
-
         private static readonly Dictionary<string, FSDirectory> directories = new Dictionary<string, FSDirectory>();
 
         protected readonly Version luceneVersion = Version.LUCENE_30;
+
+        protected readonly int searchResultsDefaultLimit = int.Parse(ConfigurationManager.AppSettings["SearchResultsDefaultLimit"]);
+
+        protected readonly string directoryPath;
+
+        public SearchProvider()
+        {
+            directoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
+                    ConfigurationManager.AppSettings["SearchProviderFolderName"],
+                    DependencyResolver.Current.GetService<ApplicationVariables>().DataSourceProviderType,
+                    typeof(T).FullName);
+        }
 
         protected FSDirectory Directory
         {
@@ -35,54 +45,29 @@ namespace ItNews.SearchProvider
             {
                 lock (directories)
                 {
-                    var dirPath = DirectoryPath;
+                    if (directories.ContainsKey(directoryPath))
+                        return directories[directoryPath];
 
-                    if (directories.ContainsKey(dirPath))
-                        return directories[dirPath];
-
-                    var dir = FSDirectory.Open(new DirectoryInfo(dirPath));
+                    var dir = FSDirectory.Open(new DirectoryInfo(directoryPath));
 
                     if (IndexWriter.IsLocked(dir))
                         IndexWriter.Unlock(dir);
 
-                    var lockFilePath = Path.Combine(dirPath, "write.lock");
+                    var lockFilePath = Path.Combine(directoryPath, "write.lock");
 
                     if (File.Exists(lockFilePath))
                         File.Delete(lockFilePath);
 
-                    directories.Add(dirPath, dir);
+                    directories.Add(directoryPath, dir);
 
                     return dir;
                 }
             }
         }
 
-        protected string DirectoryPath
-        {
-            get
-            {
-                return Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
-                    ConfigurationManager.AppSettings["SearchProviderFolderName"],
-                    DependencyResolver.Current.GetService<ApplicationVariables>().DataSourceProviderType,
-                    typeof(T).FullName);
-            }
-        }
-
-        protected IEnumerable<T> MapToDataList(IEnumerable<Document> hits)
-        {
-            return hits.Select(MapDocumentToInstance).ToList();
-        }
-
-        protected IEnumerable<T> MapToDataList(IEnumerable<ScoreDoc> hits, IndexSearcher searcher)
-        {
-            return hits.Select(hit => MapDocumentToInstance(searcher.Doc(hit.Doc))).ToList();
-        }
-
-        protected abstract T MapDocumentToInstance(Document doc);
+        protected abstract string[] SearchFields { get; }
 
         protected abstract Document MapInstanceToDocument(T instance);
-
-        protected abstract string[] GetSearchFields();
 
         protected Analyzer GetAnalyzer()
         {
@@ -114,7 +99,7 @@ namespace ItNews.SearchProvider
             {
                 foreach (var instance in instances)
                 {
-                    var searchQuery = new TermQuery(new Term("Id", instance.Id));
+                    var searchQuery = new TermQuery(new Term(nameof(instance.Id), instance.Id));
                     writer.DeleteDocuments(searchQuery);
                     writer.AddDocument(MapInstanceToDocument(instance));
                 }
@@ -129,45 +114,40 @@ namespace ItNews.SearchProvider
             AddOrUpdate(new List<T> { instance });
         }
 
-        public T SearchOne(string searchQuery, string searchField = "")
+        public string SearchOne(string searchQuery, string searchField = "")
         {
             return Search(searchQuery, 1, searchField).FirstOrDefault();
         }
 
-        public IEnumerable<T> Search(string searchQuery, int maxResults = 0, string searchField = "")
+        public IEnumerable<string> Search(string searchQuery, int maxResults = 0, string searchField = "")
         {
-            IEnumerable<T> results = new List<T>();
+            IEnumerable<string> results = new List<string>();
 
             if (string.IsNullOrEmpty(searchQuery)) return results;
 
             searchQuery = string.Join(" ", searchQuery.Trim().Replace("-", " ").Split(' ')
              .Where(x => !string.IsNullOrEmpty(x)).Select(x => x.Trim() + "*"));
 
-            if (!string.IsNullOrWhiteSpace(searchQuery))
-                using (var searcher = new IndexSearcher(Directory, false))
-                {
-                    var hitsLimit = maxResults <= 0 ? SearchResultsLimit : maxResults;
-                    var analyzer = GetAnalyzer();
+            if (string.IsNullOrWhiteSpace(searchQuery)) return results;
 
-                    if (!string.IsNullOrEmpty(searchField))
-                    {
-                        var parser = new QueryParser(luceneVersion, searchField, analyzer);
-                        var query = ParseQuery(searchQuery, parser);
-                        var hits = searcher.Search(query, hitsLimit).ScoreDocs;
-                        results = MapToDataList(hits, searcher);
-                    }
-                    else
-                    {
-                        var parser = new MultiFieldQueryParser(luceneVersion,
-                            GetSearchFields(),//typeof(T).GetProperties().Where(p => !p.GetAccessors().Any(a => !a.IsPublic)).Select(p => p.Name).ToArray(),
-                            analyzer);
+            using (var searcher = new IndexSearcher(Directory, true))
+            {
+                var hitsLimit = maxResults <= 0 ? searchResultsDefaultLimit : maxResults;
+                var analyzer = GetAnalyzer();
+                QueryParser parser;
 
-                        var query = ParseQuery(searchQuery, parser);
-                        var hits = searcher.Search(query, null, hitsLimit, Sort.RELEVANCE).ScoreDocs;
-                        results = MapToDataList(hits, searcher);
-                    }
-                    analyzer.Close();
-                }
+                if (!string.IsNullOrEmpty(searchField))
+                    parser = new QueryParser(luceneVersion, searchField, analyzer);
+                else
+                    parser = new MultiFieldQueryParser(luceneVersion, SearchFields, analyzer);
+
+                var query = ParseQuery(searchQuery, parser);
+                var hits = searcher.Search(query, null, hitsLimit, Sort.RELEVANCE).ScoreDocs;
+
+                results = hits.Select(hit => searcher.Doc(hit.Doc).Get("Id")).ToList();
+
+                analyzer.Close();
+            }
 
             return results;
         }
@@ -178,7 +158,7 @@ namespace ItNews.SearchProvider
             {
                 foreach (var id in ids)
                 {
-                    var searchQuery = new TermQuery(new Term("Id", id.ToString()));
+                    var searchQuery = new TermQuery(new Term("Id", id));
                     writer.DeleteDocuments(searchQuery);
                 }
 

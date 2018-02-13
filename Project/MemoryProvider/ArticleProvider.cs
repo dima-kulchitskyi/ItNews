@@ -17,13 +17,6 @@ namespace ItNews.FileProvider
             userProvider = new UserProvider();
         }
 
-        public override async Task<Article> Get(string id)
-        {
-            var article = await base.Get(id);
-            article.Author = await userProvider.Get(article.Author.Id);
-            return article;
-        }
-
         public async Task<IList<Article>> GetListSegment(int count, DateTime startDate)
         {
             return (await GetList()).OrderByDescending(it => it.Date)

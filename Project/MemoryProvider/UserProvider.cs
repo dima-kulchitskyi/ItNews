@@ -11,7 +11,7 @@ namespace ItNews.FileProvider
 {
     public class UserProvider : FileProvider<AppUser>, IUserProvider
     {
-        public async Task<AppUser> GetByUserNameAsync(string userName)
+        public async Task<AppUser> GetByUserName(string userName)
         {
             return (await base.GetList()).Where(it => it.UserName.Equals(userName, StringComparison.InvariantCultureIgnoreCase)).FirstOrDefault();
         }

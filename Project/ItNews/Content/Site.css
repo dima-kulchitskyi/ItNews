@@ -47,11 +47,11 @@ textarea {
 
 /* Dropdown Content (Hidden by Default) */
 .dropdown-content {
+    border: 1px solid #dbdbdb;
+    background-color: white;
     display: block;
     position: absolute;
-    background-color: #f6f6f6;
     min-width: 500px;
-    border: 1px solid #ddd;
     z-index: 1;
 }
 
@@ -60,15 +60,19 @@ textarea {
         display: block;
     }
 
+    .dropdown-content div {
+        background-color: #f6f6f6;
+    }
+
     .dropdown-content div div {
         color: black;
         padding: 8px 8px;
         text-decoration: none;
         display: block;
         border: 1px solid grey;
-        border-radius: 5px;
+        background-color: white;
         line-height: 0.6;
-        margin-bottom: 3px;
+        margin: 3px;
     }
 
     .dropdown-content div div h3 {

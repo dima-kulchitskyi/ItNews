@@ -15,7 +15,7 @@ namespace ItNews.Business.Caching
         ApplicationVariables config;
 
         protected readonly string keyPrefix;
-        protected int cacheDuration;
+        protected readonly int cacheDuration;
 
         public CacheProvider(IDependencyResolver dependencyResolver)
         {
@@ -26,10 +26,10 @@ namespace ItNews.Business.Caching
 
         public T GetById(string id)
         {
-            return MemoryCache.Default.Get(keyPrefix + id) as T;
+            return (T)MemoryCache.Default.Get(keyPrefix + id);
         }
 
-        public T Save(T entity)
+        public virtual void Save(T entity)
         {
             if (entity != null)
             {
@@ -38,10 +38,9 @@ namespace ItNews.Business.Caching
 
                 MemoryCache.Default.Set(keyPrefix + entity.Id, entity, DateTime.Now.AddMinutes(cacheDuration));
             }
-            return entity;
         }
 
-        public void Clear(string id)
+        public virtual void Clear(string id)
         {
             var key = keyPrefix + id;
             if (MemoryCache.Default.Contains(key))

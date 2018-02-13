@@ -44,7 +44,7 @@ namespace ItNews.Business.Managers
 
         public Task<AppUser> GetByName(string name)
         {
-            return provider.GetByUserNameAsync(name);
+            return provider.GetByUserName(name);
         }
 
         public async Task Delete(AppUser user)

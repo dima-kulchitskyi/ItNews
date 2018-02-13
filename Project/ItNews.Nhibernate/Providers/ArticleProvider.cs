@@ -5,35 +5,37 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ItNews.Business;
+using ItNews.Nhibernate;
 
 namespace ItNews.Nhibernate.Providers
 {
     public class ArticleProvider : Provider<Article>, IArticleProvider
     {
-        public async Task<IList<Article>> GetListSegment(int count, DateTime startDate)
+        public Task<IList<Article>> GetListSegment(int count, DateTime startDate)
         {
-            using (var container = SessionContainer.Open())
+            return ProviderHelper.GetSession(s =>
             {
-                var criteria = container.Session.CreateCriteria<Article>()
-                        .AddOrder(Order.Desc(nameof(Article.Date)))
-                        .Add(Restrictions.Lt(nameof(Article.Date), startDate))
-                        .SetMaxResults(count);
+                var criteria = s.CreateCriteria<Article>()
+                       .AddOrder(Order.Desc(nameof(Article.Date)))
+                       .Add(Restrictions.Lt(nameof(Article.Date), startDate))
+                       .SetMaxResults(count);
 
-                return await criteria.ListAsync<Article>();
-            }
+                return criteria.ListAsync<Article>();
+            });
+
         }
 
-        public async Task<IList<Article>> GetPage(int count, int pageNumber)
+        public Task<IList<Article>> GetPage(int count, int pageNumber)
         {
-            using (var container = SessionContainer.Open())
+            return ProviderHelper.GetSession(s =>
             {
-                var criteria = container.Session.CreateCriteria<Article>()
+                var criteria = s.CreateCriteria<Article>()
                         .AddOrder(Order.Desc(nameof(Article.Date)))
                         .SetFirstResult(count * pageNumber)
                         .SetMaxResults(count);
 
-                return await criteria.ListAsync<Article>();
-            }
+                return criteria.ListAsync<Article>();
+            });
         }
     }
 }

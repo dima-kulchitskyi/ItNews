@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Caching\CacheProviderExtensions.cs" />
     <Compile Include="Caching\CacheProvider.cs" />
     <Compile Include="Entities\AppUser.cs" />
     <Compile Include="Entities\Article.cs" />

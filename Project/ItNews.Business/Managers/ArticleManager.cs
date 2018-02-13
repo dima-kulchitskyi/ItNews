@@ -44,7 +44,7 @@ namespace ItNews.Business.Managers
 
                 uow.BeginTransaction();
                 await provider.SaveOrUpdate(article);
-                uow.Commit();
+                await uow.Commit();
             }
 
             searchProvider.AddOrUpdate(article);
@@ -75,7 +75,7 @@ namespace ItNews.Business.Managers
 
             using (var uow = provider.GetUnitOfWork())
             {
-                var oldArticle = await GetById(article.Id) ?? throw new ArgumentException("Article with given id does not exists"); 
+                var oldArticle = await GetById(article.Id) ?? throw new ArgumentException("Article with given id does not exists");
 
                 var author = await userManager.GetById(authorId) ?? throw new ArgumentException("User with given id does not exists");
 
@@ -87,7 +87,7 @@ namespace ItNews.Business.Managers
 
                 uow.BeginTransaction();
                 await provider.SaveOrUpdate(article);
-                uow.Commit();
+                await uow.Commit();
             }
 
             searchProvider.AddOrUpdate(article);
@@ -103,7 +103,7 @@ namespace ItNews.Business.Managers
             {
                 uow.BeginTransaction();
                 await provider.Delete(article);
-                uow.Commit();
+                await uow.Commit();
             }
 
             searchProvider.Clear(article.Id);
@@ -115,9 +115,11 @@ namespace ItNews.Business.Managers
             searchProvider.AddOrUpdate(await provider.GetList());
         }
 
-        public IEnumerable<Article> Search(string query, int maxResults = 0)
+        public async Task<IEnumerable<Article>> Search(string query, int maxResults = 0)
         {
-            return searchProvider.Search(query, maxResults);
+            var idsList = searchProvider.Search(query, maxResults).ToList();
+
+            return await cacheProvider.GetMany(idsList, async ids => await provider.Get(ids));
         }
     }
 }

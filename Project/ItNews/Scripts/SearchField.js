@@ -1,6 +1,5 @@
 ﻿$(function () {
     var input = $("#searchInput");
-    var container = $("#searchDropdown");
     var templ = $("#searchItemTemplate");
     var container = $("#searchItemsContainer");
 
@@ -40,7 +39,7 @@
                 data: { query: $(this).val() },
                 dataType: "json"
             }).done(function (data) {
-                console.log(data);
+                //console.log(data);
 
                 $(container).html('');
                 $(container).show();
@@ -60,7 +59,7 @@
                     }
                 }
                 else {
-                    $(container).append($("<DIV>").html("<p>No results</p>"));
+                    $(container).append($("<div>").append($("<p>").html("No results")));
                 }
             });
         }

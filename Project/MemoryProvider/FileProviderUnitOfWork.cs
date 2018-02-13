@@ -20,18 +20,22 @@ namespace ItNews.FileProvider
             IsActive = true;
         }
 
-        public void Commit()
+        public Task Commit()
         {
             IsActive = false;
             IsCommited = true;
+
+            return Task.CompletedTask;
+        }
+
+        public Task Rollback()
+        {
+            IsActive = false;
+
+            return Task.CompletedTask;
         }
 
         public void Dispose()
-        {
-            IsActive = false;
-        }
-
-        public void Rollback()
         {
             IsActive = false;
         }
