@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace ItNews.Business
 {
-    public class ApplicationVariables
+    public static class ApplicationVariables
     {
-        public ApplicationVariables()
+        static ApplicationVariables()
         {
             DataSourceProviderType = ConfigurationManager.AppSettings["DefaultProviderType"];
         }
 
-        public string DataSourceProviderType { get; set; }
+        public static string DataSourceProviderType { get; set; }
     }
 }

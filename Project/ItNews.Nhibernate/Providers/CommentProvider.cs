@@ -13,13 +13,13 @@ namespace ItNews.Nhibernate.Providers
 
         public Task<int> GetArticleCommentsCountAsync(string articleId)
         {
-            return ProviderHelper.GetSession(s =>
+            return ProviderHelper.Invoke(s =>
                s.QueryOver<Comment>().Where(comment => comment.Article.Id == articleId).RowCountAsync());
         }
 
         public Task<IList<Comment>> GetArticleCommentsPageAsync(string articleId, int itemsCount, int commentPage)
         {
-            return ProviderHelper.GetSession(s =>
+            return ProviderHelper.Invoke(s =>
                s.QueryOver<Comment>().Where(comment => comment.Article.Id == articleId)
                  .OrderBy(m => m.Date).Desc.Skip(commentPage).Take(itemsCount).ListAsync());
         }

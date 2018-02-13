@@ -14,11 +14,13 @@ using ItNews.Business.Managers;
 using ItNews.Mvc.Identity.Mangers;
 using ItNews.Mvc.Identity;
 using System.Threading;
+using ItNews.Business;
 
 namespace ItNews.Mvc.Controllers
 {
     public class AccountController : Controller
     {
+        
         private UserManager<IdentityUser, string> userManager;
 
         private SignInManager<IdentityUser, string> signInManager;

@@ -12,11 +12,11 @@ namespace ItNews.Nhibernate
         private static ISessionFactory ConfigureSessionFactory()
         {
             var connectionString = ConfigurationManager.ConnectionStrings["DbConnection"].ToString();
-            var sessionFactory = Fluently.Configure().Database(MsSqlConfiguration.MsSql2008.ConnectionString(connectionString).ShowSql())
+
+            return Fluently.Configure().Database(MsSqlConfiguration.MsSql2008.ConnectionString(connectionString).ShowSql())
                                 .Mappings(m => m.FluentMappings.AddFromAssemblyOf<Configuration>())
                                 .ExposeConfiguration(cfg => new SchemaUpdate(cfg).Execute(true, true))
                                 .BuildSessionFactory();
-            return sessionFactory;
         }
 
         public static void RegisterDependencies(IUnityContainer container)

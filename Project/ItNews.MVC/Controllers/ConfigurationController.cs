@@ -20,11 +20,9 @@ namespace ItNews.Mvc.Controllers
             if (string.IsNullOrEmpty(providerType))
                 return HttpNotFound();
 
-            var config = DependencyResolver.Current.GetService<ApplicationVariables>();
-
-            if (config.DataSourceProviderType != providerType)
+            if (ApplicationVariables.DataSourceProviderType != providerType)
             {
-                config.DataSourceProviderType = providerType;
+                ApplicationVariables.DataSourceProviderType = providerType;
                 DependencyResolver.Current.GetService<IAuthenticationManager>().SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             }
 

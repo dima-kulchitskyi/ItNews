@@ -185,6 +185,7 @@
     <Compile Include="App_Start\BundleOrderers\DeclarationOrderBundleOrderer.cs" />
     <Compile Include="App_Start\ControllerBuilderConfig.cs" />
     <Compile Include="App_Start\DependencyInjection\DependencyResolver.cs" />
+    <Compile Include="App_Start\DependencyInjection\LifetimeManagers\RequestLifetimeManager.cs" />
     <Compile Include="App_Start\DependencyInjection\UnityBindExtensions.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />

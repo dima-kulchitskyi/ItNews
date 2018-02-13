@@ -11,7 +11,7 @@ namespace ItNews.Nhibernate
 {
     public static class ProviderHelper
     {
-        public static async Task<TResult> GetSession<TResult>(Func<ISession, Task<TResult>> func)
+        public static async Task<TResult> Invoke<TResult>(Func<ISession, Task<TResult>> func)
         {
             using (var sessionContainer = SessionContainer.Open())
                 return await func(sessionContainer.Session);
@@ -19,7 +19,7 @@ namespace ItNews.Nhibernate
 
         public static async Task GetSession(Func<ISession, Task> func)
         {
-            await GetSession(async s =>
+            await Invoke(async s =>
             {
                 await func(s);
                 return true;

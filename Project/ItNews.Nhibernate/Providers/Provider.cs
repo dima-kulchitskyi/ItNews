@@ -42,7 +42,7 @@ namespace ItNews.Nhibernate.Providers
 
         public Task<T> Get(string id)
         {
-            return ProviderHelper.GetSession(s =>
+            return ProviderHelper.Invoke(s =>
                s.GetAsync<T>(id));
         }
 
@@ -54,7 +54,7 @@ namespace ItNews.Nhibernate.Providers
             if (ids.Count() == 0)
                 throw new ArgumentException($"{nameof(ids)} is empty");
 
-            return ProviderHelper.GetSession(async s =>
+            return ProviderHelper.Invoke(async s =>
            {
                if (ids.Count() == 1)
                    return new List<T> { await s.GetAsync<T>(ids.First()) };
@@ -65,13 +65,13 @@ namespace ItNews.Nhibernate.Providers
 
         public Task<int> GetCount()
         {
-            return ProviderHelper.GetSession(s =>
+            return ProviderHelper.Invoke(s =>
                s.QueryOver<T>().RowCountAsync());
         }
 
         public Task<IList<T>> GetList()
         {
-            return ProviderHelper.GetSession(s =>
+            return ProviderHelper.Invoke(s =>
                s.QueryOver<T>().ListAsync());
         }
 

@@ -35,7 +35,7 @@ namespace ItNews.SearchProvider
         {
             directoryPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory,
                     ConfigurationManager.AppSettings["SearchProviderFolderName"],
-                    DependencyResolver.Current.GetService<ApplicationVariables>().DataSourceProviderType,
+                    ApplicationVariables.DataSourceProviderType,
                     typeof(T).FullName);
         }
 

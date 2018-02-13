@@ -1,8 +1,7 @@
 ﻿@using ItNews.Business;
 @{
-    var currentProviderType = DependencyResolver.Current.GetService<ApplicationVariables>().DataSourceProviderType;
+    var providerType = ApplicationVariables.DataSourceProviderType;
 }
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -26,7 +25,6 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-
                     @if (User.Identity.IsAuthenticated)
                     {
                         <li>@Html.ActionLink("Create Article", "Create", "Article", new { }, new { @class = "navbar-brand" })</li>
@@ -43,8 +41,8 @@
                         {
                             @Html.AntiForgeryToken();
                             <select name="providerType" style="margin-top: 10px">
-                                <option value="DB" @(currentProviderType == "DB" ? "selected" : "")>DB</option>
-                                <option value="File"@(currentProviderType == "File" ? "selected" : "")>File</option>
+                                <option value="DB" @(providerType == "DB" ? "selected" : "")>DB</option>
+                                <option value="File" @(providerType == "File" ? "selected" : "")>File</option>
                             </select>
                             <input type="submit" value="Select" class="btn" style="float: right; margin-left: 5px; margin-right: 20px; margin-top: 3px">
                         }
@@ -60,7 +58,6 @@
             <p>&copy; @DateTime.Now.Year – ITNews</p>
         </footer>
     </div>
-
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)

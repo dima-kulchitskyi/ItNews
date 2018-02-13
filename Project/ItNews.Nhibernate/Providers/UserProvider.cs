@@ -14,13 +14,13 @@ namespace ItNews.Nhibernate.Providers
     {
         public Task<IList<AppUser>> GetAllUsers()
         {
-            return ProviderHelper.GetSession(s =>
+            return ProviderHelper.Invoke(s =>
                s.QueryOver<AppUser>().OrderBy(m => m.UserName).Asc.ListAsync());
         }
 
         public Task<AppUser> GetByUserName(string userName)
         {
-            return ProviderHelper.GetSession(s =>
+            return ProviderHelper.Invoke(s =>
                s.QueryOver<AppUser>().Where(it => it.UserName == userName).SingleOrDefaultAsync());
         }
     }

@@ -48,7 +48,7 @@ namespace ItNews.Nhibernate
         {
             try
             {
-                await transaction.RollBack();
+                await transaction.Rollback();
             }
             finally
             {

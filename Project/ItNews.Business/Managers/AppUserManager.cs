@@ -21,7 +21,7 @@ namespace ItNews.Business.Managers
             {
                 uow.BeginTransaction();
                 await provider.SaveOrUpdate(user);
-                uow.Commit();
+                await uow.Commit();
             }
 
             cacheProvider.Clear(user.Id);
@@ -56,7 +56,7 @@ namespace ItNews.Business.Managers
             {
                 uow.BeginTransaction();
                 await provider.Delete(user);
-                uow.Commit();
+                await uow.Commit();
             }
 
             cacheProvider.Clear(user.Id);

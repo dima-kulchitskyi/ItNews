@@ -13,7 +13,7 @@ namespace ItNews.Nhibernate.Providers
     {
         public Task<IList<Article>> GetListSegment(int count, DateTime startDate)
         {
-            return ProviderHelper.GetSession(s =>
+            return ProviderHelper.Invoke(s =>
             {
                 var criteria = s.CreateCriteria<Article>()
                        .AddOrder(Order.Desc(nameof(Article.Date)))
@@ -27,7 +27,7 @@ namespace ItNews.Nhibernate.Providers
 
         public Task<IList<Article>> GetPage(int count, int pageNumber)
         {
-            return ProviderHelper.GetSession(s =>
+            return ProviderHelper.Invoke(s =>
             {
                 var criteria = s.CreateCriteria<Article>()
                         .AddOrder(Order.Desc(nameof(Article.Date)))

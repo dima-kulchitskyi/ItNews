@@ -37,10 +37,7 @@ namespace ItNews.Web.DependencyInjection
 
             .RegisterType<UserManager<IdentityUser, string>, Mvc.Identity.Mangers.IdentityUserManager>()
             .RegisterType<Microsoft.AspNet.Identity.Owin.SignInManager<IdentityUser, string>, Mvc.Identity.Mangers.IdentitySignInManager>()
-
-            .RegisterTypeInRequestScope<RequestDataStorage, RequestDataStorage>()
-            .RegisterTypeInSingletonScope<ApplicationVariables, ApplicationVariables>()
-
+            
             ;
         }
     }

@@ -16,7 +16,7 @@ namespace ItNews.Business.Managers
 
         public Manager(IDependencyResolver dependencyResolver)
         {
-            provider = dependencyResolver.Resolve<TProvider>(dependencyResolver.Resolve<ApplicationVariables>().DataSourceProviderType);
+            provider = dependencyResolver.Resolve<TProvider>(ApplicationVariables.DataSourceProviderType);
             cacheProvider = dependencyResolver.Resolve<TCacheProvider>();
         }
 

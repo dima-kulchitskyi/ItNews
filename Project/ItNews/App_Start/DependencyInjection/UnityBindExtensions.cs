@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using ItNews.DependencyInjection.LifetimeManagers;
 using Unity;
 using Unity.AspNet.Mvc;
 using Unity.Lifetime;
@@ -12,6 +9,9 @@ namespace ItNews.Web.DependencyInjection
     {
         public static IUnityContainer RegisterTypeInRequestScope<TInterface, TImplementation>(this IUnityContainer container, string name = null) where TImplementation : TInterface
         {
+            if(name == null)
+                return container.RegisterType<TInterface, TImplementation>(new PerRequestLifetimeManager());
+
             return container.RegisterType<TInterface, TImplementation>(name, new PerRequestLifetimeManager());
         }
 

@@ -1,14 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace ItNews.Mvc
 {
     public class RequestDataStorage
     {
-        private Dictionary<string, object> dictionary = new Dictionary<string, object>();
+        public RequestDataStorage()
+        {
+            var dict = (Dictionary<string, object>)CallContext.GetData("RequestDataStorage");
+
+            if (dict == null)
+            {
+                dict = new Dictionary<string, object>();
+                CallContext.SetData("RequestDataStorage", dict);
+            }
+
+            dictionary = dict;
+        }
+
+        private Dictionary<string, object> dictionary;
 
         public T GetValue<T>(string key)
             where T : class
