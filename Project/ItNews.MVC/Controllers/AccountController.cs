@@ -14,24 +14,30 @@ using ItNews.Business.Managers;
 using ItNews.Mvc.Identity.Mangers;
 using ItNews.Mvc.Identity;
 using System.Threading;
+using ItNews.Mvc.ViewModels.UserProfile;
+using System.Web.UI;
 
 namespace ItNews.Mvc.Controllers
 {
     public class AccountController : Controller
     {
-        private UserManager<IdentityUser, string> userManager;
+        private AppUserManager userManager;
 
-        private SignInManager<IdentityUser, string> signInManager;
+        private UserManager<IdentityUser, string> identityUserManager;
 
-        private IAuthenticationManager authenticationManager;
+        private SignInManager<IdentityUser, string> identitySignInManager;
 
-        public AccountController(IdentityUserManager identityUserManager,
+        private IAuthenticationManager identityAuthenticationManager;
+
+        public AccountController(AppUserManager userManager,
+            IdentityUserManager identityUserManager,
             IdentitySignInManager identitySignInManager,
             IAuthenticationManager identityAuthenticationManager)
         {
-            userManager = identityUserManager;
-            signInManager = identitySignInManager;
-            authenticationManager = identityAuthenticationManager;
+            this.userManager = userManager;
+            this.identityUserManager = identityUserManager;
+            this.identitySignInManager = identitySignInManager;
+            this.identityAuthenticationManager = identityAuthenticationManager;
         }
 
         public async Task<ActionResult> Test()
@@ -69,7 +75,7 @@ namespace ItNews.Mvc.Controllers
             if (!ModelState.IsValid)
                 return View(model);
 
-            var result = await signInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, shouldLockout: false);
+            var result = await identitySignInManager.PasswordSignInAsync(model.UserName, model.Password, model.RememberMe, shouldLockout: false);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -97,10 +103,10 @@ namespace ItNews.Mvc.Controllers
             if (ModelState.IsValid)
             {
                 var user = new IdentityUser { UserName = model.UserName, Email = model.Email, Role = "User" };
-                var result = await userManager.CreateAsync(user, model.Password);
+                var result = await identityUserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await signInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+                    await identitySignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
                     return RedirectToAction("Index", "Article");
                 }
 
@@ -114,8 +120,20 @@ namespace ItNews.Mvc.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Logout()
         {
-            authenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
+            identityAuthenticationManager.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             return RedirectToAction("Index", "Article");
+        }
+
+        [HttpGet]
+        [OutputCache(Duration = int.MaxValue, Location = OutputCacheLocation.Any)]
+        public async Task<ActionResult> UserProfile()
+        {
+            var user = await userManager.GetById(User.Identity.GetUserId());
+
+            if (user == null)
+                return HttpNotFound();
+
+            return View(new UserProfileViewModel() { UserName = user.UserName, Email = user.Email });
         }
     }
 }

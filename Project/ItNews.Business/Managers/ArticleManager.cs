@@ -53,7 +53,7 @@ namespace ItNews.Business.Managers
         {
             if (string.IsNullOrEmpty(articleId))
                 throw new ArgumentNullException(nameof(articleId));
-
+            
             if (string.IsNullOrEmpty(userId))
                 throw new ArgumentNullException(nameof(userId));
 

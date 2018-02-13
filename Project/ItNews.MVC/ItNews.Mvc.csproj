@@ -127,6 +127,7 @@
     <Compile Include="ViewModels\Article\CreateCommentViewModel.cs" />
     <Compile Include="ViewModels\Article\CreateViewModel.cs" />
     <Compile Include="ViewModels\Article\EditViewModel.cs" />
+    <Compile Include="ViewModels\UserProfile\UserProfileViewModel.cs" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
